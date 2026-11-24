@@ -8,10 +8,17 @@ import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 
 import migrations from '@/drizzle/migrations';
+import { ERROR_CODES } from '@/constants/telemetry';
 import { db } from '@/features/db/client';
 import { ScriptureSizeProvider } from '@/features/scripture/scripture';
 import ar from '@/locales/ar.json';
 import { getThemePreference } from '@/services/storage';
+import {
+  installGlobalErrorScrubber,
+  reportError,
+} from '@/services/telemetry';
+
+installGlobalErrorScrubber();
 
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
@@ -19,6 +26,12 @@ export default function RootLayout() {
   useEffect(() => {
     colorScheme.set(getThemePreference());
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      reportError(ERROR_CODES.E_MIGRATION);
+    }
+  }, [error]);
 
   if (error) {
     return (
