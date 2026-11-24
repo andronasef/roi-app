@@ -23,7 +23,7 @@ Tagline: «كلمتك، وهويتك، وصلاتك… في مكان واحد، 
 - [ ] Onboarding: 3 screens (what Ro'i is + 4 tools; name + gender for personalization; pick first verse/name with a clear "later" option) — first win in the first minute
 - [ ] Home grid ("أدواتك"): tile per tool; user can show/hide/reorder; choices persisted locally; one-time intro message; nest rule — new things are screens inside existing tools, not new tiles
 - [ ] Per-tool teaching layers: first-run one-line purpose + 3–4 step coach marks (once), teaching empty states, and a permanent (?) button in each tool's app bar opening a detailed help page with FAQ shortcuts
-- [ ] **ليا أنا**: weekly verse (same for everyone that week, scheduled by admin), monthly verse, names of God (rich-text article cards), blessings (first-person title + rich text + supporting verse), favorites ⭐ (local), long-press copy to share outside the app, user-added personal items (local) with optional "suggest to everyone"
+- [ ] **ليا أنا**: weekly verse and monthly verse (no admin scheduling: each user gets their own verse picked pseudo-randomly from the content pool, seeded by device/user + period, stable for the whole week/month so reopening never changes it, never repeating a verse that user already received, and spread so different users get different verses), names of God (rich-text article cards), blessings (first-person title + rich text + supporting verse), favorites ⭐ (local), long-press copy to share outside the app, user-added personal items (local) with optional "suggest to everyone"
 - [ ] **حفظ الآيات**: stats (due today, in memorization, memorized, streak), daily review session, search + filters, add own verse, per-verse modes — Anki-style self-rated card (ts-fsrs), record & listen (expo-audio), reveal challenge (25%/50%), first-letter / full-word recall with progress bar
 - [ ] **تشفع**: prayer cards (text, person, since-when, pin, "صليت"), people grouping with active prayer counts, sort (random, most neglected, oldest, newest, alphabetical), search, "اتستجابت" answered archive with outcome + count, gratitude tie-in
 - [ ] **دفتر الشكر**: one dated line per day, gentle nightly notification, month-end view of all lines
@@ -33,15 +33,17 @@ Tagline: «كلمتك، وهويتك، وصلاتك… في مكان واحد، 
 - [ ] Personalization engine: public content stored as `text` / `textFemale` / `{الاسم}` token; app composes per user's name and gender (female version if present, else shared)
 - [ ] Offline-first content: first launch fetches public content (verses, names of God, blessings) into on-device SQLite; incremental sync via `contentVersion`; ship a small bundled fallback so first launch offline still works
 - [ ] Backend (NestJS + GraphQL code-first + SQLite/Drizzle): public content API, in-memory cache invalidated on admin change, user suggestions as `pending` submissions (anonymous device ID + rate limiting), deployed via Docker on Dokploy with persistent SQLite volume
-- [ ] Admin panel (small web frontend on the same GraphQL): Google sign-in with allowlisted admin emails (multiple admins from day one); add/edit verses, names, blessings with "same text for male/female" switch, side-by-side male/female fields, name-chip insertion (atomic, draggable, never shows raw token), live preview with test name + gender toggle; review/edit/accept/reject suggestions; schedule weekly/monthly verses; shared zod validation (both fields required when switch off; reject any token other than `{الاسم}`; warn if only one version has the name)
+- [ ] Admin panel (small web frontend on the same GraphQL): Google sign-in with allowlisted admin emails (multiple admins from day one); add/edit verses, names, blessings with "same text for male/female" switch, side-by-side male/female fields, name-chip insertion (atomic, draggable, never shows raw token), live preview with test name + gender toggle; review/edit/accept/reject suggestions; shared zod validation (both fields required when switch off; reject any token other than `{الاسم}`; warn if only one version has the name)
+- [ ] Google Drive sync (v1): on first launch the app offers (skippable, re-offerable from Settings) Google sign-in and a Drive permission request, with a plain explanation of why; user's data file (and recordings) is saved to the user's own Google Drive hidden app-data folder (`drive.appdata` scope — private to the app, no access to the rest of their Drive), synced on app open and roughly daily in the background; restore on a new device after sign-in; per-record last-write-wins with tombstones for deletes; nothing is ever sent to our servers
 - [ ] One-time import of initial public content from the existing Sanity project into the new backend; further content added manually through the admin panel
-- [ ] Privacy: everything private by default; nothing leaves the device except explicit user action (copy/share, suggest-to-all); sensitive names may use pseudonyms; Firebase Crashlytics/Analytics limited to generic events (never prayer text, names, or verse content); privacy policy and store privacy disclosures
+- [ ] Privacy: everything private by default; nothing leaves the device except explicit user action (copy/share, suggest-to-all) and the user's own opt-in sync to their personal Google Drive (never our servers); sensitive names may use pseudonyms; Firebase Crashlytics/Analytics limited to generic events (never prayer text, names, or verse content); privacy policy and store privacy disclosures
 - [ ] Tone: encouraging not accusing; Scripture text in standard Arabic (فصحى) verbatim; UI and help copy in warm, short Egyptian Arabic; RTL throughout
 - [ ] Publish to App Store and Google Play (v1 is done when it ships to the stores)
 
 ### Out of Scope
 
-- Cloud backup / sync of personal user data — deferred (local-only in v1); revisit as "save a copy of your data" ☁️ since local data loss on device change is a known risk
+- Syncing personal user data to our own servers — never; personal data only goes to the user's own Google Drive (iOS iCloud or other providers deferred)
+- Admin scheduling of weekly/monthly verses — dropped; verses are assigned per user automatically
 - Languages other than Arabic — deferred
 - Gamified challenges (7 days gratitude etc.) — later idea 🌱
 - New top-level tools/tiles — new features must nest as screens inside the four existing tools
@@ -62,6 +64,7 @@ Tagline: «كلمتك، وهويتك، وصلاتك… في مكان واحد، 
 - **Tech stack (mobile)**: Expo + expo-router, development build (not Expo Go, needed for Firebase); Drizzle + expo-sqlite; react-native-mmkv; NativeWind + React Native Reusables; Zustand; TanStack Query + graphql-request + GraphQL Codegen; react-hook-form + zod; expo-notifications (local); expo-audio; ts-fsrs; i18next + expo-localization (RTL); FlashList; Reanimated + Gesture Handler; safe-area-context + keyboard-controller; @react-native-firebase crashlytics + analytics; RNRepo (optional, beta) — chosen to match owner's stack and offline-first design
 - **Tech stack (backend)**: NestJS + @nestjs/graphql code-first, SQLite + Drizzle (same ORM as mobile), in-memory public content cache keyed by `contentVersion`, Docker on Dokploy with persistent volume
 - **Privacy**: all personal data local; no network egress of personal content except explicit actions — the data is among the most sensitive kinds
+- **Google integration**: Google Sign-In (`@react-native-google-signin/google-signin`) + Drive REST API v3 limited to `drive.appdata` scope (non-sensitive scope, avoids Google's restricted-scope verification); background sync is best-effort (iOS does not guarantee timing), so also sync on app open/foreground
 - **Platforms**: iOS and Android both required in v1, including widgets (native work needed)
 - **Language**: Arabic only; RTL
 - **Distribution**: App Store + Google Play review compliance (privacy policy, disclosures)
@@ -79,6 +82,8 @@ Tagline: «كلمتك، وهويتك، وصلاتك… في مكان واحد، 
 | Name/gender personalization via `text`/`textFemale`/`{الاسم}` with chip editor | Impossible to write the token wrong; one logic for admin and user-added content | — Pending |
 | Reanimated + Gesture Handler instead of React Native Ease | Ease lacks gesture support | — Pending |
 | Ship small bundled content fallback for first offline launch | Onboarding step 3 needs content before first sync | — Pending |
+| Google Drive sync in v1 via `drive.appdata` (user's own Drive) | Fixes the device-change data-loss risk without our servers ever touching sensitive data | — Pending |
+| Verses assigned per user (seeded pseudo-random, stable per week/month, no repeats), no admin scheduling | Owner decision; each person's verse feels personal. Strict global uniqueness can't be guaranteed offline — seeded pick spreads users across the pool | — Pending |
 | "Most neglected" prayer sort as the key differentiator | Turns prayer from mood into fairness | — Pending |
 | v1 = published on both stores | Owner's definition of done | — Pending |
 
