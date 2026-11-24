@@ -157,9 +157,98 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmap) | | |
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Pending |
+| FND-05 | Phase 1 | Pending |
+| FND-06 | Phase 1 | Pending |
+| FND-07 | Phase 1 | Pending |
+| FND-08 | Phase 1 | Pending |
+| FND-09 | Phase 1 | Pending |
+| REL-01 | Phase 1 | Pending |
+| BE-01 | Phase 2 | Pending |
+| BE-02 | Phase 2 | Pending |
+| BE-03 | Phase 2 | Pending |
+| BE-04 | Phase 2 | Pending |
+| BE-05 | Phase 2 | Pending |
+| BE-06 | Phase 2 | Pending |
+| BE-07 | Phase 2 | Pending |
+| HOME-06 | Phase 2 | Pending |
+| HOME-07 | Phase 2 | Pending |
+| ADM-01 | Phase 3 | Pending |
+| ADM-02 | Phase 3 | Pending |
+| ADM-03 | Phase 3 | Pending |
+| ADM-04 | Phase 3 | Pending |
+| ADM-05 | Phase 3 | Pending |
+| ADM-06 | Phase 3 | Pending |
+| ADM-07 | Phase 3 | Pending |
+| HOME-01 | Phase 4 | Pending |
+| HOME-02 | Phase 4 | Pending |
+| HOME-03 | Phase 4 | Pending |
+| HOME-05 | Phase 4 | Pending |
+| PERS-01 | Phase 4 | Pending |
+| PERS-02 | Phase 4 | Pending |
+| PERS-03 | Phase 4 | Pending |
+| PERS-04 | Phase 4 | Pending |
+| ME-01 | Phase 4 | Pending |
+| ME-02 | Phase 4 | Pending |
+| ME-03 | Phase 4 | Pending |
+| ME-04 | Phase 4 | Pending |
+| ME-05 | Phase 4 | Pending |
+| ME-06 | Phase 4 | Pending |
+| ME-07 | Phase 4 | Pending |
+| ME-08 | Phase 4 | Pending |
+| ME-09 | Phase 4 | Pending |
+| SET-01 | Phase 4 | Pending |
+| INT-01 | Phase 5 | Pending |
+| INT-02 | Phase 5 | Pending |
+| INT-03 | Phase 5 | Pending |
+| INT-04 | Phase 5 | Pending |
+| INT-05 | Phase 5 | Pending |
+| INT-06 | Phase 5 | Pending |
+| INT-07 | Phase 5 | Pending |
+| GRT-01 | Phase 5 | Pending |
+| GRT-02 | Phase 5 | Pending |
+| GRT-03 | Phase 5 | Pending |
+| GRT-04 | Phase 5 | Pending |
+| MEM-01 | Phase 6 | Pending |
+| MEM-02 | Phase 6 | Pending |
+| MEM-03 | Phase 6 | Pending |
+| MEM-04 | Phase 6 | Pending |
+| MEM-05 | Phase 6 | Pending |
+| MEM-06 | Phase 6 | Pending |
+| MEM-07 | Phase 6 | Pending |
+| MEM-08 | Phase 6 | Pending |
+| MEM-09 | Phase 6 | Pending |
+| MEM-10 | Phase 6 | Pending |
+| HOME-04 | Phase 6 | Pending |
+| SET-02 | Phase 6 | Pending |
+| SET-03 | Phase 6 | Pending |
+| SET-04 | Phase 6 | Pending |
+| WDG-01 | Phase 7 | Pending |
+| WDG-02 | Phase 7 | Pending |
+| WDG-03 | Phase 7 | Pending |
+| WDG-04 | Phase 7 | Pending |
+| WDG-05 | Phase 7 | Pending |
+| SYNC-01 | Phase 8 | Pending |
+| SYNC-02 | Phase 8 | Pending |
+| SYNC-03 | Phase 8 | Pending |
+| SYNC-04 | Phase 8 | Pending |
+| SYNC-05 | Phase 8 | Pending |
+| SYNC-06 | Phase 8 | Pending |
+| SYNC-07 | Phase 8 | Pending |
+| SET-06 | Phase 8 | Pending |
+| HELP-01 | Phase 9 | Pending |
+| HELP-02 | Phase 9 | Pending |
+| HELP-03 | Phase 9 | Pending |
+| SET-05 | Phase 9 | Pending |
+| REL-02 | Phase 9 | Pending |
+| REL-03 | Phase 9 | Pending |
+| REL-04 | Phase 9 | Pending |
+| REL-05 | Phase 9 | Pending |
 
-**Coverage:** v1 requirements: 90 total. Mapped to phases: 0 (pending roadmap).
+**Coverage:** v1 requirements: 90 total. Mapped to phases: 90 (100%). Unmapped: 0.
 
 ---
 *Requirements defined: 2026-11-24*
