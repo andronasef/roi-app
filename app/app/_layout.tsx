@@ -1,44 +1,36 @@
+import '../global.css';
+
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { colorScheme } from 'nativewind';
+import { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
 import migrations from '@/drizzle/migrations';
 import { db } from '@/features/db/client';
 import ar from '@/locales/ar.json';
+import { getThemePreference } from '@/services/storage';
 
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
 
+  useEffect(() => {
+    colorScheme.set(getThemePreference());
+  }, []);
+
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{ar.migrationError}</Text>
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <Text className="text-center text-base text-foreground">
+          {ar.migrationError}
+        </Text>
       </View>
     );
   }
 
   if (!success) {
-    return <View style={styles.pending} />;
+    return <View className="flex-1 bg-background" />;
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;
 }
-
-const styles = StyleSheet.create({
-  pending: {
-    flex: 1,
-    backgroundColor: '#FAF6EC',
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    backgroundColor: '#FAF6EC',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#2B2620',
-    textAlign: 'center',
-  },
-});
