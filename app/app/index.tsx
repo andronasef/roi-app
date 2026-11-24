@@ -1,12 +1,20 @@
 import { formatArabicDate, toArabicDigits } from '@roi/shared';
 import { and, eq, isNull } from 'drizzle-orm';
 import { useEffect, useState } from 'react';
-import { I18nManager, StyleSheet, Text, View } from 'react-native';
+import { I18nManager, Pressable, Text, View } from 'react-native';
 
 import { SETTINGS_KEYS } from '@/constants/app';
+import { THEME_OPTIONS, type ThemePreference } from '@/constants/theme';
 import { db } from '@/features/db/client';
 import { settings } from '@/features/db/schema';
+import { useThemePreference } from '@/hooks/use-theme-preference';
 import ar from '@/locales/ar.json';
+
+const THEME_LABELS: Record<ThemePreference, string> = {
+  system: ar.themeSystem,
+  light: ar.themeLight,
+  dark: ar.themeDark,
+};
 
 function readPreviousBootMs(): number | null {
   const existing = db
@@ -28,6 +36,7 @@ function formatBootTimestamp(epochMs: number): string {
 
 export default function HomeScreen() {
   const [previousBootMs] = useState<number | null>(readPreviousBootMs);
+  const { theme, setTheme } = useThemePreference();
 
   useEffect(() => {
     const now = Date.now();
@@ -58,41 +67,50 @@ export default function HomeScreen() {
       : ar.firstBoot;
 
   return (
-    <View style={styles.container}>
-      <Text accessibilityRole="header" style={styles.title}>
+    <View className="flex-1 items-center justify-center bg-background px-6 py-8">
+      <Text
+        accessibilityRole="header"
+        className="mb-3 text-center text-3xl font-bold text-foreground"
+      >
         {ar.appName}
       </Text>
-      <Text style={styles.subtitle}>{lastBootText}</Text>
-      <Text style={styles.meta}>{rtlStatus}</Text>
+      <Text className="mb-2 text-center text-lg text-foreground">
+        {lastBootText}
+      </Text>
+      <Text className="text-center text-sm text-muted-foreground">
+        {rtlStatus}
+      </Text>
+
+      <View
+        accessibilityRole="radiogroup"
+        accessibilityLabel={ar.themeLabel}
+        className="mt-6 flex-row items-center gap-2 rounded-2xl border border-border bg-card p-1.5"
+      >
+        {THEME_OPTIONS.map((option) => {
+          const isSelected = theme === option;
+          const label = THEME_LABELS[option];
+          return (
+            <Pressable
+              key={option}
+              onPress={() => setTheme(option)}
+              accessibilityRole="radio"
+              accessibilityLabel={label}
+              accessibilityState={{ checked: isSelected }}
+              className={`min-h-[44px] min-w-[44px] items-center justify-center rounded-xl px-4 py-2.5 ${
+                isSelected ? 'bg-primary' : 'bg-transparent'
+              }`}
+            >
+              <Text
+                className={`text-sm font-medium ${
+                  isSelected ? 'text-primary-foreground' : 'text-foreground'
+                }`}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    backgroundColor: '#FAF6EC',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#2B2620',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#2B2620',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  meta: {
-    fontSize: 14,
-    color: '#6B6257',
-    textAlign: 'center',
-  },
-});

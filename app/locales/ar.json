@@ -4,5 +4,11 @@
   "rtlInactive": "RTL: غير مفعّل",
   "firstBoot": "أول مرة",
   "lastBootLabel": "آخر فتح",
-  "migrationError": "تعذر تهيئة قاعدة البيانات"
+  "migrationError": "تعذر تهيئة قاعدة البيانات",
+  "themeLabel": "المظهر",
+  "themeSystem": "نظام",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "scriptureSizeLabel": "حجم خط الآيات",
+  "scriptureSizeOutOf": "من ٥"
 }
