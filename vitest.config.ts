@@ -8,6 +8,6 @@ if ('bun' in process.versions) {
 
 export default defineConfig({
   test: {
-    projects: ['shared', 'backend', 'admin'],
+    projects: ['shared', 'backend', 'admin', 'app'],
   },
 });
