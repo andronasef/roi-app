@@ -1,0 +1,17 @@
+node_modules/
+.tmp/
+dist/
+coverage/
+.expo/
+.env
+.env.*.local
+.signing.env
+google-services.json
+GoogleService-Info.plist
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+.DS_Store
+.claude/settings.local.json
