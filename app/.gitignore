@@ -13,10 +13,12 @@ expo-env.d.ts
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
 *.mobileprovision
+key.properties
 
 # Metro
 .metro-health-check*
@@ -32,6 +34,11 @@ yarn-error.*
 
 # local env files
 .env*.local
+.signing.env
+
+# Firebase config (local / EAS secrets)
+google-services.json
+GoogleService-Info.plist
 
 # typescript
 *.tsbuildinfo

@@ -4,10 +4,7 @@
     "strict": true,
     "paths": {
       "@/*": [
-        "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
+        "./*"
       ]
     }
   },
@@ -16,5 +13,11 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "exclude": [
+    "**/__tests__/**",
+    "scripts",
+    "drizzle",
+    "dist"
   ]
 }
