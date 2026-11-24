@@ -1,9 +1,10 @@
 import { formatArabicDate, toArabicDigits, TORTURE_FIXTURES } from '@roi/shared';
 import { and, eq, isNull } from 'drizzle-orm';
+import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { I18nManager, Pressable, Text, View } from 'react-native';
 
-import { SETTINGS_KEYS } from '@/constants/app';
+import { DEV_TOOLS_ENABLED, ROUTES, SETTINGS_KEYS } from '@/constants/app';
 import { THEME_OPTIONS, type ThemePreference } from '@/constants/theme';
 import { db } from '@/features/db/client';
 import { settings } from '@/features/db/schema';
@@ -129,6 +130,20 @@ export default function HomeScreen() {
           );
         })}
       </View>
+
+      {DEV_TOOLS_ENABLED ? (
+        <Link href={ROUTES.torture} asChild>
+          <Pressable
+            accessibilityRole="link"
+            accessibilityLabel={ar.tortureLink}
+            className="mt-6 min-h-[44px] items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5"
+          >
+            <Text className="text-sm font-medium text-foreground">
+              {ar.tortureLink}
+            </Text>
+          </Pressable>
+        </Link>
+      ) : null}
     </View>
   );
 }

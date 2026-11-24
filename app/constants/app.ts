@@ -10,7 +10,13 @@ export const SETTINGS_KEYS = {
 
 export const ROUTES = {
   home: '/',
+  torture: '/torture',
 } as const;
+
+export const DEV_TOOLS_ENABLED =
+  __DEV__ || process.env.EXPO_PUBLIC_DEV_TOOLS === '1';
+
+export const SAMPLE_NAME = 'مريم';
 
 export const GOOGLE_OAUTH = {
   webClientId:
