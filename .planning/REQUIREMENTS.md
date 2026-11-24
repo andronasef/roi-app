@@ -4,6 +4,7 @@
 **Core Value:** It remembers for you — the app tells you what's due today, without guilt.
 
 ## Owner decisions applied
+
 - Week starts **Saturday**. Digits: **Arabic-Indic (١٢٣)** everywhere.
 - A verse is "memorized" when its FSRS stability / interval reaches **30 days or more**, **or** the user marks it manually.
 - Google sign-in / Drive is offered **after the user's first win**, not on the first screen. It stays skippable and re-offerable from Settings.
@@ -12,6 +13,7 @@
 ## v1 Requirements
 
 ### Foundation & Platform (FND)
+
 - [ ] **FND-01**: App runs in forced RTL with Arabic-only UI, regardless of the phone's language
 - [ ] **FND-02**: Scripture renders with correct tashkeel using a bundled font; the user can change the font size
 - [ ] **FND-03**: All numbers and dates show in Arabic-Indic digits
@@ -19,10 +21,11 @@
 - [ ] **FND-05**: User can switch between light and dark mode
 - [ ] **FND-06**: Every user-data table has a client UUID, `createdAt`, `updatedAt` and `deletedAt`; deletes are soft
 - [ ] **FND-07**: Counters (prayed, reviews) are derived from append-only event rows
-- [ ] **FND-08**: One shared package holds zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic and the merge function, used by app, backend and admin
+- [x] **FND-08**: One shared package holds zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic and the merge function, used by app, backend and admin
 - [ ] **FND-09**: A real-device build proves the native stack together (Firebase, Google Sign-In, MMKV, both widget systems, Reanimated pins) before feature work depends on it
 
 ### Onboarding & Home (HOME)
+
 - [ ] **HOME-01**: First launch shows 3 onboarding screens (what Ro'i is; name + gender; pick a first verse or "later")
 - [ ] **HOME-02**: User reaches a first win (a verse, a prayer card or a gratitude line saved) within the first minute
 - [ ] **HOME-03**: Home shows a tile per tool; the user can show, hide and reorder tiles, and the choice persists
@@ -32,12 +35,14 @@
 - [ ] **HOME-07**: The first content download is resumable and applied transactionally
 
 ### Personalization (PERS)
+
 - [ ] **PERS-01**: User enters name and gender; both can be changed later in Settings
 - [ ] **PERS-02**: Content renders from `text` / `textFemale` / `{الاسم}` using the one shared `personalize()` function
 - [ ] **PERS-03**: When the name is missing, the content falls back to a neutral form
 - [ ] **PERS-04**: UI strings are also gender-aware
 
 ### ليا أنا (ME)
+
 - [ ] **ME-01**: User sees a weekly verse picked pseudo-randomly from their own seed, stable for the whole week (Saturday to Friday), never repeating a verse they already got
 - [ ] **ME-02**: User sees a monthly verse with the same rules for the month
 - [ ] **ME-03**: Past assignments are saved, so history survives content edits
@@ -49,6 +54,7 @@
 - [ ] **ME-09**: User can optionally suggest a personal item to everyone
 
 ### حفظ الآيات (MEM)
+
 - [ ] **MEM-01**: User sees stats: due today, in memorization, memorized, streak
 - [ ] **MEM-02**: User can add their own verse, or pick one from the library
 - [ ] **MEM-03**: User can run a daily review session and rate each card with four FSRS buttons
@@ -61,6 +67,7 @@
 - [ ] **MEM-10**: The streak is forgiving and never shames the user for a missed day
 
 ### تشفع (INT)
+
 - [ ] **INT-01**: User can create a prayer card (text, person, since-when) and pin it
 - [ ] **INT-02**: User can tap "صليت" to record a prayer
 - [ ] **INT-03**: User can group by person and see each person's active prayer count
@@ -70,12 +77,14 @@
 - [ ] **INT-07**: An answered prayer offers a one-tap link to a gratitude line
 
 ### دفتر الشكر (GRT)
+
 - [ ] **GRT-01**: User can write one dated line per day
 - [ ] **GRT-02**: User can get a gentle nightly reminder at a time they choose
 - [ ] **GRT-03**: User can view all lines of a month
 - [ ] **GRT-04**: User can add or edit lines for past days
 
 ### Widgets (WDG)
+
 - [ ] **WDG-01**: User can add a widget per tool on iOS
 - [ ] **WDG-02**: User can add a widget per tool on Android
 - [ ] **WDG-03**: Tapping a widget opens the right screen
@@ -83,6 +92,7 @@
 - [ ] **WDG-05**: Widgets show privacy-safe content by default; names and prayer text are opt-in
 
 ### Settings & Notifications (SET)
+
 - [ ] **SET-01**: Global settings: dark mode, rate app, request help, WhatsApp contact
 - [ ] **SET-02**: Per-tool settings as listed in PROJECT.md (weekly-verse day/time; review time and new-verse cap; prayer reminder time and default sort; gratitude time)
 - [ ] **SET-03**: Local notifications fire for review, prayer, gratitude and the weekly verse
@@ -91,11 +101,13 @@
 - [ ] **SET-06**: User can export all their data manually as a file
 
 ### Help & Teaching (HELP)
+
 - [ ] **HELP-01**: Each tool shows a one-line purpose and 3–4 coach marks once
 - [ ] **HELP-02**: Each tool has teaching empty states
 - [ ] **HELP-03**: Each tool has a permanent (?) button opening a detailed help page with FAQ shortcuts
 
 ### Google Drive Sync (SYNC)
+
 - [ ] **SYNC-01**: After the first win, the app offers Google sign-in and a Drive permission with a plain explanation; the user can skip and re-offer it from Settings
 - [ ] **SYNC-02**: Data and recordings are saved only to the user's hidden `drive.appdata` folder
 - [ ] **SYNC-03**: Sync runs pull, merge, push on app open; an empty device never overwrites a backup
@@ -105,6 +117,7 @@
 - [ ] **SYNC-07**: Nothing personal is ever sent to our servers
 
 ### Backend (BE)
+
 - [ ] **BE-01**: API serves public content (verses, names, blessings) from one pre-built gzipped snapshot per type, rebuilt only on admin change
 - [ ] **BE-02**: One global monotonic `contentVersion`; clients send their last version and get deltas, including soft-delete tombstones
 - [ ] **BE-03**: Users can submit suggestions as `pending` with a signed anonymous device ID
@@ -114,6 +127,7 @@
 - [ ] **BE-07**: A one-time idempotent import loads the initial content from Sanity, with a dry run
 
 ### Admin Panel (ADM)
+
 - [ ] **ADM-01**: Admin signs in with Google; only allowlisted emails get in (multiple admins), with a short-lived session
 - [ ] **ADM-02**: Admin can add, edit and soft-delete verses, names of God and blessings
 - [ ] **ADM-03**: A "same text for male/female" switch shows side-by-side fields when off; both are required when off
@@ -123,6 +137,7 @@
 - [ ] **ADM-07**: Admin can review, edit, accept or reject suggestions
 
 ### Privacy & Release (REL)
+
 - [ ] **REL-01**: Analytics uses a closed list of generic events and never logs prayer text, names or verse content; crash reports are scrubbed
 - [ ] **REL-02**: A privacy policy and store privacy disclosures are published, matching each SDK's real data use
 - [ ] **REL-03**: The app passes App Review and Google Play review (review notes, privacy manifests, Play 12-tester / 14-day rule)
@@ -164,7 +179,7 @@
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Pending |
 | FND-07 | Phase 1 | Pending |
-| FND-08 | Phase 1 | Pending |
+| FND-08 | Phase 1 | Complete |
 | FND-09 | Phase 1 | Pending |
 | REL-01 | Phase 1 | Pending |
 | BE-01 | Phase 2 | Pending |

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Foundation & Native Spike
 status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-11-24T20:36:57.595Z"
+stopped_at: Completed 01-06-PLAN.md
+last_updated: "2026-11-24T20:44:58.490Z"
 last_activity: 2026-11-24
 last_activity_desc: Phase 01 execution started
-state_head: 80f1a0cc13bc7aadd009bbc994c132d197a94ce7
+state_head: bd6f3bc9fd8c150e133c9ee17393b1438eaeaacb
 progress:
   total_phases: 9
   completed_phases: 0
   total_plans: 16
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 ## Current Position
 
 Phase: 01 (Foundation & Native Spike) — EXECUTING
-Plan: 4 of 16
+Plan: 5 of 16
 Status: Ready to execute
 Last activity: 2026-11-24 — Phase 01 execution started
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 3 min | 2 tasks | 12 files |
 | Phase 01 P04 | 3 min | 3 tasks | 9 files |
 | Phase 01 P05 | 2 min | 2 tasks | 8 files |
+| Phase 01 P06 | 7 min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,7 @@ Recent decisions affecting current work:
 - [Roadmap]: Mobile first-download client (HOME-06/07) ships with the backend in Phase 2 so that phase ends in a user-visible result
 - [Roadmap]: HOME-04 and SET-02..04 map to Phase 6, where all four tools exist
 - [Owner]: Week starts Saturday; Arabic-Indic digits; "memorized" = 30+ days stability or manual mark; Drive offered after first win; app lock and manual export are in v1
+- [Phase 01]: Resolved babel-preset-expo from expo package dir in app/babel.config.js to preserve bun isolated linker
 
 ### Pending Todos
 
@@ -95,6 +97,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-24T20:36:57.574Z
-Stopped at: Completed 01-05-PLAN.md
+Last session: 2026-11-24T20:44:58.470Z
+Stopped at: Completed 01-06-PLAN.md
 Resume file: None
