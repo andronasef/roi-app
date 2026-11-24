@@ -1,0 +1,8 @@
+{
+  "appName": "روعي",
+  "rtlActive": "RTL: مفعّل",
+  "rtlInactive": "RTL: غير مفعّل",
+  "firstBoot": "أول مرة",
+  "lastBootLabel": "آخر فتح",
+  "migrationError": "تعذر تهيئة قاعدة البيانات"
+}
