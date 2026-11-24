@@ -1,4 +1,4 @@
-import { formatArabicDate, toArabicDigits } from '@roi/shared';
+import { formatArabicDate, toArabicDigits, TORTURE_FIXTURES } from '@roi/shared';
 import { and, eq, isNull } from 'drizzle-orm';
 import { useEffect, useState } from 'react';
 import { I18nManager, Pressable, Text, View } from 'react-native';
@@ -7,8 +7,16 @@ import { SETTINGS_KEYS } from '@/constants/app';
 import { THEME_OPTIONS, type ThemePreference } from '@/constants/theme';
 import { db } from '@/features/db/client';
 import { settings } from '@/features/db/schema';
+import {
+  Scripture,
+  ScriptureSizeSlider,
+} from '@/features/scripture/scripture';
 import { useThemePreference } from '@/hooks/use-theme-preference';
 import ar from '@/locales/ar.json';
+
+const PSALM_23_1 =
+  TORTURE_FIXTURES.find((fixture) => fixture.id === 'ps23-1') ??
+  TORTURE_FIXTURES[0];
 
 const THEME_LABELS: Record<ThemePreference, string> = {
   system: ar.themeSystem,
@@ -80,6 +88,16 @@ export default function HomeScreen() {
       <Text className="text-center text-sm text-muted-foreground">
         {rtlStatus}
       </Text>
+
+      <View className="mt-6 w-full rounded-2xl border border-border bg-card p-4">
+        <Scripture className="text-center">{PSALM_23_1.text}</Scripture>
+        <Text className="mt-1 text-center text-xs text-muted-foreground">
+          {PSALM_23_1.ref}
+        </Text>
+        <View className="mt-3">
+          <ScriptureSizeSlider />
+        </View>
+      </View>
 
       <View
         accessibilityRole="radiogroup"

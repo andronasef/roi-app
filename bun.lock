@@ -20,6 +20,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@expo/ui": "~58.0.29",
+        "@react-native-community/slider": "5.2.1",
         "@react-native-firebase/analytics": "27.1.1",
         "@react-native-firebase/app": "27.1.1",
         "@react-native-firebase/crashlytics": "27.1.1",
@@ -591,6 +592,8 @@
     "@radix-ui/react-use-is-hydrated": ["@radix-ui/react-use-is-hydrated@0.1.3", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-umO/aJ+82CpOnhDZUTbILCQf7kU/g0iv+oGs/Q8jw7IkhWBzaEP4sA268PhFAJTFetbwp3ICc6ktpI4TqtxcIw=="],
 
     "@radix-ui/react-use-layout-effect": ["@radix-ui/react-use-layout-effect@1.1.4", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-K20DkRkUwDnxEYMBPcg3Y6voLkEy5p5QQmszZgLngKKiC7dzBR/aEuK3w1qlx2JWDUNH6FluahYdgR3BP+QbYw=="],
+
+    "@react-native-community/slider": ["@react-native-community/slider@5.2.1", "", {}, "sha512-HBDPRFRIN47hRtd5tdDWZp3kkVN1z98jGbK9wHOfUfVO+PbBDZzD7xjiiyBqNpg6Rom2QPFOpBZzsB2bHy4yAQ=="],
 
     "@react-native-firebase/analytics": ["@react-native-firebase/analytics@27.1.1", "", { "dependencies": { "superstruct": "^2.0.2" }, "peerDependencies": { "@react-native-firebase/app": "27.1.1", "expo": ">=47.0.0" }, "optionalPeers": ["expo"] }, "sha512-w2SJzmevE4oNNyhZaUyagx3yy+WkYLgeqLMOzGiOYmeF8jGg3yY1gzW1xxbbbOlBari6ydvGjJ0bTjvgH3iy3Q=="],
 

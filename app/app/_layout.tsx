@@ -8,6 +8,7 @@ import { Text, View } from 'react-native';
 
 import migrations from '@/drizzle/migrations';
 import { db } from '@/features/db/client';
+import { ScriptureSizeProvider } from '@/features/scripture/scripture';
 import ar from '@/locales/ar.json';
 import { getThemePreference } from '@/services/storage';
 
@@ -32,5 +33,9 @@ export default function RootLayout() {
     return <View className="flex-1 bg-background" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <ScriptureSizeProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </ScriptureSizeProvider>
+  );
 }
