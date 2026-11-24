@@ -1,5 +1,8 @@
 {
   "name": "@roi/admin",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@roi/shared": "workspace:*"
+  }
 }

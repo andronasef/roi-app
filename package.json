@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "shared",
-    "backend"
+    "backend",
+    "admin"
   ],
   "engines": {
     "node": ">=24"
