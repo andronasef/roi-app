@@ -1,0 +1,3 @@
+export const SPIKE_LOG_PREFIX = 'SPIKE_RESULT';
+
+export const SPIKE_CHECK_TIMEOUT_MS = 5000;

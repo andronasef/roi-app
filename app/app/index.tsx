@@ -132,17 +132,30 @@ export default function HomeScreen() {
       </View>
 
       {DEV_TOOLS_ENABLED ? (
-        <Link href={ROUTES.torture} asChild>
-          <Pressable
-            accessibilityRole="link"
-            accessibilityLabel={ar.tortureLink}
-            className="mt-6 min-h-[44px] items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5"
-          >
-            <Text className="text-sm font-medium text-foreground">
-              {ar.tortureLink}
-            </Text>
-          </Pressable>
-        </Link>
+        <View className="mt-6 flex-row gap-3">
+          <Link href={ROUTES.torture} asChild>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={ar.tortureLink}
+              className="min-h-[44px] items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5"
+            >
+              <Text className="text-sm font-medium text-foreground">
+                {ar.tortureLink}
+              </Text>
+            </Pressable>
+          </Link>
+          <Link href={ROUTES.spike} asChild>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={ar.spikeLink}
+              className="min-h-[44px] items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5"
+            >
+              <Text className="text-sm font-medium text-foreground">
+                {ar.spikeLink}
+              </Text>
+            </Pressable>
+          </Link>
+        </View>
       ) : null}
     </View>
   );
