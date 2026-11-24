@@ -17,3 +17,10 @@ export {
 } from './fixtures';
 export { uuidv7 } from './ids';
 export { localDateKey, weekKey, monthKey, seededPick } from './period';
+export { mergeRecords, type SyncRow } from './merge';
+export {
+  syncRowSchema,
+  personalizedTextSchema,
+  type SyncRowRecord,
+  type PersonalizedText,
+} from './schemas';
