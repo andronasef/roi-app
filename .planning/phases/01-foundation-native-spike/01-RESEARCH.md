@@ -667,22 +667,28 @@ export const testCrash = () => crash(getCrashlytics());                         
 | A19 | `expo-font` plugin accepts PostScript-named TTFs for both platforms with identical `fontFamily` strings | Pattern 3 | Per-platform `Platform.select` font map needed (`fonts.ts` isolates it) |
 | A20 | Suggested theme hex values and the 5 font-size steps | Pattern 4/5 | Cosmetic; owner reviews on device |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Identity decisions (needs owner now).**
    - What we know: bundle id, Android package, URL scheme (`roi` assumed), App Group id, widget extension bundle id are baked into Firebase apps, OAuth clients, provisioning and the store listing.
    - What's unclear: the actual identifiers (not in any planning doc).
    - Recommendation: first human-action checkpoint; choose once, record in a decision note, then everything downstream references `app.config.ts` constants.
+   - **RESOLVED:** Plan 01-01 Task 2 (`checkpoint:human-action`) collects and fixes `bundleIdentifier`, `androidPackage`, `appGroup`, and `scheme` in `01-01-SUMMARY.md` before any downstream native config (`01-07`) runs.
 
 2. **Digits and dates policy detail.** Arabic-Indic digits everywhere is decided; month names (A6) and whether numbers in widgets/notifications follow the same function (yes, recommended) should be confirmed. Hermes `Intl` is deliberately avoided; revisit only if a later phase needs plural/relative-time formatting.
+   - **RESOLVED:** Plan 01-01 Task 2 confirms the Egyptian Gregorian `monthNames` table (`يناير`..`ديسمبر`), and plans 01-03, 01-07, and 01-13 route all app and widget digits/dates through `@roi/shared` (`toArabicDigits`, `formatArabicDate`) without relying on Hermes `Intl`.
 
 3. **Physical devices.** No iPhone or Android phone was connected during research (`adb devices` empty; only the Mac listed by `xctrace`). The owner needs both phones available, the iPhone's UDID registered (`eas device:create`) and Developer Mode on. Planner should schedule device access as the Wave 3 entry condition.
+   - **RESOLVED:** Plan 01-02 Task 1 registers the iPhone UDID (`eas device:create`) and prepares both English-locale phones, and plan 01-15 enforces physical USB/Wi-Fi device connection as a precondition before running the EAS dev builds and spike screen.
 
 4. **Backend/admin skeleton depth and how Nest consumes source-TS `@roi/shared` (D-02).** Phase 1 only needs a Vitest import smoke test. For Phase 2 note: Nest uses decorators, so it needs tsc/swc, and importing workspace **source** TS from outside `rootDir` needs a bundling step (esbuild/tsup with `@roi/shared` inlined) or Node type stripping, which does not handle decorators. Record as a Phase 2 research item; do not solve now.
+   - **RESOLVED:** Plan 01-05 proves `@roi/shared` source-TS import via Vitest smoke tests in `backend/` and `admin/` only; NestJS decorator/source-TS bundling is explicitly deferred to Phase 2 research as recommended.
 
 5. **Crashlytics default collection.** Research recommends both Firebase products default-off until consent (Pitfall 15 in research/PITFALLS.md). Final consent UX and disclosure wording are Phase 9 (REL-02); Phase 1 only needs the switch and the default.
+   - **RESOLVED:** Plan 01-12 configures `app/firebase.json` with `analytics_auto_collection_enabled: false` and `crashlytics_auto_collection_enabled: false` by default, gated behind `setTelemetryConsent()`, with full consent UX and disclosures deferred to Phase 9 (`REL-02`).
 
 6. **Optional spike rows.** Recommended (cheap, named by D-09): ts-fsrs 6 `DefaultScheduler` under Hermes, one Reusables Dialog + Select in RTL. Optional stretch: `addScopes(drive.appdata)` + one `files.list` against `appDataFolder`. Headless background `signInSilently()` is Phase 8 (STATE.md), not Phase 1.
+   - **RESOLVED:** Plan 01-09 includes Reusables `Dialog` and `Select` (exercised on the torture screen in plan 01-10), plan 01-14 includes the `ts-fsrs` 6 `DefaultScheduler` automatic spike row under Hermes, and the `drive.appdata` `addScopes` / headless `signInSilently()` stretch is deferred to Phase 8.
 
 ## Environment Availability
 

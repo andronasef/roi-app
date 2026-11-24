@@ -26,11 +26,11 @@ On the owner's real iPhone and Android phone set to English, a development build
 
 ## Stack Touched in Phase 1
 
-- [ ] Project scaffold: bun workspaces, Expo app, shared package, backend and admin stubs, Vitest, ESLint, TypeScript ~6.0.3 (01-03, 01-04)
-- [ ] Routing: home, the dev-gated torture screen and spike screen, and a widget deep link (01-04, 01-06)
-- [ ] Database: a real write (last-open date, settings upsert, prayer and review events) and a real read (counts), with migrations proven on a fixture and in release builds (01-04, 01-05, 01-08)
-- [ ] UI: theme switch, Scripture size steps, search box, Reusables Dialog and Select in RTL (01-04)
-- [ ] Deployment: EAS development builds and release builds installed on both real phones (01-07, 01-08)
+- [ ] Project scaffold: bun workspaces, Expo app, shared package, backend and admin stubs, Vitest, ESLint, TypeScript ~6.0.3 (01-03, 01-04, 01-05, 01-06)
+- [ ] Routing: home, the dev-gated torture screen and spike screen, and a widget deep link (01-06, 01-10, 01-13, 01-14)
+- [ ] Database: a real write (last-open date, settings upsert, prayer and review events) and a real read (counts), with migrations proven on a fixture and in release builds (01-07, 01-11, 01-16)
+- [ ] UI: theme switch, Scripture size slider steps, search box, Reusables Dialog and Select in RTL (01-08, 01-09, 01-10)
+- [ ] Deployment: EAS development builds and release builds installed on both real phones (01-15, 01-16)
 
 ## Out of Scope (Deferred to Later Slices)
 

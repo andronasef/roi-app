@@ -35,17 +35,50 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Typing a search without diacritics, or with a different letter variant (أ/ا/إ، ة/ه، ى/ي), still finds the matching Arabic fixture text on the torture-fixtures screen.
   4. Every user-data table has a client UUID plus `createdAt`, `updatedAt` and `deletedAt`; deleting a record leaves a tombstone; "prayed" and "review" counts are computed from append-only event rows; a fixture-database migration test passes.
   5. One shared package (zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic, `merge()`) is imported by the app, backend and admin workspaces with passing unit tests, and a test crash plus a test analytics event reach Firebase using only a closed list of generic events with no personal content.
-**Plans**: 8 plans
+**Plans**: 16 plans
 
 Plans:
+**Wave 1**
 - [ ] 01-01-PLAN.md — Package legitimacy gate and permanent identifiers (bundle id, package, scheme, App Group)
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 01-02-PLAN.md — Owner accounts: Apple, Expo and phones, Firebase apps and config files
-- [ ] 01-03-PLAN.md — bun workspaces (app, backend, admin, shared) and the tested @roi/shared package
-- [ ] 01-04-PLAN.md — Expo app scaffold: forced RTL, NativeWind tokens, fonts, torture screen, guard tests
-- [ ] 01-05-PLAN.md — Sync-ready Drizzle schema, event tables, baseline migration and fixture migration test
-- [ ] 01-06-PLAN.md — Telemetry choke point with scrubber, spike screen, iOS and Android spike widgets
-- [ ] 01-07-PLAN.md — EAS development builds on real phones, every spike row passing, Scripture font chosen
-- [ ] 01-08-PLAN.md — Release builds, Firebase crash and event proof, spike decision note
+- [ ] 01-03-PLAN.md — bun workspaces (shared, backend, admin) and @roi/shared Arabic module + fixtures
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 01-04-PLAN.md — @roi/shared sync primitives (UUIDv7, period keys, seeded pick, merge, zod schemas)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 01-05-PLAN.md — Backend and admin workspace consumer smoke tests for @roi/shared
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 01-06-PLAN.md — Expo SDK 58 app scaffold, pinned deps, forced RTL, and accessibility lint
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 01-07-PLAN.md — Drizzle baseline SQLite boot, native config plugins, dynamic signing, EAS profiles, prebuild
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 01-08-PLAN.md — NativeWind warm paper theme tokens, MMKV preferences, and light/dark/system switch
+
+**Wave 8** *(blocked on Wave 7 completion)*
+- [ ] 01-09-PLAN.md — Bundled fonts, 5-step Scripture size slider, and Reusables Dialog & Select
+
+**Wave 9** *(blocked on Wave 8 completion)*
+- [ ] 01-10-PLAN.md — Dev-gated torture-fixtures screen with Arabic search and static guard tests
+
+**Wave 10** *(blocked on Wave 9 completion)*
+- [ ] 01-11-PLAN.md — Sync-ready Drizzle schema, append-only event tables, baseline migration, fixture DB test
+- [ ] 01-12-PLAN.md — Privacy-first telemetry choke point and global error scrubber
+- [ ] 01-13-PLAN.md — Android and iOS spike widgets with deep links
+
+**Wave 11** *(blocked on Wave 10 completion)*
+- [ ] 01-14-PLAN.md — Dev-only spike screen, automatic runner, and manual/widget rows
+
+**Wave 12** *(blocked on Wave 11 completion)*
+- [ ] 01-15-PLAN.md — EAS development builds on real phones, D-01/D-09 timeboxed verification, Scripture font chosen
+
+**Wave 13** *(blocked on Wave 12 completion)*
+- [ ] 01-16-PLAN.md — Release builds, Firebase crash and event proof, spike decision note
 **UI hint**: yes
 
 ### Phase 2: Content Backend & First Download
@@ -177,7 +210,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Native Spike | 0/8 | Not started | - |
+| 1. Foundation & Native Spike | 0/16 | Ready to execute | - |
 | 2. Content Backend & First Download | 0/TBD | Not started | - |
 | 3. Admin Panel & Moderation | 0/TBD | Not started | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
