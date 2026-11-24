@@ -6,12 +6,16 @@ export const DB_NAME = 'roi.db';
 
 export const SETTINGS_KEYS = {
   LAST_BOOT: 'last_boot',
+  SPIKE_WIDGET: 'spike_widget_count',
 } as const;
 
 export const ROUTES = {
   home: '/',
   torture: '/torture',
+  spike: '/spike',
 } as const;
+
+export const SPIKE_WIDGET_URL = `${SCHEME}://spike?from=widget`;
 
 export const DEV_TOOLS_ENABLED =
   __DEV__ || process.env.EXPO_PUBLIC_DEV_TOOLS === '1';
