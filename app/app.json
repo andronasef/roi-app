@@ -13,6 +13,7 @@
     "icon": "./assets/images/icon.png",
     "ios": {
       "bundleIdentifier": "com.increasinglabs.roi",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
       "icon": "./assets/expo.icon",
       "infoPlist": {
@@ -25,6 +26,7 @@
     },
     "android": {
       "package": "com.increasinglabs.roi",
+      "googleServicesFile": "./google-services.json",
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -36,11 +38,73 @@
     },
     "plugins": [
       "expo-router",
+      "./plugins/with-firebase-configure",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "dynamic"
+          }
+        }
+      ],
       [
         "expo-localization",
         {
           "supportsRTL": true,
           "forcesRTL": true
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
+      [
+        "@react-native-firebase/analytics",
+        {
+          "ios": {
+            "withoutAdIdSupport": true
+          }
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosDependencyManager": "spm",
+          "iosUrlScheme": "com.googleusercontent.apps.23662840492-laqcbt3hkft72a3mu0ofcokeskr7sr7a"
+        }
+      ],
+      [
+        "expo-widgets",
+        {
+          "groupIdentifier": "group.com.increasinglabs.roi",
+          "enableAndroid": false,
+          "widgets": [
+            {
+              "name": "RoiSpike",
+              "displayName": "روعي",
+              "description": "روعي",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "RoiSpike",
+              "label": "روعي",
+              "minWidth": "180dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 3,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 1800000
+            }
+          ]
         }
       ]
     ]
