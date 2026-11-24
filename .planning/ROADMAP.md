@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Every user-data table has a client UUID plus `createdAt`, `updatedAt` and `deletedAt`; deleting a record leaves a tombstone; "prayed" and "review" counts are computed from append-only event rows; a fixture-database migration test passes.
   5. One shared package (zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic, `merge()`) is imported by the app, backend and admin workspaces with passing unit tests, and a test crash plus a test analytics event reach Firebase using only a closed list of generic events with no personal content.
 
-**Plans**: 1/16 plans executed
+**Plans**: 2/16 plans executed
 
 Plans:
 **Wave 1**
@@ -45,7 +45,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 01-02-PLAN.md — Owner accounts: Apple, Expo and phones, Firebase apps and config files
-- [ ] 01-03-PLAN.md — bun workspaces (shared, backend, admin) and @roi/shared Arabic module + fixtures
+- [x] 01-03-PLAN.md — bun workspaces (shared, backend, admin) and @roi/shared Arabic module + fixtures
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 01-04-PLAN.md — @roi/shared sync primitives (UUIDv7, period keys, seeded pick, merge, zod schemas)
@@ -229,7 +229,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Native Spike | 1/16 | Ready to execute | - |
+| 1. Foundation & Native Spike | 2/16 | Ready to execute | - |
 | 2. Content Backend & First Download | 0/TBD | Not started | - |
 | 3. Admin Panel & Moderation | 0/TBD | Not started | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
