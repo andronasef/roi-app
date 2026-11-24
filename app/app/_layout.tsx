@@ -1,5 +1,6 @@
 import '../global.css';
 
+import { PortalHost } from '@rn-primitives/portal';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { colorScheme } from 'nativewind';
@@ -36,6 +37,7 @@ export default function RootLayout() {
   return (
     <ScriptureSizeProvider>
       <Stack screenOptions={{ headerShown: false }} />
+      <PortalHost />
     </ScriptureSizeProvider>
   );
 }
