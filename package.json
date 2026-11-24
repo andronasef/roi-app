@@ -2,7 +2,8 @@
   "name": "roi",
   "private": true,
   "workspaces": [
-    "shared"
+    "shared",
+    "backend"
   ],
   "engines": {
     "node": ">=24"

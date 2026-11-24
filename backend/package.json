@@ -1,5 +1,8 @@
 {
   "name": "@roi/backend",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@roi/shared": "workspace:*"
+  }
 }

@@ -10,5 +10,5 @@
     "noUncheckedIndexedAccess": true,
     "isolatedModules": true
   },
-  "include": ["shared/src"]
+  "include": ["shared/src", "backend/src"]
 }
