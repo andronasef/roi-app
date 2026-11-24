@@ -25,6 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Foundation & Native Spike
+
 **Goal:** As a solo owner, I want to run an Arabic RTL app on real phones with a sync-ready database and proven native integrations, so that feature work never rests on guesses.
 **Mode:** mvp
 **Depends on**: Nothing (first phase)
@@ -35,11 +36,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Typing a search without diacritics, or with a different letter variant (أ/ا/إ، ة/ه، ى/ي), still finds the matching Arabic fixture text on the torture-fixtures screen.
   4. Every user-data table has a client UUID plus `createdAt`, `updatedAt` and `deletedAt`; deleting a record leaves a tombstone; "prayed" and "review" counts are computed from append-only event rows; a fixture-database migration test passes.
   5. One shared package (zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic, `merge()`) is imported by the app, backend and admin workspaces with passing unit tests, and a test crash plus a test analytics event reach Firebase using only a closed list of generic events with no personal content.
-**Plans**: 16 plans
+
+**Plans**: 1/16 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 01-01-PLAN.md — Package legitimacy gate and permanent identifiers (bundle id, package, scheme, App Group)
+- [x] 01-01-PLAN.md — Package legitimacy gate and permanent identifiers (bundle id, package, scheme, App Group)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 01-02-PLAN.md — Owner accounts: Apple, Expo and phones, Firebase apps and config files
@@ -79,9 +81,11 @@ Plans:
 
 **Wave 13** *(blocked on Wave 12 completion)*
 - [ ] 01-16-PLAN.md — Release builds, Firebase crash and event proof, spike decision note
+
 **UI hint**: yes
 
 ### Phase 2: Content Backend & First Download
+
 **Goal:** As a new user, I want to download the app's content once from a reliable backend and then use it fully offline, so that I can use Ro'i anywhere.
 **Mode:** mvp
 **Depends on**: Phase 1
@@ -92,10 +96,12 @@ Plans:
   3. After content changes on the server, a phone that already synced receives only the changed, new and deleted items (including soft-delete tombstones) by sending its last `contentVersion`, and never re-downloads the whole library.
   4. The owner can run the Sanity import with a dry run, then run it for real, and re-running it produces no duplicates; every content change, including the import, writes an audit-log entry.
   5. The production backend runs on Dokploy with a persistent volume, a restore from backup has been tested, an uptime monitor alerts the owner, public endpoints are throttled with introspection off and CORS locked, and a suggestion submitted with a signed anonymous device ID is stored as `pending` and rate-limited.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 3: Admin Panel & Moderation
+
 **Goal:** As a content owner, I want to add and moderate verses, names and blessings in a safe admin panel, so that the app's content stays correct without code changes.
 **Mode:** mvp
 **Depends on**: Phase 2
@@ -106,10 +112,12 @@ Plans:
   3. With "same text for male/female" on, one field shows; turned off, male and female fields appear side by side and both are required; the admin inserts the user's name with a draggable chip and never sees the raw `{الاسم}` token.
   4. A live preview with a test name and a gender toggle renders exactly what a phone would show; validation rejects any token other than `{الاسم}` and warns when only one version contains the name.
   5. An admin opens a suggestion sent from a phone, edits it, then accepts it (it joins public content) or rejects it (it leaves the queue).
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 4: Onboarding, Personalization & Identity
+
 **Goal:** As a new user, I want to set my name, get my own weekly verse and read names of God and blessings written for me, so that the app feels personal from the first minute.
 **Mode:** mvp
 **Depends on**: Phase 2
@@ -120,10 +128,12 @@ Plans:
   3. Home shows a tile per tool; the user can show, hide and reorder tiles, the choice survives a restart, a one-time intro message explains the screen, and Settings offers dark mode, rate app, request help and WhatsApp contact.
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 5: Intercession & Gratitude
+
 **Goal:** As a busy believer, I want to record who I pray for and one thing I'm thankful for each day, so that I never forget either and can see my journey.
 **Mode:** mvp
 **Depends on**: Phase 4
@@ -134,10 +144,12 @@ Plans:
   3. The user marks a prayer "اتستجابت" with an outcome, browses the answered archive with counts, and taps once to turn it into a gratitude line.
   4. In دفتر الشكر the user writes one dated line per day, adds or edits lines for past days, and views all lines of a month.
   5. The user picks a time and receives a gentle nightly gratitude reminder that is generic and never accusing.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 6: Memorization & the Daily Loop
+
 **Goal:** As a forgetful believer, I want to run a daily verse-review session and see what is due today on Home, so that the app remembers for me without guilt.
 **Mode:** mvp
 **Depends on**: Phase 5
@@ -148,10 +160,12 @@ Plans:
   3. The user practices with the reveal challenge (25% / 50%) and first-letter or full-word recall with a progress bar on Arabic letters, and records and plays back their own recitation.
   4. Home shows today's counts (verses to review, prayers waiting, tonight's gratitude) so the user sees what is due without opening each tool.
   5. Reminders for review, prayer, gratitude and the weekly verse fire at the times the user set in each tool's settings, with generic text by default.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 7: Widgets
+
 **Goal:** As a user, I want to add a home-screen widget per tool that opens the right screen, so that Ro'i is present in my day without opening the app.
 **Mode:** mvp
 **Depends on**: Phase 6
@@ -162,10 +176,12 @@ Plans:
   3. Tapping any widget opens the right screen in the app, from a cold start and from the background.
   4. After the user taps "صليت", finishes a review or saves a gratitude line, the matching widget shows the new state without a manual refresh.
   5. By default widgets show only counts and neutral copy; names and prayer text appear only after the user opts in.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 8: Google Drive Backup & Restore
+
 **Goal:** As a user, I want to back up my data to my own Google Drive and restore it on a new phone, so that changing devices never loses my prayers or verses.
 **Mode:** mvp
 **Depends on**: Phase 6
@@ -176,10 +192,12 @@ Plans:
   3. On app open the app syncs by pulling, merging, then pushing; edits made on two devices both survive, a deleted record stays deleted, prayer counts add up from events, and a fresh empty device never overwrites the backup.
   4. On a new phone, the user signs in, sees a preview of what will be restored, and then gets their verses, prayers, gratitude lines, recordings and settings back.
   5. Background sync runs roughly daily when the OS allows it, and the user can export all their data as a file from Settings at any time.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 9: Teaching Layers & Store Release
+
 **Goal:** As a new user, I want to download Ro'i from the store and have each tool explain itself, so that I'm never lost and I trust it with private prayers.
 **Mode:** mvp
 **Depends on**: Phase 7, Phase 8
@@ -190,6 +208,7 @@ Plans:
   3. A public privacy policy and the App Store and Google Play privacy disclosures are published and match what each SDK actually collects.
   4. On a build installed from the stores' own testing tracks, Google sign-in works with the OAuth consent screen set to "In production".
   5. The app passes App Review and Google Play review and a user can download and use it from both stores.
+
 **Plans**: TBD
 **UI hint**: yes
 
@@ -210,7 +229,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Native Spike | 0/16 | Ready to execute | - |
+| 1. Foundation & Native Spike | 1/16 | Ready to execute | - |
 | 2. Content Backend & First Download | 0/TBD | Not started | - |
 | 3. Admin Panel & Moderation | 0/TBD | Not started | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
