@@ -12,7 +12,7 @@ Ro'i goes from an unproven native stack to two store-published apps in nine phas
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Native Spike** - RTL Arabic on real phones, sync-ready schema, shared package, all native integrations proven together
+- [x] **Phase 1: Foundation & Native Spike** - RTL Arabic on real phones, sync-ready schema, shared package, all native integrations proven together *(Release & Firebase Console checks deferred to end of Phase 2)*
 - [ ] **Phase 2: Content Backend & First Download** - Deployed backend, Sanity import, and a resumable first content download that then works offline
 - [ ] **Phase 3: Admin Panel & Moderation** - Google-gated admin to author content with the name-chip editor and review user suggestions
 - [ ] **Phase 4: Onboarding, Personalization & Identity** - Onboarding, name/gender personalization, Home grid, Settings and the full ليا أنا tool
@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Every user-data table has a client UUID plus `createdAt`, `updatedAt` and `deletedAt`; deleting a record leaves a tombstone; "prayed" and "review" counts are computed from append-only event rows; a fixture-database migration test passes.
   5. One shared package (zod schemas, `personalize()`, `normalizeArabic()`, period/seed logic, `merge()`) is imported by the app, backend and admin workspaces with passing unit tests, and a test crash plus a test analytics event reach Firebase using only a closed list of generic events with no personal content.
 
-**Plans**: 14/16 plans executed
+**Plans**: 16/16 plans executed *(Release & Firebase Console checks moved to end of Phase 2)*
 
 Plans:
 **Wave 1**
@@ -77,10 +77,10 @@ Plans:
 - [x] 01-14-PLAN.md — Dev-only spike screen, automatic runner, and manual/widget rows
 
 **Wave 12** *(blocked on Wave 11 completion)*
-- [ ] 01-15-PLAN.md — EAS development builds on real phones, D-01/D-09 timeboxed verification, Scripture font chosen
+- [x] 01-15-PLAN.md — Local development builds (iOS Simulator + RMX5106), D-01/D-09 verification, Scripture font chosen (`amiri`)
 
 **Wave 13** *(blocked on Wave 12 completion)*
-- [ ] 01-16-PLAN.md — Release builds, Firebase crash and event proof, spike decision note
+- [x] 01-16-PLAN.md — Font default, owner-signed release APK, spike decision note (Release & Firebase triggers moved to end of Phase 2)
 
 **UI hint**: yes
 
@@ -99,6 +99,7 @@ Plans:
 
 **Plans**: TBD
 **UI hint**: yes
+**Inherited End-of-Phase Verification (from Phase 1, moved per owner 2026-11-25):** Run Android Release APK (`app-release.apk`) & local Xcode Release Simulator `RELEASE_RESULT` checks, Firebase Console Release triggers (`spike_test`, Test Crash, Sentinel `E_UNCAUGHT` scrub), iOS `otool -L` `AdSupport` check, and `01-REVIEW-FIX.md` (`WR-01`, `WR-02`, `WR-03`, `WR-06`) human verification at Phase 2 sign-off.
 
 ### Phase 3: Admin Panel & Moderation
 
@@ -229,7 +230,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Native Spike | 14/16 | Ready to execute | - |
+| 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 0/TBD | Not started | - |
 | 3. Admin Panel & Moderation | 0/TBD | Not started | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |

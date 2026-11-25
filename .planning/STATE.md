@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 01
-current_phase_name: Foundation & Native Spike
-status: executing
-stopped_at: Completed 01-14-PLAN.md
-last_updated: "2026-11-24T22:41:24.374Z"
-last_activity: 2026-11-24
-last_activity_desc: Phase 01 execution started
-state_head: d82885b9de7c83a461ba3acdc354d13aab296048
+current_phase: 02
+current_phase_name: Content Backend & First Download
+status: planning
+stopped_at: Completed 01-16-PLAN.md (Release/Firebase checks moved to end of Phase 2)
+last_updated: "2026-11-25T13:08:00.000Z"
+last_activity: 2026-11-25
+last_activity_desc: Phase 01 closed (01-16-SUMMARY, 01-SPIKE-DECISIONS, remaining Release checks moved to end of Phase 2)
+state_head: 313240d
 progress:
   total_phases: 9
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 16
-  completed_plans: 14
-  percent: 0
+  completed_plans: 16
+  percent: 100
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-24)
 
 **Core value:** It remembers for you. A busy, forgetful, God-loving person opens the app and it tells them what's due today (verses to review, who to pray for, tonight's gratitude) without guilt.
-**Current focus:** Phase 01 — Foundation & Native Spike
+**Current focus:** Phase 02 — Content Backend & First Download
 
 ## Current Position
 
-Phase: 01 (Foundation & Native Spike) — EXECUTING
-Plan: 14 of 16
-Status: Ready to execute
-Last activity: 2026-11-24 — Phase 01 execution started
+Phase: 02 (Content Backend & First Download) — DISCUSS / PLAN
+Plan: 0 of TBD
+Status: Ready to discuss
+Last activity: 2026-11-25 — Closed Phase 01 (deferred Release/Firebase checks to end of Phase 2)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 11%
 
 ## Performance Metrics
 
@@ -81,16 +81,19 @@ Recent decisions affecting current work:
 - [Roadmap]: Mobile first-download client (HOME-06/07) ships with the backend in Phase 2 so that phase ends in a user-visible result
 - [Roadmap]: HOME-04 and SET-02..04 map to Phase 6, where all four tools exist
 - [Owner]: Week starts Saturday; Arabic-Indic digits; "memorized" = 30+ days stability or manual mark; Drive offered after first win; app lock and manual export are in v1
-- [Phase 01]: Resolved babel-preset-expo from expo package dir in app/babel.config.js to preserve bun isolated linker
+- [Phase 01]: Selected `'amiri'` (`SCRIPTURE_FONT_DEFAULT = 'amiri'`) in `app/constants/theme.ts`; no EAS / no physical iPhone (`01-02`, `01-15`, `01-16`)
 
 ### Pending Todos
 
-None yet.
+- [Phase 2 End-of-Phase]: Install `app/android/app/build/outputs/apk/release/app-release.apk` on `RMX5106` & run `RELEASE_RESULT android` + Google Sign-In/widget/torture release checks
+- [Phase 2 End-of-Phase]: Build local Xcode `Release` on `iPhone 18 Pro` Simulator (`EXPO_PUBLIC_DEV_TOOLS=1`), capture `RELEASE_RESULT ios`, and run `otool -L` `AdSupport` check
+- [Phase 2 End-of-Phase]: Run Firebase Release triggers (consent switch, `spike_test` in DebugView/Realtime, Test Crash + relaunch, Sentinel `E_UNCAUGHT` scrub + relaunch) and confirm in Firebase Console
+- [Phase 2 End-of-Phase]: Complete human verification of `01-REVIEW-FIX.md` (`WR-01`, `WR-02`, `WR-03`, `WR-06`, and `WR-05` cleanup decision)
 
 ### Blockers/Concerns
 
-- [Phase 1]: Native stack (RNFB 27 + dynamic frameworks, Google Sign-In SPM, MMKV/Nitro, two widget systems, Reanimated pins) is unproven together; the spike is the final authority
-- [Phase 1]: iOS widget library undecided (`expo-widgets` default, `@bacons/apple-targets` fallback)
+- [Phase 1 / Carried to Phase 2 End]: `FND-09` Release run, `REL-01` Release Crashlytics console proof, and `AD_ID` / `AdSupport` audit open until end-of-Phase-2 Release pass (see `01-SPIKE-DECISIONS.md` & `01-VERIFICATION.md`)
+- [Phase 1 / Hardware]: Physical iPhone Google Sign-In interactive flow and physical iOS widget cold-start tap deferred until physical iOS hardware / Apple Developer provisioning
 - [Phase 2]: First launch needs internet, so backend uptime and production content are release gates
 - [Phase 6]: Start the Play 12-tester / 14-day closed-testing clock at the end of this phase
 - [Phase 8]: Drive file layout (one shared file vs one per device) and headless background sign-in are open research items
@@ -105,6 +108,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-24T21:21:14.701Z
-Stopped at: Completed 01-14-PLAN.md
-Resume file: None
+Last session: 2026-11-25T13:10:00.000Z
+Stopped at: Closed Phase 01 (01-16-SUMMARY + 01-SPIKE-DECISIONS + 01-VERIFICATION), moving Release checks to end of Phase 2
+Resume file: .planning/phases/01-foundation-native-spike/01-SPIKE-DECISIONS.md
