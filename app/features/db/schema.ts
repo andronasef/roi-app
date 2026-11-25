@@ -123,3 +123,56 @@ export const syncMeta = sqliteTable('sync_meta', {
   lastContentVersion: integer('last_content_version').notNull().default(0),
   lastCheckedAt: integer('last_checked_at').notNull().default(0),
 });
+
+/** Assigned weekly and monthly verses with ref/text snapshots surviving public content edits. */
+export const verseAssignments = sqliteTable(
+  'verse_assignments',
+  {
+    ...syncCols(),
+    periodType: text('period_type').$type<'weekly' | 'monthly'>().notNull(),
+    periodKey: text('period_key').notNull(),
+    verseId: text('verse_id').notNull(),
+    ref: text('ref').notNull(),
+    text: text('text').notNull(),
+    textFemale: text('text_female'),
+    assignedAt: integer('assigned_at').notNull(),
+  },
+  (t) => [
+    index('verse_assignments_period_idx').on(
+      t.periodType,
+      t.periodKey,
+      t.deletedAt,
+    ),
+  ],
+);
+
+/** Local starred favorites across public and personal items with deterministic natural-key IDs. */
+export const favorites = sqliteTable(
+  'favorites',
+  {
+    ...syncCols(),
+    itemKind: text('item_kind')
+      .$type<'verse' | 'name_of_god' | 'blessing'>()
+      .notNull(),
+    itemSource: text('item_source').$type<'public' | 'personal'>().notNull(),
+    itemId: text('item_id').notNull(),
+  },
+  (t) => [index('favorites_live_created_idx').on(t.deletedAt, t.createdAt)],
+);
+
+/** Local user-authored personal verses, Names of God, and blessings. */
+export const personalItems = sqliteTable(
+  'personal_items',
+  {
+    ...syncCols(),
+    kind: text('kind')
+      .$type<'verse' | 'name_of_god' | 'blessing'>()
+      .notNull(),
+    title: text('title').notNull(),
+    text: text('text').notNull(),
+    verseRef: text('verse_ref'),
+  },
+  (t) => [
+    index('personal_items_kind_live_idx').on(t.kind, t.deletedAt, t.createdAt),
+  ],
+);

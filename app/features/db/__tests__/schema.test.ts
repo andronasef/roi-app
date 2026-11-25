@@ -38,10 +38,18 @@ function walkSourceFiles(dir: string): string[] {
 }
 
 describe('database schema and soft-delete guards', () => {
-  it('defines all ten Phase 1 and Phase 2 tables', () => {
-    expect(tables.length).toBeGreaterThanOrEqual(10);
+  it('defines all thirteen Phase 1, Phase 2, and Phase 4 tables', () => {
+    expect(tables).toHaveLength(13);
     expect(tables.map(([name]) => name)).toEqual(
-      expect.arrayContaining(['verses', 'namesOfGod', 'blessings', 'syncMeta']),
+      expect.arrayContaining([
+        'verses',
+        'namesOfGod',
+        'blessings',
+        'syncMeta',
+        'verseAssignments',
+        'favorites',
+        'personalItems',
+      ]),
     );
     expect(schema.CONTENT_SYNC_META_ID).toBe('content_sync');
   });

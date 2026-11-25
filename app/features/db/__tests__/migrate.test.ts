@@ -119,7 +119,7 @@ describe('fixture database migrations', () => {
     },
   );
 
-  it('migrates an empty database to the latest schema with all ten tables', () => {
+  it('migrates an empty database to the latest schema with all thirteen tables', () => {
     const tempDir = mkdtempSync(path.join(tmpdir(), 'roi-empty-'));
     const tempDbPath = path.join(tempDir, 'empty.sqlite');
     const sqlite = new Database(tempDbPath);
@@ -136,14 +136,17 @@ describe('fixture database migrations', () => {
 
       expect(tableRows.map((r) => r.name)).toEqual([
         'blessings',
+        'favorites',
         'gratitude_lines',
         'mem_verses',
         'names_of_god',
+        'personal_items',
         'prayer_events',
         'prayers',
         'review_events',
         'settings',
         'sync_meta',
+        'verse_assignments',
         'verses',
       ]);
       expect(sqlite.pragma('integrity_check', { simple: true })).toBe('ok');

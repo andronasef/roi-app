@@ -15,6 +15,13 @@
       "when": 1795611132328,
       "tag": "0001_hard_risque",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795640363001,
+      "tag": "0002_tiresome_mojo",
+      "breakpoints": true
     }
   ]
 }

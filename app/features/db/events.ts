@@ -3,12 +3,15 @@ import type { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
 import { localDateKey, uuidv7 } from '@roi/shared';
 
 import {
+  favorites,
   gratitudeLines,
   memVerses,
+  personalItems,
   prayerEvents,
   prayers,
   reviewEvents,
   settings,
+  verseAssignments,
 } from './schema';
 import type * as schema from './schema';
 
@@ -28,7 +31,10 @@ export type SyncTable =
   | typeof prayerEvents
   | typeof memVerses
   | typeof reviewEvents
-  | typeof gratitudeLines;
+  | typeof gratitudeLines
+  | typeof verseAssignments
+  | typeof favorites
+  | typeof personalItems;
 
 /** Insert one append-only prayer event and return its UUIDv7 id. */
 export function logPrayed(
@@ -121,6 +127,29 @@ export function softDelete(
         .where(
           and(eq(gratitudeLines.id, id), isNull(gratitudeLines.deletedAt)),
         )
+        .run();
+      return;
+    case verseAssignments:
+      db.update(verseAssignments)
+        .set({ deletedAt: now, updatedAt: now })
+        .where(
+          and(
+            eq(verseAssignments.id, id),
+            isNull(verseAssignments.deletedAt),
+          ),
+        )
+        .run();
+      return;
+    case favorites:
+      db.update(favorites)
+        .set({ deletedAt: now, updatedAt: now })
+        .where(and(eq(favorites.id, id), isNull(favorites.deletedAt)))
+        .run();
+      return;
+    case personalItems:
+      db.update(personalItems)
+        .set({ deletedAt: now, updatedAt: now })
+        .where(and(eq(personalItems.id, id), isNull(personalItems.deletedAt)))
         .run();
       return;
   }

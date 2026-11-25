@@ -3,12 +3,14 @@
 import journal from './meta/_journal.json';
 import m0000 from './0000_noisy_kulan_gath.sql';
 import m0001 from './0001_hard_risque.sql';
+import m0002 from './0002_tiresome_mojo.sql';
 
   export default {
     journal,
     migrations: {
       m0000,
-m0001
+m0001,
+m0002
     }
   }
   
