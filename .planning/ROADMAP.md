@@ -123,7 +123,7 @@ Plans:
   4. A live preview with a test name and a gender toggle renders exactly what a phone would show; validation rejects any token other than `{الاسم}` and warns when only one version contains the name.
   5. An admin opens a suggestion sent from a phone, edits it, then accepts it (it joins public content) or rejects it (it leaves the queue).
 
-**Plans:** 5/9 plans executed
+**Plans:** 7/9 plans executed
 
 Plans:
 **Wave 1**
@@ -138,8 +138,8 @@ Plans:
 - [x] 03-05-PLAN.md — Warm-paper Tailwind 4 logical-CSS UI component primitives in admin/src/components/ui/
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 03-06-PLAN.md — Credentialed GraphQL client, GIS AuthProvider + non-clearing ReauthModal, LoginPage, and bilingual AdminShell
-- [ ] 03-07-PLAN.md — Tiptap 3 atomic {الاسم} chip editor, Markdown-subset serializer, validation, and live preview
+- [x] 03-06-PLAN.md — Credentialed GraphQL client, GIS AuthProvider + non-clearing ReauthModal, LoginPage, and bilingual AdminShell
+- [x] 03-07-PLAN.md — Tiptap 3 atomic {الاسم} chip editor, Markdown-subset serializer, validation, and live preview
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 03-08-PLAN.md — Catalog management, suggestion moderation queue UI, and read-only audit log page
@@ -263,7 +263,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
-| 3. Admin Panel & Moderation | 5/9 | In Progress | - |
+| 3. Admin Panel & Moderation | 7/9 | In Progress | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
