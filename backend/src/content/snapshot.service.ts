@@ -72,8 +72,23 @@ export class SnapshotService implements OnModuleInit {
     return rebuilt;
   }
 
+  /**
+   * The DB is the source of truth: `seed`/`restore` run out-of-process and cannot touch this
+   * in-memory cache, so rebuild whenever the cached version no longer matches the DB.
+   */
+  private refreshIfStale(): void {
+    const dbVersion = this.getDbContentVersion();
+    const stale = snapshotTypeSchema.options.some(
+      (type) => this.cache.get(type)?.contentVersion !== dbVersion,
+    );
+    if (stale) {
+      this.refreshCache();
+    }
+  }
+
   /** Return the cached pre-built snapshot artifact for the requested type. */
   getSnapshot(type: SnapshotType): SnapshotArtifact {
+    this.refreshIfStale();
     const cached = this.cache.get(type);
     if (cached) {
       return cached;
@@ -83,6 +98,7 @@ export class SnapshotService implements OnModuleInit {
 
   /** Return true when all three public content snapshots are cached and ready. */
   areSnapshotsReady(): boolean {
+    this.refreshIfStale();
     return snapshotTypeSchema.options.every((type) => this.cache.has(type));
   }
 }

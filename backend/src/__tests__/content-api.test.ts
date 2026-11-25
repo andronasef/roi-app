@@ -402,4 +402,40 @@ describe('Content HTTP & GraphQL API (BE-01, BE-02, BE-04, BE-06)', () => {
       await app.close().catch(() => {});
     }
   });
+  it('serves fresh snapshots after an out-of-process seed (no restart needed)', async () => {
+    const emptyDir = mkdtempSync(join(tmpdir(), 'roi-api-drift-'));
+    tempDirs.push(emptyDir);
+    process.env.DATA_DIR = emptyDir;
+    process.env.NODE_ENV = 'test';
+
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    const app = moduleRef.createNestApplication();
+    await app.init();
+
+    try {
+      const server = app.getHttpServer();
+      const before = await request(server).get('/snapshots/verses').set('Accept-Encoding', 'gzip');
+      expect(before.headers['x-content-version']).toBe('0');
+
+      const handle = openBackendDatabase(emptyDir);
+      try {
+        runSeed({
+          db: handle.db,
+          sqlite: handle.sqlite,
+          dataDir: emptyDir,
+          filePath: resolveBackendPath('seed', 'initial-content.json'),
+          dryRun: false,
+          nowMs: 1_795_552_000_000,
+        });
+      } finally {
+        handle.close();
+      }
+
+      const after = await request(server).get('/snapshots/verses').set('Accept-Encoding', 'gzip');
+      expect(after.headers['x-content-version']).toBe('1');
+      expect(versesEnvelopeSchema.parse(after.body).items.length).toBeGreaterThan(0);
+    } finally {
+      await app.close().catch(() => {});
+    }
+  });
 });
