@@ -40,7 +40,12 @@ export class SnapshotService implements OnModuleInit {
     let needsRebuild = false;
 
     for (const type of snapshotTypeSchema.options) {
-      const artifact = readSnapshotFromDisk(this.env.DATA_DIR, type);
+      let artifact: SnapshotArtifact | null = null;
+      try {
+        artifact = readSnapshotFromDisk(this.env.DATA_DIR, type);
+      } catch {
+        // Snapshots are derived data: a corrupt or schema-incompatible file is rebuilt, not fatal.
+      }
       if (!artifact || artifact.contentVersion !== dbVersion) {
         needsRebuild = true;
         break;

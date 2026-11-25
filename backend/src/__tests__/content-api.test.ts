@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { request as httpRequest } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -434,6 +434,27 @@ describe('Content HTTP & GraphQL API (BE-01, BE-02, BE-04, BE-06)', () => {
       const after = await request(server).get('/snapshots/verses').set('Accept-Encoding', 'gzip');
       expect(after.headers['x-content-version']).toBe('1');
       expect(versesEnvelopeSchema.parse(after.body).items.length).toBeGreaterThan(0);
+    } finally {
+      await app.close().catch(() => {});
+    }
+  });
+
+  it('rebuilds instead of crashing when a snapshot file on disk is corrupt', async () => {
+    const dataDir = seedTempDir(tempDirs);
+    writeFileSync(join(dataDir, 'snapshots', 'verses.json.gz'), 'not gzip');
+    process.env.DATA_DIR = dataDir;
+    process.env.NODE_ENV = 'test';
+
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    const app = moduleRef.createNestApplication();
+    await app.init();
+
+    try {
+      const res = await request(app.getHttpServer())
+        .get('/snapshots/verses')
+        .set('Accept-Encoding', 'gzip');
+      expect(res.status).toBe(200);
+      expect(versesEnvelopeSchema.parse(res.body).items.length).toBeGreaterThan(0);
     } finally {
       await app.close().catch(() => {});
     }
