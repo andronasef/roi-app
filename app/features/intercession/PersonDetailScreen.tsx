@@ -250,7 +250,7 @@ export function PersonDetailScreen() {
                       {prayer.body}
                     </Text>
                     {prayer.outcome ? (
-                      <View className="rounded-xl border-s-2 border-accent bg-muted/50 p-4">
+                      <View className="rounded-xl bg-muted/50 p-4">
                         <Text className="text-start text-sm text-foreground">
                           {prayer.outcome}
                         </Text>

@@ -22,6 +22,7 @@
 - **Missing Daily Verse (`آية اليوم`) — High Priority:** Currently **ليا أنا** only shows Weekly (`آية الأسبوع`) and Monthly (`آية الشهر`) verses. It must include **Daily, Weekly, and Monthly** verses, with **Daily Verse (`آية اليوم`) shown first**.
 - **First-Time Explainer for `"اقترح للكل"` (Suggest to Everyone):** On the user's first tap of `"اقترح للكل"`, display an introductory explanation of what it does (e.g., *"You added a personal item — you can suggest it to everyone so other users can see this verse/name/blessing too"*, tailored to the item type).
 - **Larger / Full Screen for Adding a Personal Item:** The current `"إضافة عنصر شخصي"` sheet/modal is too small and cramped. Make it a full or much larger screen so the user can comfortably see and write their item.
+  - Note (Phase 5): the دفتر الشكر full-screen Reanimated editor already opens smoothly (260ms); collapse is instant by design. Use it as the model for this full-screen add-item editor.
 - **Online Bible Verse Search & Auto-Fill (Personal Verse Creation):**
   - Instead of forcing the user to type the verse and reference manually, allow searching the Bible online (e.g., searching `"حياة"` across the whole Bible or by reference), showing matching results, and auto-filling both **`الشاهد` (reference)** and **`النص` (verse text)** when the user picks one.
   - Reference API to evaluate/test at implementation time (`biblesupersearch.com`, `svd` module), using the user's Tampermonkey script below:
