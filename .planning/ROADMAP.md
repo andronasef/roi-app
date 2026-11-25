@@ -162,7 +162,7 @@ Plans:
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
 
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans executed
 
 Plans:
 **Wave 1**
@@ -180,7 +180,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [x] 04-06-PLAN.md — Global Settings screen (theme, Scripture size, editable name/gender, Google connect, Share/Rate/Help/WhatsApp)
-- [ ] 04-07-PLAN.md — Local personal items CRUD across all 3 kinds and Google-authenticated public suggestions (submitSuggestion)
+- [x] 04-07-PLAN.md — Local personal items CRUD across all 3 kinds and Google-authenticated public suggestions (submitSuggestion)
 
 **UI hint**: yes
 
@@ -284,7 +284,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
 | 3. Admin Panel & Moderation | 9/9 | In Progress | - |
-| 4. Onboarding, Personalization & Identity | 6/7 | In Progress | - |
+| 4. Onboarding, Personalization & Identity | 7/7 | In Progress | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
 | 7. Widgets | 0/TBD | Not started | - |
