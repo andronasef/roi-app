@@ -58,7 +58,12 @@ export const API_BASE_URL = resolveApiBaseUrl();
 
 function resolveApiBaseUrl(): string {
   if (rawApiBaseUrl.length > 0) {
-    return rawApiBaseUrl.replace(/\/+$/, '');
+    const normalized = rawApiBaseUrl.replace(/\/+$/, '');
+    // A Google ID token and suggestion text are sent here; never allow cleartext in release.
+    if (process.env.NODE_ENV === 'production' && !normalized.startsWith('https://')) {
+      throw new Error('EXPO_PUBLIC_API_BASE_URL must use https:// in release builds');
+    }
+    return normalized;
   }
   // Release bundles must never silently target cleartext localhost (unreachable on devices).
   if (process.env.NODE_ENV === 'production') {
