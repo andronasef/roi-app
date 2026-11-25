@@ -32,7 +32,7 @@
 - [ ] **HOME-04**: Home shows what is due today as counts (verses to review, prayers waiting, tonight's gratitude)
 - [ ] **HOME-05**: A one-time intro message explains the home screen
 - [ ] **HOME-06**: First launch without internet shows a friendly screen with a retry button; after the first download everything works offline
-- [ ] **HOME-07**: The first content download is resumable and applied transactionally
+- [x] **HOME-07**: The first content download is resumable and applied transactionally
 
 ### Personalization (PERS)
 
@@ -190,7 +190,7 @@
 | BE-06 | Phase 2 | Pending |
 | BE-07 | Phase 2 | Pending |
 | HOME-06 | Phase 2 | Pending |
-| HOME-07 | Phase 2 | Pending |
+| HOME-07 | Phase 2 | Complete |
 | ADM-01 | Phase 3 | Pending |
 | ADM-02 | Phase 3 | Pending |
 | ADM-03 | Phase 3 | Pending |
