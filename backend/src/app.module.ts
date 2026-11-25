@@ -7,14 +7,13 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AdminAuditModule } from './admin-audit/admin-audit.module';
 import { AdminAuthModule } from './admin-auth/admin-auth.module';
+import { AdminContentModule } from './admin-content/admin-content.module';
 import { GoogleAuthGuard } from './common/google-auth.guard';
 import { GqlThrottlerGuard } from './common/gql-throttler.guard';
 import { loadEnv } from './config/env';
-import { ContentResolver } from './content/content.resolver';
-import { ContentService } from './content/content.service';
-import { SnapshotController } from './content/snapshot.controller';
-import { SnapshotService } from './content/snapshot.service';
+import { ContentModule } from './content/content.module';
 import { DrizzleModule } from './db/drizzle.module';
 import { HealthController } from './health/health.controller';
 import { SuggestionsResolver } from './suggestions/suggestions.resolver';
@@ -49,7 +48,10 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 60 }]),
     DrizzleModule,
+    ContentModule,
     AdminAuthModule,
+    AdminContentModule,
+    AdminAuditModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: () => {
@@ -96,11 +98,8 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
       },
     }),
   ],
-  controllers: [SnapshotController, HealthController],
+  controllers: [HealthController],
   providers: [
-    SnapshotService,
-    ContentService,
-    ContentResolver,
     GoogleAuthGuard,
     SuggestionsService,
     SuggestionsResolver,

@@ -47,7 +47,7 @@ export function parseTagsJson(tagsJson: string | null): string[] | null {
   return Array.isArray(parsed) ? (parsed as string[]) : null;
 }
 
-function compareContentOrder(
+export function compareContentOrder(
   a: { sortOrder: number | null; createdAt: number; id: string },
   b: { sortOrder: number | null; createdAt: number; id: string },
 ): number {
