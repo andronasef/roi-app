@@ -1,7 +1,6 @@
 import '../global.css';
 
 import { PortalHost } from '@rn-primitives/portal';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { colorScheme } from 'nativewind';
@@ -21,8 +20,6 @@ import {
 } from '@/services/telemetry';
 
 installGlobalErrorScrubber();
-
-const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
@@ -52,13 +49,11 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ScriptureSizeProvider>
-        <ContentGate>
-          <Stack screenOptions={{ headerShown: false }} />
-        </ContentGate>
-        <PortalHost />
-      </ScriptureSizeProvider>
-    </QueryClientProvider>
+    <ScriptureSizeProvider>
+      <ContentGate>
+        <Stack screenOptions={{ headerShown: false }} />
+      </ContentGate>
+      <PortalHost />
+    </ScriptureSizeProvider>
   );
 }

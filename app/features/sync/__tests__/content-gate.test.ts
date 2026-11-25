@@ -187,12 +187,11 @@ describe('ContentGate state & UI-SPEC contract', () => {
     expect(ALLOWED_EVENTS).toContain('first_download_completed');
   });
 
-  it('wires QueryClientProvider and ContentGate inside app/app/_layout.tsx after useMigrations', () => {
+  it('wires ContentGate inside app/app/_layout.tsx after useMigrations', () => {
     const layoutSource = fs.readFileSync(
       path.join(APP_ROOT, 'app', '_layout.tsx'),
       'utf8',
     );
-    expect(layoutSource).toContain('QueryClientProvider');
     expect(layoutSource).toContain('ContentGate');
     expect(layoutSource).toContain('useMigrations');
   });
