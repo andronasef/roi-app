@@ -51,6 +51,14 @@ describe('syncRowSchema', () => {
 });
 
 describe('personalizedTextSchema', () => {
+  it('rejects Markdown links/images and raw HTML but allows blockquotes and comparisons (WR-03)', () => {
+    for (const bad of ['[x](https://evil.example)', '![](https://t.example/p.png)', 'a <img src=x> b', '<script>']) {
+      expect(personalizedTextSchema.safeParse({ text: bad }).success).toBe(false);
+      expect(personalizedTextSchema.safeParse({ text: 'ok', textFemale: bad }).success).toBe(false);
+    }
+    expect(personalizedTextSchema.safeParse({ text: '> اقتباس\n\n**نص** و 1 < 2' }).success).toBe(true);
+  });
+
   it('accepts plain Arabic text and text containing {الاسم}', () => {
     expect(personalizedTextSchema.safeParse({ text: 'يا {الاسم}، الرب راعيك' }).success).toBe(true);
     expect(

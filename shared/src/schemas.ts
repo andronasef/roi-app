@@ -11,6 +11,13 @@ function hasOnlyAllowedBraceToken(value: string): boolean {
   return !/[{}]/.test(value.replaceAll(NAME_TOKEN, ''));
 }
 
+const MARKDOWN_SUBSET_ERROR = 'الروابط والصور وأكواد HTML غير مسموح بها في النص';
+
+/** Rejects Markdown links/images and raw HTML so public content can never load or link remote resources. */
+function hasNoLinksImagesOrHtml(value: string): boolean {
+  return !/\]\(|!\[|<[a-z/!?]/i.test(value);
+}
+
 const titleOrRefSchema = z.string().trim().min(1, EMPTY_TEXT_ERROR).max(200);
 const optionalVerseRefSchema = z
   .string()
@@ -37,11 +44,13 @@ export const personalizedTextSchema = z.object({
     .min(1, EMPTY_TEXT_ERROR)
     .max(5000)
     .refine((v) => v.trim().length > 0, EMPTY_TEXT_ERROR)
-    .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR),
+    .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR)
+    .refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR),
   textFemale: z
     .string()
     .max(5000)
     .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR)
+    .refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR)
     .nullable()
     .optional(),
 });
