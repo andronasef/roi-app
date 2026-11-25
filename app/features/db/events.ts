@@ -36,14 +36,18 @@ export type SyncTable =
   | typeof favorites
   | typeof personalItems;
 
-/** Insert one append-only prayer event and return its UUIDv7 id. */
+/** Insert one append-only prayer event (with optional trimmed note) and return its UUIDv7 id. */
 export function logPrayed(
   db: SyncDatabase,
   clock: Clock,
   prayerId: string,
+  note?: string | null,
 ): string {
   const now = clock.now();
   const id = uuidv7(now, clock.rand);
+  const trimmedNote = note?.trim();
+  const normalizedNote =
+    trimmedNote && trimmedNote.length > 0 ? trimmedNote : null;
   db.insert(prayerEvents)
     .values({
       id,
@@ -53,6 +57,7 @@ export function logPrayed(
       prayerId,
       prayedAt: now,
       localDate: localDateKey(new Date(now)),
+      note: normalizedNote,
     })
     .run();
   return id;

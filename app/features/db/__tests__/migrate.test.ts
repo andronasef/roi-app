@@ -49,6 +49,11 @@ describe('fixture database migrations', () => {
         expect(allPrayers).toHaveLength(3);
         expect(livePrayers).toHaveLength(2);
         expect(tombstonedPrayers).toHaveLength(1);
+        for (const prayer of allPrayers) {
+          expect(prayer.pinnedAt).toBeNull();
+          expect(prayer.answeredAt).toBeNull();
+          expect(prayer.outcome).toBeNull();
+        }
 
         expect(
           prayedCount(db, '01936000-0001-7000-8000-000000000001'),
@@ -56,7 +61,11 @@ describe('fixture database migrations', () => {
         expect(
           prayedCount(db, '01936000-0001-7000-8000-000000000002'),
         ).toBe(1);
-        expect(db.select().from(schema.prayerEvents).all()).toHaveLength(4);
+        const allPrayerEvents = db.select().from(schema.prayerEvents).all();
+        expect(allPrayerEvents).toHaveLength(4);
+        for (const event of allPrayerEvents) {
+          expect(event.note).toBeNull();
+        }
 
         const memVerses = db.select().from(schema.memVerses).all();
         expect(memVerses).toHaveLength(1);
@@ -111,6 +120,7 @@ describe('fixture database migrations', () => {
         const migrationCount = sqlite
           .prepare('SELECT count(*) AS count FROM __drizzle_migrations')
           .get() as { count: number };
+        expect(readJournalEntryCount()).toBe(4);
         expect(migrationCount.count).toBe(readJournalEntryCount());
       } finally {
         sqlite.close();

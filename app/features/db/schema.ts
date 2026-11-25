@@ -24,6 +24,9 @@ export const prayers = sqliteTable('prayers', {
   body: text('body').notNull(),
   personName: text('person_name'),
   sinceLocalDate: text('since_local_date'),
+  pinnedAt: integer('pinned_at'),
+  answeredAt: integer('answered_at'),
+  outcome: text('outcome'),
 });
 
 /** Append-only prayer events; counts come from live (non-tombstoned) rows. */
@@ -34,6 +37,7 @@ export const prayerEvents = sqliteTable(
     prayerId: text('prayer_id').notNull(),
     prayedAt: integer('prayed_at').notNull(),
     localDate: text('local_date').notNull(),
+    note: text('note'),
   },
   (t) => [index('prayer_events_parent_idx').on(t.prayerId, t.deletedAt)],
 );
