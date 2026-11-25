@@ -79,13 +79,16 @@ export function ItemEditorPage({
       kind,
       refOrTitle: initialValues?.refOrTitle ?? '',
       verseRef: initialValues?.verseRef ?? '',
-      sameForBoth: !initialValues?.textFemale,
+      sameForBoth: kind !== 'verse' || !initialValues?.textFemale,
       text: initialValues?.text ?? '',
       textFemale: initialValues?.textFemale ?? '',
     },
   });
 
-  const [sameForBoth, text, textFemale, verseRef] = watch(['sameForBoth', 'text', 'textFemale', 'verseRef']);
+  const [sameForBothRaw, text, textFemale, verseRef] = watch(['sameForBoth', 'text', 'textFemale', 'verseRef']);
+  // Names of God and blessings are title + single text only; the male/female variant is verses-only.
+  const hasVariants = kind === 'verse';
+  const sameForBoth = hasVariants ? sameForBothRaw : true;
   const mode = kind === 'verse' ? 'verse' : 'rich';
   const oneSided = hasOneSidedNameToken(sameForBoth, text, textFemale);
 
@@ -97,7 +100,7 @@ export function ItemEditorPage({
         verseRef: kind === 'blessing' ? normalizeOptionalVerseRef(values.verseRef) : null,
         text: values.text,
         // Hidden female draft stays in form state while "same" is ON; it is only dropped here.
-        textFemale: values.sameForBoth ? null : values.textFemale,
+        textFemale: !hasVariants || values.sameForBoth ? null : values.textFemale,
       });
       toast.success(t.toast.saved);
     } catch (error) {
@@ -148,6 +151,7 @@ export function ItemEditorPage({
             </div>
           ) : null}
 
+          {hasVariants ? (
           <div className="flex items-center gap-2">
             <Switch
               id="item-same-for-both"
@@ -157,6 +161,7 @@ export function ItemEditorPage({
             />
             <Label htmlFor="item-same-for-both">{t.editor.sameForBothLabel}</Label>
           </div>
+          ) : null}
 
           {sameForBoth ? (
             textEditor('text', t.editor.singleTextLabel)
