@@ -122,6 +122,8 @@ export function ContentGate({ children }: { children: ReactNode }) {
   const isOnlineRef = useRef(isOnline);
   isOnlineRef.current = isOnline;
   const deltaCheckedThisOnlineRef = useRef(false);
+  // Resume from 'paused' only on a hook-reported offline->online edge, never in a failure loop.
+  const resumeOnOnlineRef = useRef(false);
   // Bumped on every return to foreground so the (6h-throttled) delta check re-arms without a restart.
   const [foregroundTick, setForegroundTick] = useState(0);
 
@@ -130,6 +132,7 @@ export function ContentGate({ children }: { children: ReactNode }) {
       return;
     }
     inFlightRef.current = true;
+    resumeOnOnlineRef.current = false;
     const controller = new AbortController();
     abortRef.current = controller;
     setDownloadStatus('downloading');
@@ -196,7 +199,9 @@ export function ContentGate({ children }: { children: ReactNode }) {
 
   // Interrupt an active request promptly if connectivity drops mid-batch.
   useEffect(() => {
-    if (!isOnline) {
+    if (isOnline) {
+      resumeOnOnlineRef.current = true;
+    } else {
       deltaCheckedThisOnlineRef.current = false;
       if (inFlightRef.current && abortRef.current) {
         abortRef.current.abort();
@@ -209,7 +214,10 @@ export function ContentGate({ children }: { children: ReactNode }) {
     if (isBypassed || lastContentVersion > 0 || !isOnline) {
       return;
     }
-    if (downloadStatus === 'idle' || downloadStatus === 'paused') {
+    if (
+      downloadStatus === 'idle' ||
+      (downloadStatus === 'paused' && resumeOnOnlineRef.current)
+    ) {
       void startDownload();
     }
   }, [isBypassed, lastContentVersion, isOnline, downloadStatus, startDownload]);
