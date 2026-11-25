@@ -3,7 +3,6 @@ import { EditorContent, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Fragment, Slice } from '@tiptap/pm/model';
 import { Bold, Heading2, Heading3, Italic, List, Quote, User } from 'lucide-react';
-import { NAME_TOKEN } from '@roi/shared';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useI18n } from '@/lib/i18n';
 import {
@@ -126,12 +125,12 @@ export function RichContentEditor({ value, onChange, mode, ariaLabel, className 
           class:
             'min-h-[140px] max-h-[360px] overflow-y-auto px-3 py-2 text-base leading-7 focus:outline-none [&_h2]:text-xl [&_h2]:font-bold [&_h3]:font-bold [&_ul]:list-disc [&_ul]:ps-6 [&_blockquote]:border-s-4 [&_blockquote]:border-accent/40 [&_blockquote]:ps-3 [&_p]:my-1',
         },
-        // Plain-text clipboards (and everything in verse mode) become paragraphs + nameToken chips;
-        // external HTML formatting never enters the doc in verse mode.
+        // Plain-text clipboards (and everything in verse mode) become paragraphs + nameToken chips
+        // (so a pasted {الاسم} turns into a chip); external HTML never enters the doc in verse mode.
         handlePaste(view, event) {
           const text = event.clipboardData?.getData('text/plain') ?? '';
           const html = event.clipboardData?.getData('text/html') ?? '';
-          if (!text || !(mode === 'verse' || (!html && text.includes(NAME_TOKEN)))) {
+          if (!text || !(mode === 'verse' || !html)) {
             return false;
           }
           const doc = view.state.schema.nodeFromJSON(parseContentToDoc(text, 'verse'));
