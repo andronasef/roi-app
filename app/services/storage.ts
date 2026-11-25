@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
   SCRIPTURE_STEP: 'pref.scripture_step',
   SCRIPTURE_FONT: 'pref.scripture_font',
   LAST_BOOT: 'diag.last_boot',
+  TELEMETRY_CONSENT: 'pref.telemetry_consent',
 } as const;
 
 function isThemePreference(value: string | undefined): value is ThemePreference {

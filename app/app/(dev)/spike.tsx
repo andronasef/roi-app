@@ -15,6 +15,7 @@ import { MIN_TOUCH } from '@/constants/theme';
 import {
   AUTOMATIC_CHECKS,
   getDeviceLocaleTag,
+  getTelemetryConsent,
   runGoogleSignInCheck,
   sendSpikeTestEvent,
   throwSpikeSentinelError,
@@ -45,7 +46,7 @@ export default function SpikeScreen() {
   const { from } = useLocalSearchParams<{ from?: string }>();
   const [results, setResults] = useState<SpikeCheckResult[]>([]);
   const [running, setRunning] = useState(true);
-  const [consentEnabled, setConsentEnabled] = useState(false);
+  const [consentEnabled, setConsentEnabled] = useState(getTelemetryConsent);
   const [eventSent, setEventSent] = useState(false);
   const [googleStatus, setGoogleStatus] = useState<ManualStatus>('idle');
   const [googleError, setGoogleError] = useState<string | null>(null);
@@ -77,20 +78,34 @@ export default function SpikeScreen() {
 
   const handleRerun = async () => {
     setRunning(true);
-    const nextResults = await runAllChecks();
-    setResults(nextResults);
-    setRunning(false);
-    console.log(summaryLine(Platform.OS, nextResults));
+    try {
+      const nextResults = await runAllChecks();
+      setResults(nextResults);
+      console.log(summaryLine(Platform.OS, nextResults));
+    } catch {
+      console.warn('spike rerun failed');
+    } finally {
+      setRunning(false);
+    }
   };
 
   const handleToggleConsent = async (next: boolean) => {
-    setConsentEnabled(next);
-    await toggleTelemetryConsent(next);
+    try {
+      await toggleTelemetryConsent(next);
+      setConsentEnabled(next);
+    } catch {
+      console.warn('telemetry consent update failed');
+      setConsentEnabled(getTelemetryConsent());
+    }
   };
 
   const handleSendTestEvent = async () => {
-    await sendSpikeTestEvent();
-    setEventSent(true);
+    try {
+      await sendSpikeTestEvent();
+      setEventSent(true);
+    } catch {
+      console.warn('spike test event failed');
+    }
   };
 
   const handleGoogleSignIn = async () => {

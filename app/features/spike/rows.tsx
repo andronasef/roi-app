@@ -16,7 +16,7 @@ import { db } from '@/features/db/client';
 import { settings } from '@/features/db/schema';
 import { type SpikeCheck } from '@/features/spike/runner';
 import { pushSpikeWidget } from '@/features/widgets/update';
-import { storage } from '@/services/storage';
+import { STORAGE_KEYS, storage } from '@/services/storage';
 import {
   setTelemetryConsent,
   telemetryStatus,
@@ -198,8 +198,14 @@ export const AUTOMATIC_CHECKS: readonly SpikeCheck[] = [
   { id: 'widget', titleKey: 'spikeRowWidget', run: checkWidgetUpdate },
 ] as const;
 
+export function getTelemetryConsent(): boolean {
+  return storage.getBoolean(STORAGE_KEYS.TELEMETRY_CONSENT) ?? false;
+}
+
+/** Applies consent natively first; only persists the choice once that succeeds. */
 export async function toggleTelemetryConsent(enabled: boolean): Promise<void> {
   await setTelemetryConsent(enabled);
+  storage.set(STORAGE_KEYS.TELEMETRY_CONSENT, enabled);
 }
 
 export async function sendSpikeTestEvent(): Promise<void> {
