@@ -70,6 +70,7 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
           graphiql: !isProd,
           introspection: !isProd,
           includeStacktraceInErrorResponses: !isProd,
+          hideSchemaDetailsFromClientErrors: isProd,
           preserveHttpStatusForExecutionErrors: false,
           formatError: (formattedError) => {
             if (formattedError.extensions?.status === 429) {
