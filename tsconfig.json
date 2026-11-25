@@ -8,7 +8,9 @@
     "moduleResolution": "bundler",
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["shared/src", "backend/src", "admin/src"]
 }
