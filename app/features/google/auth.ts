@@ -138,7 +138,7 @@ export async function requestGoogleDriveScopeUpgrade(): Promise<GoogleSignInResu
     let currentUser = GoogleSignin.getCurrentUser();
     if (!currentUser) {
       const silent = await GoogleSignin.signInSilently();
-      if (isSuccessResponse(silent)) {
+      if (!isNoSavedCredentialFoundResponse(silent) && silent.type === 'success') {
         currentUser = silent.data;
       }
     }
@@ -191,7 +191,7 @@ export async function getGoogleSessionToken(): Promise<GoogleSessionTokenResult>
     let currentUser = GoogleSignin.getCurrentUser();
     if (!currentUser) {
       const silent = await GoogleSignin.signInSilently();
-      if (isNoSavedCredentialFoundResponse(silent) || !isSuccessResponse(silent)) {
+      if (isNoSavedCredentialFoundResponse(silent) || silent.type !== 'success') {
         return { status: 'unauthenticated' };
       }
       currentUser = silent.data;
@@ -234,7 +234,7 @@ export async function getGoogleAccountStatus(): Promise<GoogleAccountStatus> {
     let currentUser = GoogleSignin.getCurrentUser();
     if (!currentUser) {
       const silent = await GoogleSignin.signInSilently();
-      if (isSuccessResponse(silent)) {
+      if (!isNoSavedCredentialFoundResponse(silent) && silent.type === 'success') {
         currentUser = silent.data;
       }
     }

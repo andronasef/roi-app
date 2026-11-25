@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { eq } from 'drizzle-orm';
@@ -236,5 +237,28 @@ describe('onboarding identity validation, starter verses, and SQLite first-win',
     } finally {
       sqlite.close();
     }
+  });
+
+  it('wires 3-screen OnboardingFlow and MMKV state-gated root index route', () => {
+    const flowPath = path.resolve(__dirname, '../OnboardingFlow.tsx');
+    const indexPath = path.resolve(__dirname, '../../../app/index.tsx');
+    const flowSource = fs.readFileSync(flowPath, 'utf8');
+    const indexSource = fs.readFileSync(indexPath, 'utf8');
+
+    expect(flowSource).toContain('validateOnboardingIdentity');
+    expect(flowSource).toContain('pickStarterVerses');
+    expect(flowSource).toContain('filterStarterVerses');
+    expect(flowSource).toContain('signInWithGoogleDriveScope');
+    expect(flowSource).toContain('toggleFavorite');
+    expect(flowSource).toContain('setOnboardingCompleted(true)');
+    expect(flowSource).toContain('استمر باستخدام جوجل');
+    expect(flowSource).toContain('استمر بدون تسجيل');
+    expect(flowSource).toContain('متابعة مع جوجل');
+    expect(flowSource).toContain('إغلاق النافذة');
+    expect(flowSource).toContain('<Scripture');
+
+    expect(indexSource).toContain('getOnboardingCompleted');
+    expect(indexSource).toContain('OnboardingFlow');
+    expect(indexSource).toContain('HomeScreen');
   });
 });
