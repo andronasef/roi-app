@@ -31,7 +31,7 @@
 - [ ] **HOME-03**: Home shows a tile per tool; the user can show, hide and reorder tiles, and the choice persists
 - [ ] **HOME-04**: Home shows what is due today as counts (verses to review, prayers waiting, tonight's gratitude)
 - [ ] **HOME-05**: A one-time intro message explains the home screen
-- [ ] **HOME-06**: First launch without internet shows a friendly screen with a retry button; after the first download everything works offline
+- [x] **HOME-06**: First launch without internet shows a friendly screen with a retry button; after the first download everything works offline
 - [x] **HOME-07**: The first content download is resumable and applied transactionally
 
 ### Personalization (PERS)
@@ -119,7 +119,7 @@
 ### Backend (BE)
 
 - [x] **BE-01**: API serves public content (verses, names, blessings) from one pre-built gzipped snapshot per type, rebuilt only on admin change
-- [ ] **BE-02**: One global monotonic `contentVersion`; clients send their last version and get deltas, including soft-delete tombstones
+- [x] **BE-02**: One global monotonic `contentVersion`; clients send their last version and get deltas, including soft-delete tombstones
 - [ ] **BE-03**: Users can submit suggestions as `pending` with a signed anonymous device ID
 - [ ] **BE-04**: Hardening: throttling (stricter on suggestions), zod validation, GraphQL depth/complexity limits, introspection off in production, CORS locked to the admin origin, helmet, payload limits, trust proxy
 - [x] **BE-05**: An audit log records every admin change
@@ -183,13 +183,13 @@
 | FND-09 | Phase 1 | Pending |
 | REL-01 | Phase 1 | Pending |
 | BE-01 | Phase 2 | Complete |
-| BE-02 | Phase 2 | Pending |
+| BE-02 | Phase 2 | Complete |
 | BE-03 | Phase 2 | Pending |
 | BE-04 | Phase 2 | Pending |
 | BE-05 | Phase 2 | Complete |
 | BE-06 | Phase 2 | Pending |
 | BE-07 | Phase 2 | Complete |
-| HOME-06 | Phase 2 | Pending |
+| HOME-06 | Phase 2 | Complete |
 | HOME-07 | Phase 2 | Complete |
 | ADM-01 | Phase 3 | Pending |
 | ADM-02 | Phase 3 | Pending |
