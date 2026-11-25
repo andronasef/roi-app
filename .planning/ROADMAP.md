@@ -161,14 +161,14 @@ Plans:
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
 
-**Plans:** 1/7 plans executed
+**Plans:** 2/7 plans executed
 
 Plans:
 **Wave 1**
 - [x] 04-01-PLAN.md — Package legitimacy gate for react-native-marked@8.3.4 and expo-clipboard@~58.0.4
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 04-02-PLAN.md — Install approved packages, Drizzle 0002 migration, expo prebuild, and non-repeat verse assignment engine
+- [x] 04-02-PLAN.md — Install approved packages, Drizzle 0002 migration, expo prebuild, and non-repeat verse assignment engine
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 04-03-PLAN.md — Tracer slice: personalization engine, ProfileProvider, uiCopy, ContentRefreshContext, and Home (أدواتك)
@@ -282,7 +282,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
 | 3. Admin Panel & Moderation | 9/9 | In Progress | - |
-| 4. Onboarding, Personalization & Identity | 1/7 | In Progress | - |
+| 4. Onboarding, Personalization & Identity | 2/7 | In Progress | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
 | 7. Widgets | 0/TBD | Not started | - |

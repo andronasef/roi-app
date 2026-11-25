@@ -43,9 +43,9 @@
 
 ### ليا أنا (ME)
 
-- [ ] **ME-01**: User sees a weekly verse picked pseudo-randomly from their own seed, stable for the whole week (Saturday to Friday), never repeating a verse they already got
-- [ ] **ME-02**: User sees a monthly verse with the same rules for the month
-- [ ] **ME-03**: Past assignments are saved, so history survives content edits
+- [x] **ME-01**: User sees a weekly verse picked pseudo-randomly from their own seed, stable for the whole week (Saturday to Friday), never repeating a verse they already got
+- [x] **ME-02**: User sees a monthly verse with the same rules for the month
+- [x] **ME-03**: Past assignments are saved, so history survives content edits
 - [ ] **ME-04**: User can read names of God as rich-text article cards
 - [ ] **ME-05**: User can read blessings (first-person title, rich text, supporting verse)
 - [ ] **ME-06**: User can favorite any item with ⭐ and see all favorites
@@ -206,9 +206,9 @@
 | PERS-02 | Phase 4 | Pending |
 | PERS-03 | Phase 4 | Pending |
 | PERS-04 | Phase 4 | Pending |
-| ME-01 | Phase 4 | Pending |
-| ME-02 | Phase 4 | Pending |
-| ME-03 | Phase 4 | Pending |
+| ME-01 | Phase 4 | Complete |
+| ME-02 | Phase 4 | Complete |
+| ME-03 | Phase 4 | Complete |
 | ME-04 | Phase 4 | Pending |
 | ME-05 | Phase 4 | Pending |
 | ME-06 | Phase 4 | Pending |
