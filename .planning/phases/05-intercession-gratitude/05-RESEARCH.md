@@ -331,12 +331,12 @@ export async function scheduleDailyGratitudeReminder(
 | A1 | `expo-notifications` `~58.1.9` builds cleanly with existing `useFrameworks: "dynamic"` + Firebase SPM setup in `app/app.json` | Standard Stack | Native build step may need pod/gradle refresh; caught immediately during dev-client rebuild |
 | A2 | Adding `note` column to `prayer_events` and `pinned_at`, `answered_at`, `outcome` to `prayers` is compatible with Phase 8 Drive merge | Architecture Patterns | Low — all columns are nullable and additive on existing `syncCols()` tables |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Person entity vs `personName` string on `prayers`:**
    - What we know: `app/features/db/schema.ts:25` stores `personName: text('person_name')` directly on `prayers` (no separate `entities` table).
    - What's unclear: Whether renaming a person in the `الأشخاص` tab should update `personName` across all live prayers for that person.
-   - Recommendation: Group live prayers by normalized `personName` (`personName?.trim() || 'عام'`). Support optional person rename by updating `personName` + `updatedAt` on all live prayers matching that person name.
+   - **RESOLVED:** Group live prayers by normalized `personName` (`personName?.trim() || 'عام'`). Individual prayer edit updates `personName` on the prayer row; batch person-rename in `الأشخاص` is not needed for v1 (deferrable without schema change).
 
 ## Environment Availability
 
