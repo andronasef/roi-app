@@ -70,7 +70,9 @@ export function LivePreviewCard({ kind, text, textFemale, verseRef, className }:
     if (defaults.includes(name)) setName(next === 'male' ? p.defaultMaleName : p.defaultFemaleName);
   };
 
-  const output = personalize({ text, textFemale }, { name, gender });
+  // Test name + gender only apply to verses; names of God and blessings render title + single text.
+  const personalized = kind === 'verse';
+  const output = personalized ? personalize({ text, textFemale }, { name, gender }) : text;
   const isNeutral = name.trim() === '';
 
   return (
@@ -79,6 +81,7 @@ export function LivePreviewCard({ kind, text, textFemale, verseRef, className }:
         <CardTitle>{p.heading}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {personalized ? (
         <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
           <div className="space-y-1">
             <Label htmlFor="preview-test-name">{p.testNameLabel}</Label>
@@ -114,7 +117,8 @@ export function LivePreviewCard({ kind, text, textFemale, verseRef, className }:
             </div>
           </div>
         </div>
-        {isNeutral ? <p className="text-sm text-muted-foreground">{p.neutralHint}</p> : null}
+        ) : null}
+        {personalized && isNeutral ? <p className="text-sm text-muted-foreground">{p.neutralHint}</p> : null}
 
         <div
           dir="rtl"

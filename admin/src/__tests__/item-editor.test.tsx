@@ -67,11 +67,13 @@ describe('ItemEditorPage minimal fields (D-08)', () => {
     expect(submit.mock.calls[1]![0].verseRef).toBe('يوحنا ٣: ١٦');
   });
 
-  it('shows the live preview with the personalized text', async () => {
+  it('shows title + single text only for names of God (no gender/test-name controls)', async () => {
     setup({ kind: 'name_of_god' });
     await waitFor(() => expect(editor('Content Text')).toBeTruthy());
-    paste('Content Text', 'يرعاك {الاسم}');
-    await waitFor(() => expect(screen.getByTestId('preview-surface').textContent).toBe('يرعاك مينا'));
+    paste('Content Text', 'يرعاك');
+    await waitFor(() => expect(screen.getByTestId('preview-surface').textContent).toBe('يرعاك'));
+    expect(screen.queryByLabelText('Test Name')).toBeNull();
+    expect(screen.queryByRole('switch')).toBeNull();
   });
 });
 
