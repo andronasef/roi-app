@@ -7,7 +7,10 @@ import {
   STAGING_DIR_NAME,
   STAGING_MANIFEST_FILE,
 } from '../../../constants/sync';
-import { createSyncApiClient } from '../api';
+import {
+  createSyncApiClient,
+  SuggestionSubmitError,
+} from '../api';
 
 const NOW = 1_732_483_200_000;
 
@@ -131,5 +134,139 @@ describe('sync constants and API client', () => {
     expect(String(url)).toBe('https://api.roi.example/graphql');
     const headers = new Headers(init?.headers);
     expect(headers.has('accept-encoding')).toBe(false);
+  });
+
+  it('validates input client-side before submitSuggestion sends a network request', async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    const client = createSyncApiClient('https://api.roi.example', fetchMock);
+
+    await expect(
+      client.submitSuggestion(
+        {
+          kind: 'verse',
+          title: 'مزمور ٢٣',
+          text: 'نص به {name} غير مسموح',
+        },
+        'google-id-token-123',
+      ),
+    ).rejects.toMatchObject({
+      name: 'SuggestionSubmitError',
+      code: 'validation',
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('sends Bearer idToken on submitSuggestion and parses receipt', async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          data: {
+            submitSuggestion: {
+              id: 'sug-1',
+              status: 'pending',
+              createdAt: NOW,
+              remainingToday: 9,
+            },
+          },
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    );
+
+    const client = createSyncApiClient('https://api.roi.example', fetchMock);
+    const receipt = await client.submitSuggestion(
+      {
+        kind: 'blessing',
+        title: 'سلام اليوم',
+        text: 'بركة سلام ليك النهاردة.',
+        verseRef: 'يوحنا ١٤: ٢٧',
+      },
+      'id-token-abc',
+    );
+
+    expect(receipt).toEqual({
+      id: 'sug-1',
+      status: 'pending',
+      createdAt: NOW,
+      remainingToday: 9,
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [, init] = fetchMock.mock.calls[0]!;
+    const headers = new Headers(init?.headers);
+    expect(headers.get('authorization')).toBe('Bearer id-token-abc');
+  });
+
+  it('maps 401, 429 daily limit, 429 burst throttle, and 400 errors to SuggestionSubmitError', async () => {
+    const makeErrorResponse = (
+      status: number,
+      message: string,
+      code?: string,
+    ) =>
+      new Response(
+        JSON.stringify({
+          errors: [
+            {
+              message,
+              ...(code ? { extensions: { code } } : {}),
+            },
+          ],
+        }),
+        { status, headers: { 'Content-Type': 'application/json' } },
+      );
+
+    const payload = {
+      kind: 'verse' as const,
+      title: 'مزمور ٢٣: ١',
+      text: 'الرب راعيّ فلا يعوزني شيء.',
+    };
+
+    const client401 = createSyncApiClient(
+      'https://api.roi.example',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        makeErrorResponse(401, 'GOOGLE_TOKEN_REQUIRED', 'UNAUTHENTICATED'),
+      ),
+    );
+    await expect(client401.submitSuggestion(payload, 'tok')).rejects.toEqual(
+      expect.objectContaining<Partial<SuggestionSubmitError>>({
+        code: 'unauthenticated',
+      }),
+    );
+
+    const clientDaily = createSyncApiClient(
+      'https://api.roi.example',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        makeErrorResponse(429, 'DAILY_SUGGESTION_LIMIT_REACHED'),
+      ),
+    );
+    await expect(clientDaily.submitSuggestion(payload, 'tok')).rejects.toEqual(
+      expect.objectContaining<Partial<SuggestionSubmitError>>({
+        code: 'daily_limit',
+      }),
+    );
+
+    const clientBurst = createSyncApiClient(
+      'https://api.roi.example',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        makeErrorResponse(429, 'ThrottlerException: Too Many Requests'),
+      ),
+    );
+    await expect(clientBurst.submitSuggestion(payload, 'tok')).rejects.toEqual(
+      expect.objectContaining<Partial<SuggestionSubmitError>>({
+        code: 'rate_limited',
+      }),
+    );
+
+    const client400 = createSyncApiClient(
+      'https://api.roi.example',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        makeErrorResponse(400, 'BAD_REQUEST', 'BAD_USER_INPUT'),
+      ),
+    );
+    await expect(client400.submitSuggestion(payload, 'tok')).rejects.toEqual(
+      expect.objectContaining<Partial<SuggestionSubmitError>>({
+        code: 'validation',
+      }),
+    );
   });
 });

@@ -3,12 +3,14 @@ import {
   contentDeltaResponseSchema,
   createSnapshotEnvelopeSchema,
   nameOfGodItemSchema,
+  submitSuggestionInputSchema,
   verseItemSchema,
   type ContentDeltaResponse,
   type SnapshotEnvelope,
   type SnapshotType,
+  type SubmitSuggestionInput,
 } from '@roi/shared';
-import { GraphQLClient } from 'graphql-request';
+import { ClientError, GraphQLClient } from 'graphql-request';
 import { z } from 'zod';
 
 import { API_BASE_URL } from '../../constants/app';
@@ -88,7 +90,94 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
   }
 `;
 
-/** Public sync API client interface for snapshot downloads and GraphQL delta queries. */
+const SUBMIT_SUGGESTION_MUTATION = /* GraphQL */ `
+  mutation SubmitSuggestion($input: SubmitSuggestionInput!) {
+    submitSuggestion(input: $input) {
+      id
+      status
+      createdAt
+      remainingToday
+    }
+  }
+`;
+
+const suggestionReceiptSchema = z.object({
+  id: z.string().min(1),
+  status: z.string().min(1),
+  createdAt: z.number(),
+  remainingToday: z.number().int().nonnegative(),
+});
+
+export type SuggestionReceipt = z.infer<typeof suggestionReceiptSchema>;
+
+export type SuggestionSubmitErrorCode =
+  | 'unauthenticated'
+  | 'daily_limit'
+  | 'rate_limited'
+  | 'validation'
+  | 'network';
+
+/** Typed error for submitSuggestion GraphQL and validation failures. */
+export class SuggestionSubmitError extends Error {
+  readonly code: SuggestionSubmitErrorCode;
+
+  constructor(code: SuggestionSubmitErrorCode, message?: string) {
+    super(message ?? code);
+    this.name = 'SuggestionSubmitError';
+    this.code = code;
+  }
+}
+
+function mapSuggestionError(error: unknown): SuggestionSubmitError {
+  if (error instanceof SuggestionSubmitError) {
+    return error;
+  }
+
+  if (error instanceof ClientError) {
+    const status = error.response.status;
+    const errors = error.response.errors ?? [];
+    const firstMessage = errors[0]?.message ?? error.message;
+    const codes = errors
+      .map((entry) =>
+        typeof entry.extensions?.code === 'string' ? entry.extensions.code : '',
+      )
+      .filter(Boolean);
+
+    if (
+      status === 401 ||
+      codes.includes('UNAUTHENTICATED') ||
+      firstMessage.includes('UNAUTHENTICATED') ||
+      firstMessage.includes('GOOGLE_TOKEN_REQUIRED')
+    ) {
+      return new SuggestionSubmitError('unauthenticated', firstMessage);
+    }
+
+    if (
+      status === 429 ||
+      codes.includes('TOO_MANY_REQUESTS') ||
+      firstMessage.includes('DAILY_SUGGESTION_LIMIT_REACHED') ||
+      firstMessage.includes('ThrottlerException')
+    ) {
+      if (firstMessage.includes('DAILY_SUGGESTION_LIMIT_REACHED')) {
+        return new SuggestionSubmitError('daily_limit', firstMessage);
+      }
+      return new SuggestionSubmitError('rate_limited', firstMessage);
+    }
+
+    if (
+      status === 400 ||
+      codes.includes('BAD_USER_INPUT') ||
+      codes.includes('BAD_REQUEST')
+    ) {
+      return new SuggestionSubmitError('validation', firstMessage);
+    }
+  }
+
+  const message = error instanceof Error ? error.message : 'Network error';
+  return new SuggestionSubmitError('network', message);
+}
+
+/** Public sync API client interface for snapshot downloads, GraphQL delta queries, and suggestions. */
 export interface SyncApiClient {
   fetchSnapshot<T extends SnapshotType>(
     type: T,
@@ -98,6 +187,11 @@ export interface SyncApiClient {
     sinceVersion: number,
     signal?: AbortSignal,
   ): Promise<ContentDeltaResponse>;
+  submitSuggestion(
+    input: SubmitSuggestionInput,
+    idToken: string,
+    signal?: AbortSignal,
+  ): Promise<SuggestionReceipt>;
 }
 
 function createTimeoutSignal(
@@ -192,6 +286,51 @@ export function createSyncApiClient(
           signal: requestSignal,
         });
         return contentDeltaResponseSchema.parse(result.contentDelta);
+      } finally {
+        cleanup();
+      }
+    },
+
+    async submitSuggestion(
+      input: SubmitSuggestionInput,
+      idToken: string,
+      signal?: AbortSignal,
+    ): Promise<SuggestionReceipt> {
+      const parsedInput = submitSuggestionInputSchema.safeParse(input);
+      if (!parsedInput.success) {
+        throw new SuggestionSubmitError(
+          'validation',
+          parsedInput.error.issues[0]?.message ?? 'Invalid suggestion input',
+        );
+      }
+
+      const trimmedToken = idToken.trim();
+      if (!trimmedToken) {
+        throw new SuggestionSubmitError(
+          'unauthenticated',
+          'Missing Google ID token',
+        );
+      }
+
+      const { signal: requestSignal, cleanup } = createTimeoutSignal(
+        SYNC_REQUEST_TIMEOUT_MS,
+        signal,
+      );
+      try {
+        const result = await graphqlClient.request<
+          { submitSuggestion: unknown },
+          { input: SubmitSuggestionInput }
+        >({
+          document: SUBMIT_SUGGESTION_MUTATION,
+          variables: { input: parsedInput.data },
+          requestHeaders: {
+            Authorization: `Bearer ${trimmedToken}`,
+          },
+          signal: requestSignal,
+        });
+        return suggestionReceiptSchema.parse(result.submitSuggestion);
+      } catch (error) {
+        throw mapSuggestionError(error);
       } finally {
         cleanup();
       }
