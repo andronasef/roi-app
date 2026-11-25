@@ -123,11 +123,11 @@ Plans:
   4. A live preview with a test name and a gender toggle renders exactly what a phone would show; validation rejects any token other than `{الاسم}` and warns when only one version contains the name.
   5. An admin opens a suggestion sent from a phone, edits it, then accepts it (it joins public content) or rejects it (it leaves the queue).
 
-**Plans:** 9 plans
+**Plans:** 1/9 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 03-01-PLAN.md — Package legitimacy gate (blocking owner approval for Phase 3 npm dependencies)
+- [x] 03-01-PLAN.md — Package legitimacy gate (blocking owner approval for Phase 3 npm dependencies)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03-02-PLAN.md — Drizzle migration 0001 and backend Google-allowlisted 14-day httpOnly cookie auth
@@ -263,7 +263,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
-| 3. Admin Panel & Moderation | 0/7 | Planned | - |
+| 3. Admin Panel & Moderation | 1/9 | In Progress | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
