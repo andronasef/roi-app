@@ -6,6 +6,15 @@ export interface SyncRow {
   deletedAt: number | null;
 }
 
+/** JSON with object keys sorted at every depth, so the tie-break is independent of key order. */
+function canon(row: SyncRow): string {
+  return JSON.stringify(row, (_k, v: unknown) =>
+    v && typeof v === 'object' && !Array.isArray(v)
+      ? Object.fromEntries(Object.entries(v).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : 0)))
+      : v,
+  );
+}
+
 function pickWinner<T extends SyncRow>(a: T, b: T): T {
   if (a.updatedAt !== b.updatedAt) {
     return a.updatedAt > b.updatedAt ? a : b;
@@ -15,7 +24,7 @@ function pickWinner<T extends SyncRow>(a: T, b: T): T {
   if (aDeleted !== bDeleted) {
     return aDeleted ? a : b;
   }
-  return JSON.stringify(a) >= JSON.stringify(b) ? a : b;
+  return canon(a) >= canon(b) ? a : b;
 }
 
 /** Merge local and remote sync rows using per-record LWW with tombstone tie-break and future-clock clamping. */

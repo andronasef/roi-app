@@ -21,6 +21,27 @@ describe('mergeRecords', () => {
     expect(mergeRecords(a, b, NOW)).toEqual(mergeRecords(b, a, NOW));
   });
 
+  it('converges on a full tie regardless of per-device key order', () => {
+    // Device 1 holds x with Drizzle key order and receives y in JSON order; device 2 holds the reverse.
+    const d1 = mergeRecords(
+      [{ id: '1', updatedAt: 100, deletedAt: null, body: 'x' }],
+      [{ body: 'y', deletedAt: null, updatedAt: 100, id: '1' }],
+      NOW,
+    );
+    const d2 = mergeRecords(
+      [{ body: 'y', deletedAt: null, updatedAt: 100, id: '1' }],
+      [{ id: '1', updatedAt: 100, deletedAt: null, body: 'x' }],
+      NOW,
+    );
+    const d2b = mergeRecords(
+      [{ id: '1', updatedAt: 100, deletedAt: null, body: 'y' }],
+      [{ body: 'x', deletedAt: null, updatedAt: 100, id: '1' }],
+      NOW,
+    );
+    expect(d1[0]?.body).toBe(d2[0]?.body);
+    expect(d1[0]?.body).toBe(d2b[0]?.body);
+  });
+
   it('is idempotent: merge(a, a) equals a sorted by id', () => {
     const a: TestRow[] = [
       { id: 'z', updatedAt: 100, deletedAt: null, body: 'last' },
