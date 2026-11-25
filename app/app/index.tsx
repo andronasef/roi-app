@@ -1,19 +1,17 @@
 import { formatArabicDate, toArabicDigits, TORTURE_FIXTURES } from '@roi/shared';
-import { and, eq, isNull } from 'drizzle-orm';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { I18nManager, Pressable, Text, View } from 'react-native';
 
-import { DEV_TOOLS_ENABLED, ROUTES, SETTINGS_KEYS } from '@/constants/app';
+import { DEV_TOOLS_ENABLED, ROUTES } from '@/constants/app';
 import { THEME_OPTIONS, type ThemePreference } from '@/constants/theme';
-import { db } from '@/features/db/client';
-import { settings } from '@/features/db/schema';
 import {
   Scripture,
   ScriptureSizeSlider,
 } from '@/features/scripture/scripture';
 import { useThemePreference } from '@/hooks/use-theme-preference';
 import ar from '@/locales/ar.json';
+import { STORAGE_KEYS, storage } from '@/services/storage';
 
 const PSALM_23_1 =
   TORTURE_FIXTURES.find((fixture) => fixture.id === 'ps23-1') ??
@@ -26,14 +24,9 @@ const THEME_LABELS: Record<ThemePreference, string> = {
 };
 
 function readPreviousBootMs(): number | null {
-  const existing = db
-    .select({ value: settings.value })
-    .from(settings)
-    .where(and(eq(settings.id, SETTINGS_KEYS.LAST_BOOT), isNull(settings.deletedAt)))
-    .get();
-
-  const parsed = existing ? Number(existing.value) : NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  // Device-local diagnostic: kept in MMKV so it never enters the sync-eligible SQLite tables.
+  const stored = storage.getNumber(STORAGE_KEYS.LAST_BOOT);
+  return stored !== undefined && Number.isFinite(stored) && stored > 0 ? stored : null;
 }
 
 function formatBootTimestamp(epochMs: number): string {
@@ -48,24 +41,7 @@ export default function HomeScreen() {
   const { theme, setTheme } = useThemePreference();
 
   useEffect(() => {
-    const now = Date.now();
-    db.insert(settings)
-      .values({
-        id: SETTINGS_KEYS.LAST_BOOT,
-        value: String(now),
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null,
-      })
-      .onConflictDoUpdate({
-        target: settings.id,
-        set: {
-          value: String(now),
-          updatedAt: now,
-          deletedAt: null,
-        },
-      })
-      .run();
+    storage.set(STORAGE_KEYS.LAST_BOOT, Date.now());
   }, []);
 
   const isRtl = I18nManager.isRTL;

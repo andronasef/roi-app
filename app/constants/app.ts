@@ -4,8 +4,11 @@ export const SCHEME = appConfig.expo.scheme;
 
 export const DB_NAME = 'roi.db';
 
+/**
+ * SPIKE_WIDGET is a device-local diagnostic row (read by the Android widget to prove headless SQLite access).
+ * Exclude it from Drive sync, or delete it, when the spike is signed off.
+ */
 export const SETTINGS_KEYS = {
-  LAST_BOOT: 'last_boot',
   SPIKE_WIDGET: 'spike_widget_count',
 } as const;
 

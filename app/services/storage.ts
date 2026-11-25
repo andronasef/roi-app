@@ -12,6 +12,7 @@ export const STORAGE_KEYS = {
   THEME: 'pref.theme',
   SCRIPTURE_STEP: 'pref.scripture_step',
   SCRIPTURE_FONT: 'pref.scripture_font',
+  LAST_BOOT: 'diag.last_boot',
 } as const;
 
 function isThemePreference(value: string | undefined): value is ThemePreference {

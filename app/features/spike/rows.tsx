@@ -101,6 +101,9 @@ async function checkSqlite(): Promise<boolean> {
     .where(and(eq(settings.id, SQLITE_PROBE_ID), isNull(settings.deletedAt)))
     .get();
 
+  // Remove the probe so it never lingers in a sync-eligible table.
+  db.delete(settings).where(eq(settings.id, SQLITE_PROBE_ID)).run();
+
   if (row?.value !== value) {
     throw new Error('SQLite settings upsert readback mismatch');
   }
