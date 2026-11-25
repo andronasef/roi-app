@@ -179,6 +179,16 @@ describe('ZodValidationPipe, GoogleAuthGuard, and SuggestionsService (unit)', ()
     expect(thrown).toBeInstanceOf(HttpException);
     expect((thrown as HttpException).getStatus()).toBe(HttpStatus.TOO_MANY_REQUESTS);
 
+    // Rejecting (soft-deleting) rows must not refund the daily quota
+    sqlite.exec('UPDATE suggestions SET deleted_at = 1 WHERE google_sub = \'sub-a\'');
+    expect(() =>
+      service.submitSuggestion(
+        userA,
+        { kind: 'verse', title: 'آية ١٢', text: 'نص آية ١٢' },
+        day1Start + 22_000,
+      ),
+    ).toThrow(HttpException);
+
     // Different googleSub still succeeds
     const bReceipt = service.submitSuggestion(
       userB,

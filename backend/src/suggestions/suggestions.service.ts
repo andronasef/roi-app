@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { type SubmitSuggestionInput, uuidv7 } from '@roi/shared';
 import type Database from 'better-sqlite3';
-import { and, count, eq, gte, isNull } from 'drizzle-orm';
+import { and, count, eq, gte } from 'drizzle-orm';
 import type { GoogleUser } from '../common/google-auth.guard';
 import type { BackendDatabase } from '../db/client';
 import { DRIZZLE_DB, SQLITE_DB } from '../db/drizzle.module';
@@ -47,8 +47,8 @@ export class SuggestionsService {
         .where(
           and(
             eq(suggestions.googleSub, user.googleSub),
+            // Soft-deleted (rejected) rows still count, so moderation cannot refund the quota.
             gte(suggestions.createdAt, dayStartMs),
-            isNull(suggestions.deletedAt),
           ),
         )
         .all();
