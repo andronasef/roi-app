@@ -1,5 +1,5 @@
-import { LibraryReadyView } from '@/features/sync/LibraryReadyView';
+import { HomeScreen } from '@/features/home/HomeScreen';
 
-export default function HomeScreen() {
-  return <LibraryReadyView />;
+export default function IndexRoute() {
+  return <HomeScreen />;
 }

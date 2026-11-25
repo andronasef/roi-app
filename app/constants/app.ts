@@ -10,12 +10,30 @@ export const DB_NAME = 'roi.db';
  */
 export const SETTINGS_KEYS = {
   SPIKE_WIDGET: 'spike_widget_count',
+  USER_PROFILE: 'user_profile',
+  HOME_TILES: 'home_tiles',
+  VERSE_SEED: 'verse_seed',
 } as const;
 
 export const ROUTES = {
   home: '/',
+  settings: '/settings',
+  leyaana: '/leyaana',
+  leyaanaHistory: '/leyaana/history',
+  leyaanaBrowse: '/leyaana/browse',
   torture: '/torture',
   spike: '/spike',
+} as const;
+
+const rawRateUrl = process.env.EXPO_PUBLIC_RATE_URL?.trim() ?? '';
+const rawShareUrl = process.env.EXPO_PUBLIC_SHARE_URL?.trim() ?? '';
+const rawSupportUrl = process.env.EXPO_PUBLIC_SUPPORT_URL?.trim() ?? '';
+
+export const SUPPORT_URLS = {
+  whatsapp: 'https://wa.me/increasinglabs',
+  rate: rawRateUrl || 'https://promote.increasinglabs.com/l/roi',
+  share: rawShareUrl || 'https://promote.increasinglabs.com/l/roi',
+  support: rawSupportUrl || 'https://forms.gle/DGKYCQwtfdtGcnTH6',
 } as const;
 
 export const SPIKE_WIDGET_URL = `${SCHEME}://spike?from=widget`;

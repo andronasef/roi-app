@@ -10,6 +10,7 @@ import { Text, View } from 'react-native';
 import migrations from '@/drizzle/migrations';
 import { ERROR_CODES } from '@/constants/telemetry';
 import { db } from '@/features/db/client';
+import { ProfileProvider } from '@/features/profile/context';
 import { ScriptureSizeProvider } from '@/features/scripture/scripture';
 import { ContentGate } from '@/features/sync/ContentGate';
 import ar from '@/locales/ar.json';
@@ -51,7 +52,9 @@ export default function RootLayout() {
   return (
     <ScriptureSizeProvider>
       <ContentGate>
-        <Stack screenOptions={{ headerShown: false }} />
+        <ProfileProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </ProfileProvider>
       </ContentGate>
       <PortalHost />
     </ScriptureSizeProvider>
