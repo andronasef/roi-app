@@ -4,6 +4,7 @@ import { LogOut } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/toaster';
 import { executeAdminGraphQL } from '@/lib/graphql';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -87,8 +88,12 @@ export function AdminShell() {
               variant="ghost"
               size="sm"
               onClick={async () => {
-                await logout();
-                queryClient.clear();
+                try {
+                  await logout();
+                  queryClient.clear();
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : t.errors.networkFailure);
+                }
               }}
             >
               <LogOut aria-hidden="true" />

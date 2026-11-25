@@ -156,11 +156,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    try {
-      await adminLogoutMutation();
-    } finally {
-      setUser(null);
-    }
+    // Only drop the local session once the server cleared the cookie; on failure the
+    // error propagates and the UI stays signed in so the admin can retry (WR-02).
+    await adminLogoutMutation();
+    setUser(null);
   }, []);
 
   const handleUnauthorized = useCallback((): Promise<boolean> => {
