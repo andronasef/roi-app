@@ -59,6 +59,8 @@
     "ts-fsrs": "6.0.1"
   },
   "devDependencies": {
+    "@rnrepo/build-tools": "0.2.2",
+    "@rnrepo/expo-config-plugin": "0.3.6",
     "@types/react": "~19.3.0",
     "babel-plugin-inline-import": "3.0.0",
     "better-sqlite3": "13.2.0",

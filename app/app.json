@@ -37,6 +37,7 @@
     },
     "plugins": [
       "expo-router",
+      "@rnrepo/expo-config-plugin",
       "./plugins/with-firebase-configure",
       "./plugins/with-utf8-pods",
       "./plugins/with-xcode27-devlauncher",
