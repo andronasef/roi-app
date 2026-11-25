@@ -586,11 +586,11 @@ export function toggleFavorite(
 | A2 | Ro'i store rate URL (`https://promote.increasinglabs.com/l/roi`) and Google Form support URL (`https://forms.gle/DGKYCQwtfdtGcnTH6`) are the intended defaults until store IDs exist | Architecture Patterns (Pattern 6) | Easy config update in `app/constants/app.ts` / `EXPO_PUBLIC_*` env vars |
 | A3 | `GoogleSignin.configure({ scopes: ['https://www.googleapis.com/auth/drive.appdata'] })` + `signIn()` on iOS/Android returns both `idToken` and `drive.appdata` consent in one prompt when `webClientId` + `iosClientId` are set | Architecture Patterns (Pattern 5) | If iOS/Android separates incremental scopes, calling `addScopes({ scopes: ['https://www.googleapis.com/auth/drive.appdata'] })` immediately after `signIn()` handles it cleanly |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Native dev-client rebuild timing for `expo-clipboard@~58.0.4`:**
    - What we know: `expo-clipboard@~58.0.4` is `[OK]` and not yet in `app/ios/Podfile.lock` or `app/android/settings.gradle`. `react-native`'s legacy `Clipboard` module IS compiled into RN 0.88.1 (`RCTClipboard` / `ClipboardModule`) with a deprecation warning.
-   - Recommendation: Install `expo-clipboard@~58.0.4` per `.claude/CLAUDE.md:94` and include a native prebuild + simulator/device rebuild step in the Phase 4 verification plan (so the clipboard module is cleanly tested on real simulator/device).
+   - **RESOLVED:** Install `expo-clipboard@~58.0.4` after Wave 1 owner package approval, run `CI=1 bunx --cwd app expo prebuild --clean --no-install` during Wave 2 so native projects (`app/ios`, `app/android`) include `expo-clipboard`, and run the iOS/Android dev-client rebuild at end-of-phase device verification.
 
 ## Environment Availability
 
