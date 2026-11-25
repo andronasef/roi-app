@@ -249,7 +249,7 @@ export function ItemEditorRoute({ kind }: { kind: ContentKind }) {
   const catalog = useAdminCatalog(kind);
   const save = useSaveContent(kind);
   const back = () => navigate(`/${route}`);
-  // Version the form was first loaded from; a refetch after a conflict must not silently "rebase" the draft.
+  // Version the next save is based on: set when the form loads, and rebased only after a conflict was shown to the admin.
   const loaded = useRef<{ id: string; version: number } | null>(null);
 
   if (id && catalog.isError) {
@@ -285,7 +285,10 @@ export function ItemEditorRoute({ kind }: { kind: ContentKind }) {
           await save.mutateAsync({ id, payload, expectedVersion: loaded.current?.version });
         } catch (error) {
           if (isContentConflict(error)) {
-            void catalog.refetch();
+            const { data } = await catalog.refetch();
+            const latest = data?.find((i) => i.id === id);
+            // Rebase so the next explicit save overwrites the other admin's edit instead of conflicting forever.
+            if (id && latest) loaded.current = { id, version: latest.version };
             throw new Error(t.errors.contentConflict);
           }
           throw error;

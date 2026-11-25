@@ -67,7 +67,7 @@ const AR_COPY = {
     sessionExpired401:
       'انتهت صلاحية الجلسة — مسودتك محفوظة هنا. سجّل الدخول بحساب جوجل للاستمرار بدون فقدان التعديلات.',
     contentConflict:
-      'تم تعديل هذا العنصر أو حذفه بواسطة مشرف آخر. أعدنا تحميل القائمة — راجع آخر نسخة ثم أعد المحاولة.',
+      'تم تعديل هذا العنصر أو حذفه بواسطة مشرف آخر. إن حفظت مرة أخرى فسيحل تعديلك محل تعديله — لمراجعة آخر نسخة أولاً، انسخ مسودتك ثم أعد فتح الصفحة.',
     concurrentModeration409:
       'تمت مراجعة هذا الاقتراح بالفعل بواسطة مشرف آخر. حدّث القائمة لعرض الحالة الحالية.',
     networkFailure:
@@ -248,7 +248,7 @@ const EN_COPY: AdminCopy = {
     sessionExpired401:
       'Your admin session expired — your unsaved edits are preserved. Sign in with Google below to continue saving.',
     contentConflict:
-      'This item was edited or deleted by another admin. The list was reloaded; review the latest version and try again.',
+      'This item was edited or deleted by another admin. Saving again will overwrite their change with your draft — to review the latest version first, copy your draft and reopen the page.',
     concurrentModeration409:
       'This suggestion was already moderated by another admin. Refresh the queue to see its latest status.',
     networkFailure:
