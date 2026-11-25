@@ -128,7 +128,7 @@
 
 ### Admin Panel (ADM)
 
-- [ ] **ADM-01**: Admin signs in with Google; only allowlisted emails get in (multiple admins), with a short-lived session
+- [x] **ADM-01**: Admin signs in with Google; only allowlisted emails get in (multiple admins), with a short-lived session
 - [ ] **ADM-02**: Admin can add, edit and soft-delete verses, names of God and blessings
 - [ ] **ADM-03**: A "same text for male/female" switch shows side-by-side fields when off; both are required when off
 - [ ] **ADM-04**: Admin inserts `{الاسم}` through an atomic, draggable chip and never sees the raw token
@@ -191,7 +191,7 @@
 | BE-07 | Phase 2 | Complete |
 | HOME-06 | Phase 2 | Complete |
 | HOME-07 | Phase 2 | Complete |
-| ADM-01 | Phase 3 | Pending |
+| ADM-01 | Phase 3 | Complete |
 | ADM-02 | Phase 3 | Pending |
 | ADM-03 | Phase 3 | Pending |
 | ADM-04 | Phase 3 | Pending |
