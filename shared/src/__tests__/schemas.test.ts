@@ -59,6 +59,21 @@ describe('personalizedTextSchema', () => {
     expect(personalizedTextSchema.safeParse({ text: '> اقتباس\n\n**نص** و 1 < 2' }).success).toBe(true);
   });
 
+  it('rejects reference-style links, definitions, bare URLs and bare emails', () => {
+    for (const bad of [
+      '[click here][1]\n\n[1]: https://evil.example',
+      'see [x][]',
+      '[1]:<https://evil.example>',
+      '  [ref]: javascript:alert(1)',
+      'زوروا https://evil.example الآن',
+      'زوروا www.evil.example',
+      'راسلنا على a@evil.example',
+    ]) {
+      expect(personalizedTextSchema.safeParse({ text: bad }).success, bad).toBe(false);
+    }
+    expect(personalizedTextSchema.safeParse({ text: 'مزمور [٢٣] ثم **اقرأ** @ المساء' }).success).toBe(true);
+  });
+
   it('accepts plain Arabic text and text containing {الاسم}', () => {
     expect(personalizedTextSchema.safeParse({ text: 'يا {الاسم}، الرب راعيك' }).success).toBe(true);
     expect(

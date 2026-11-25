@@ -13,9 +13,16 @@ function hasOnlyAllowedBraceToken(value: string): boolean {
 
 const MARKDOWN_SUBSET_ERROR = 'الروابط والصور وأكواد HTML غير مسموح بها في النص';
 
+/**
+ * Anything a GFM renderer could turn into a tappable link or remote resource: inline/reference
+ * links and definitions, images, raw HTML, bare http(s)/www URLs and bare emails.
+ */
+const UNSAFE_MARKDOWN =
+  /\]\(|\]\s?\[|!\[|^\s{0,3}\[[^\]]+\]:|<[a-z/!?]|https?:\/\/|www\.|[^\s@]+@[^\s@]+\.[^\s@]/im;
+
 /** Rejects Markdown links/images and raw HTML so public content can never load or link remote resources. */
 function hasNoLinksImagesOrHtml(value: string): boolean {
-  return !/\]\(|!\[|<[a-z/!?]/i.test(value);
+  return !UNSAFE_MARKDOWN.test(value);
 }
 
 const titleOrRefSchema = z.string().trim().min(1, EMPTY_TEXT_ERROR).max(200);
