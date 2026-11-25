@@ -169,6 +169,22 @@ describe('content item, snapshot envelope, and delta schemas', () => {
     expect(verseItemSchema.safeParse({ ...validVerse, text: 'يا {user}' }).success).toBe(false);
   });
 
+  it('does not apply the write-only link/HTML rule on the read path (legacy rows must not break sync)', () => {
+    const legacy = '[x](https://old.example) <b>قديم</b>';
+    expect(verseItemSchema.safeParse({ ...validVerse, text: legacy }).success).toBe(true);
+    expect(nameOfGodItemSchema.safeParse({ ...validName, text: legacy }).success).toBe(true);
+    expect(blessingItemSchema.safeParse({ ...validBlessing, text: legacy }).success).toBe(true);
+    expect(
+      contentDeltaResponseSchema.safeParse({
+        contentVersion: 3,
+        verses: [{ ...validVerse, text: legacy, deletedAt: 1_795_553_000_000 }],
+        namesOfGod: [],
+        blessings: [],
+      }).success,
+    ).toBe(true);
+    expect(personalizedTextSchema.safeParse({ text: legacy }).success).toBe(false);
+  });
+
   it('validates createSnapshotEnvelopeSchema, snapshotEnvelopeSchema, and contentDeltaResponseSchema', () => {
     const verseEnvelopeSchema = createSnapshotEnvelopeSchema(verseItemSchema);
     const envelope = {

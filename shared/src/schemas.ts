@@ -37,22 +37,27 @@ export const syncRowSchema = z.object({
   deletedAt: epochMsSchema.nullable(),
 });
 
-/** Schema for personalized Arabic content allowing only {الاسم} as a brace token. */
+const storedTextSchema = z
+  .string()
+  .min(1, EMPTY_TEXT_ERROR)
+  .max(5000)
+  .refine((v) => v.trim().length > 0, EMPTY_TEXT_ERROR)
+  .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR);
+const storedTextFemaleSchema = z.string().max(5000).refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR);
+
+/**
+ * Read-path text shape (snapshots, deltas, mobile parse): structural checks only. The link/HTML
+ * rule is write-only so one legacy row can never make a delta or snapshot rebuild throw.
+ */
+const storedTextShape = {
+  text: storedTextSchema,
+  textFemale: storedTextFemaleSchema.nullable().optional(),
+};
+
+/** Write-path schema for personalized Arabic content (admin mutations, accept, submit): also rejects links/images/HTML. */
 export const personalizedTextSchema = z.object({
-  text: z
-    .string()
-    .min(1, EMPTY_TEXT_ERROR)
-    .max(5000)
-    .refine((v) => v.trim().length > 0, EMPTY_TEXT_ERROR)
-    .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR)
-    .refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR),
-  textFemale: z
-    .string()
-    .max(5000)
-    .refine(hasOnlyAllowedBraceToken, BRACE_TOKEN_ERROR)
-    .refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR)
-    .nullable()
-    .optional(),
+  text: storedTextSchema.refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR),
+  textFemale: storedTextFemaleSchema.refine(hasNoLinksImagesOrHtml, MARKDOWN_SUBSET_ERROR).nullable().optional(),
 });
 
 /** Title + single text (no male/female variant, no personalization): names of God and blessings. */
@@ -66,7 +71,7 @@ export const snapshotTypeSchema = z.enum(['verses', 'names_of_god', 'blessings']
 
 /** Public verse item contract shared between backend snapshots/deltas and mobile SQLite. */
 export const verseItemSchema = syncRowSchema
-  .extend(personalizedTextSchema.shape)
+  .extend(storedTextShape)
   .extend({
     ref: titleOrRefSchema,
     version: versionSchema,
@@ -76,7 +81,7 @@ export const verseItemSchema = syncRowSchema
 
 /** Public Name of God item contract shared between backend snapshots/deltas and mobile SQLite. */
 export const nameOfGodItemSchema = syncRowSchema
-  .extend(plainTextSchema.shape)
+  .extend({ text: storedTextSchema })
   .extend({
     title: titleOrRefSchema,
     version: versionSchema,
@@ -86,7 +91,7 @@ export const nameOfGodItemSchema = syncRowSchema
 
 /** Public blessing item contract shared between backend snapshots/deltas and mobile SQLite. */
 export const blessingItemSchema = syncRowSchema
-  .extend(plainTextSchema.shape)
+  .extend({ text: storedTextSchema })
   .extend({
     title: titleOrRefSchema,
     verseRef: optionalVerseRefSchema,
