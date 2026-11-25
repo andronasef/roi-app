@@ -4,7 +4,7 @@ import {
   THEME_DEFAULT,
   THEME_OPTIONS,
   type ThemePreference,
-} from '@/constants/theme';
+} from '../constants/theme';
 
 export const storage = createMMKV({ id: 'roi-preferences' });
 
@@ -14,6 +14,8 @@ export const STORAGE_KEYS = {
   SCRIPTURE_FONT: 'pref.scripture_font',
   LAST_BOOT: 'diag.last_boot',
   TELEMETRY_CONSENT: 'pref.telemetry_consent',
+  ONBOARDING_COMPLETED: 'pref.onboarding_completed',
+  HOME_INTRO_DISMISSED: 'pref.home_intro_dismissed',
 } as const;
 
 function isThemePreference(value: string | undefined): value is ThemePreference {
@@ -51,4 +53,20 @@ export function getScriptureFont(): string | undefined {
 
 export function setScriptureFont(fontFamily: string): void {
   storage.set(STORAGE_KEYS.SCRIPTURE_FONT, fontFamily);
+}
+
+export function getOnboardingCompleted(): boolean {
+  return storage.getBoolean(STORAGE_KEYS.ONBOARDING_COMPLETED) ?? false;
+}
+
+export function setOnboardingCompleted(completed: boolean): void {
+  storage.set(STORAGE_KEYS.ONBOARDING_COMPLETED, completed);
+}
+
+export function getHomeIntroDismissed(): boolean {
+  return storage.getBoolean(STORAGE_KEYS.HOME_INTRO_DISMISSED) ?? false;
+}
+
+export function setHomeIntroDismissed(dismissed: boolean): void {
+  storage.set(STORAGE_KEYS.HOME_INTRO_DISMISSED, dismissed);
 }

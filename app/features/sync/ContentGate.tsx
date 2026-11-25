@@ -3,7 +3,9 @@ import * as Network from 'expo-network';
 import { useSegments } from 'expo-router';
 import { WifiOff } from 'lucide-react-native';
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -100,6 +102,17 @@ function resolveInitialStage(completed: readonly SnapshotType[]): SnapshotType {
 }
 
 /**
+ * Incremented whenever first-download completes or a silent 6h delta sync applies updates,
+ * letting mounted screens re-read SQLite without restarting.
+ */
+export const ContentRefreshContext = createContext<number>(0);
+
+/** Read the monotonic content-refresh tick emitted by ContentGate. */
+export function useContentVersion(): number {
+  return useContext(ContentRefreshContext);
+}
+
+/**
  * Root content gate:
  * - Passes through immediately when DEV_TOOLS_ENABLED && segments[0] === '(dev)' (D-13).
  * - Launches offline immediately once lastContentVersion > 0 and triggers silent 6h delta sync when online (D-03).
@@ -114,6 +127,7 @@ export function ContentGate({ children }: { children: ReactNode }) {
   const [lastContentVersion, setLastContentVersion] = useState<number>(
     () => readSyncState(db).lastContentVersion,
   );
+  const [contentVersionTick, setContentVersionTick] = useState(0);
   const [downloadStatus, setDownloadStatus] = useState<DownloadStatus>('idle');
   const [activeStage, setActiveStage] = useState<SnapshotType>('verses');
 
@@ -159,6 +173,7 @@ export function ContentGate({ children }: { children: ReactNode }) {
         // Telemetry failure must never block completion transition.
       }
       setLastContentVersion(result.contentVersion);
+      setContentVersionTick((tick) => tick + 1);
       setDownloadStatus('idle');
     } catch {
       const latestNet = await Network.getNetworkStateAsync().catch(() => null);
@@ -238,7 +253,9 @@ export function ContentGate({ children }: { children: ReactNode }) {
       isOnline: true,
     })
       .then((result) => {
-        if (result.status === 'reset') {
+        if (result.status === 'updated') {
+          setContentVersionTick((tick) => tick + 1);
+        } else if (result.status === 'reset') {
           // Server lineage was rewound; the auto-start effect re-runs first download from version 0.
           setLastContentVersion(0);
         }
@@ -286,7 +303,11 @@ export function ContentGate({ children }: { children: ReactNode }) {
   }));
 
   if (isBypassed) {
-    return <>{children}</>;
+    return (
+      <ContentRefreshContext.Provider value={contentVersionTick}>
+        {children}
+      </ContentRefreshContext.Provider>
+    );
   }
 
   const mode = deriveGateMode({
@@ -296,7 +317,11 @@ export function ContentGate({ children }: { children: ReactNode }) {
   });
 
   if (mode === 'ready') {
-    return <>{children}</>;
+    return (
+      <ContentRefreshContext.Provider value={contentVersionTick}>
+        {children}
+      </ContentRefreshContext.Provider>
+    );
   }
 
   if (mode === 'offline_empty') {

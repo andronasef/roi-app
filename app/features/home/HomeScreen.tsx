@@ -1,6 +1,8 @@
 import { personalize } from '@roi/shared';
 import { Link, useFocusEffect } from 'expo-router';
 import {
+  ArrowDown,
+  ArrowUp,
   BookOpen,
   HeartHandshake,
   NotebookPen,
@@ -8,8 +10,8 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react-native';
-import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Pressable, ScrollView, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Icon } from '../../components/ui/icon';
@@ -17,6 +19,10 @@ import { Text } from '../../components/ui/text';
 import { DEV_TOOLS_ENABLED, ROUTES } from '../../constants/app';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constants/theme';
 import ar from '../../locales/ar.json';
+import {
+  getHomeIntroDismissed,
+  setHomeIntroDismissed,
+} from '../../services/storage';
 import { db, deviceClock } from '../db/client';
 import {
   getOrAssignPeriodVerse,
@@ -24,12 +30,15 @@ import {
 } from '../leyaana/assignments';
 import { useProfile } from '../profile/context';
 import {
+  IMPLEMENTED_HOME_TOOLS,
+  LAST_VISIBLE_TOOL_ERROR,
   getVisibleHomeTools,
   readOrCreateVerseSeed,
   type HomeToolId,
 } from '../profile/repository';
 import { uiCopy } from '../profile/ui-copy';
 import { Scripture } from '../scripture/scripture';
+import { useContentVersion } from '../sync/ContentGate';
 
 interface HomeToolDisplayMeta {
   title: string;
@@ -40,8 +49,8 @@ interface HomeToolDisplayMeta {
 
 const HOME_TOOL_META: Record<HomeToolId, HomeToolDisplayMeta> = {
   leyaana: {
-    title: 'ليا أنا',
-    subtitle: 'آية الأسبوع والشهر، أسماء الله، البركات',
+    title: ar.leyaanaTitle,
+    subtitle: ar.leyaanaSubtitle,
     icon: Sparkles,
     route: ROUTES.leyaana,
   },
@@ -72,13 +81,23 @@ function loadWeeklyVerse(): VerseAssignmentRow | null {
 
 /**
  * Personalized أدواتك Home screen (HOME-03, HOME-05, D-05..D-07):
- * Renders gender-aware greeting, weekly verse peek into ليا أنا, and visible tool tiles.
+ * - Gender-aware personalized greeting and settings gear
+ * - One-time dismissible MMKV intro card
+ * - Compact weekly verse peek synced on focus and silent 6h delta updates
+ * - أدواتك grid (Phase 4 renders ليا أنا only) with inline تعديل الأدوات edit mode
  */
 export function HomeScreen() {
-  const { profile, tiles, refreshProfile } = useProfile();
+  const { profile, tiles, toggleTile, reorderTile, refreshProfile } =
+    useProfile();
+  const contentVersion = useContentVersion();
   const [weeklyVerse, setWeeklyVerse] = useState<VerseAssignmentRow | null>(() =>
     loadWeeklyVerse(),
   );
+  const [introDismissed, setIntroDismissed] = useState<boolean>(() =>
+    getHomeIntroDismissed(),
+  );
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -87,17 +106,54 @@ export function HomeScreen() {
     }, [refreshProfile]),
   );
 
+  useEffect(() => {
+    setWeeklyVerse(loadWeeklyVerse());
+  }, [contentVersion]);
+
+  const handleDismissIntro = useCallback(() => {
+    setHomeIntroDismissed(true);
+    setIntroDismissed(true);
+  }, []);
+
+  const handleToggleEditMode = useCallback(() => {
+    setIsEditing((prev) => !prev);
+    setEditError(null);
+  }, []);
+
+  const handleToggleVisibility = useCallback(
+    (toolId: HomeToolId) => {
+      const result = toggleTile(toolId);
+      if (!result.ok) {
+        setEditError(result.message || LAST_VISIBLE_TOOL_ERROR);
+      } else {
+        setEditError(null);
+      }
+    },
+    [toggleTile],
+  );
+
+  const handleMoveTile = useCallback(
+    (toolId: HomeToolId, direction: 'up' | 'down') => {
+      setEditError(null);
+      reorderTile(toolId, direction, IMPLEMENTED_HOME_TOOLS);
+    },
+    [reorderTile],
+  );
+
   const greetingText = profile.name.trim()
     ? `${uiCopy('homeGreetingPrefix', profile.gender)}${profile.name.trim()}`
     : uiCopy('homeGreetingNeutral', profile.gender);
 
   const visibleTools = getVisibleHomeTools(tiles);
+  const editableImplementedTools = [...tiles]
+    .filter((tile) => IMPLEMENTED_HOME_TOOLS.has(tile.id))
+    .sort((a, b) => a.order - b.order);
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
       <ScrollView
         className="flex-1 bg-background"
-        contentContainerClassName="px-6 py-6 gap-6"
+        contentContainerClassName="gap-6 px-6 py-6"
       >
         <View className="flex-row items-center justify-between gap-4">
           <View className="flex-1 gap-1">
@@ -124,6 +180,31 @@ export function HomeScreen() {
           </Link>
         </View>
 
+        {!introDismissed ? (
+          <View className="gap-4 rounded-2xl border border-border bg-card p-4">
+            <Text
+              accessibilityRole="header"
+              maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+              className="text-start text-xl font-bold text-foreground"
+            >
+              {uiCopy('homeIntroHeading', profile.gender)}
+            </Text>
+            <Text className="text-start text-base text-muted-foreground">
+              {uiCopy('homeIntroBody', profile.gender)}
+            </Text>
+            <Pressable
+              onPress={handleDismissIntro}
+              accessibilityRole="button"
+              accessibilityLabel={uiCopy('homeIntroDismiss', profile.gender)}
+              className="min-h-[44px] min-w-[44px] items-center justify-center self-start rounded-xl bg-primary px-4 py-2"
+            >
+              <Text className="text-sm font-bold text-primary-foreground">
+                {uiCopy('homeIntroDismiss', profile.gender)}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
+
         <Link href={ROUTES.leyaana} asChild>
           <Pressable
             accessibilityRole="button"
@@ -131,7 +212,7 @@ export function HomeScreen() {
             className="min-h-[44px] gap-2 rounded-2xl border border-border bg-card p-4"
           >
             <Text className="text-start text-sm font-bold text-accent">
-              آية الأسبوع
+              {ar.weeklyVerseBadge}
             </Text>
             {weeklyVerse ? (
               <>
@@ -157,45 +238,148 @@ export function HomeScreen() {
         </Link>
 
         <View className="gap-4">
-          <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center justify-between gap-2">
             <Text
               accessibilityRole="header"
               maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
               className="text-start text-xl font-bold text-foreground"
             >
-              أدواتك
+              {ar.homeTitle}
             </Text>
+            <Pressable
+              onPress={handleToggleEditMode}
+              accessibilityRole="button"
+              accessibilityLabel={
+                isEditing ? ar.homeSaveOrder : ar.homeEditTools
+              }
+              className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-card px-4 py-2"
+            >
+              <Text className="text-sm font-bold text-foreground">
+                {isEditing ? ar.homeSaveOrder : ar.homeEditTools}
+              </Text>
+            </Pressable>
           </View>
 
-          <View className="gap-4">
-            {visibleTools.map((tile) => {
-              const meta = HOME_TOOL_META[tile.id];
-              return (
-                <Link key={tile.id} href={meta.route} asChild>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={meta.title}
-                    className="min-h-[44px] flex-row items-center gap-4 rounded-2xl border border-border bg-card p-6"
+          {isEditing && editError ? (
+            <Text className="text-start text-sm text-destructive">
+              {editError}
+            </Text>
+          ) : null}
+
+          {isEditing ? (
+            <View className="gap-4">
+              {editableImplementedTools.map((tile, index) => {
+                const meta = HOME_TOOL_META[tile.id];
+                const isFirst = index === 0;
+                const isLast = index === editableImplementedTools.length - 1;
+                return (
+                  <View
+                    key={tile.id}
+                    className="flex-row items-center justify-between gap-2 rounded-2xl border border-border bg-card p-4"
                   >
-                    <View className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-muted">
-                      <Icon as={meta.icon} size={24} className="text-accent" />
+                    <View className="flex-1 flex-row items-center gap-3">
+                      <View className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-muted">
+                        <Icon
+                          as={meta.icon}
+                          size={22}
+                          className="text-accent"
+                        />
+                      </View>
+                      <View className="flex-1 gap-1">
+                        <Text
+                          maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                          className="text-start text-xl font-bold text-foreground"
+                        >
+                          {meta.title}
+                        </Text>
+                        <Text className="text-start text-sm text-muted-foreground">
+                          {meta.subtitle}
+                        </Text>
+                      </View>
                     </View>
-                    <View className="flex-1 gap-1">
-                      <Text
-                        maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                        className="text-start text-xl font-bold text-foreground"
+
+                    <View className="flex-row items-center gap-1">
+                      <Pressable
+                        onPress={() => handleMoveTile(tile.id, 'up')}
+                        disabled={isFirst}
+                        accessibilityRole="button"
+                        accessibilityLabel="حرّك الأداة لفوق"
+                        accessibilityState={{ disabled: isFirst }}
+                        className={`min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-background ${
+                          isFirst ? 'opacity-40' : ''
+                        }`}
                       >
-                        {meta.title}
-                      </Text>
-                      <Text className="text-start text-sm text-muted-foreground">
-                        {meta.subtitle}
-                      </Text>
+                        <Icon
+                          as={ArrowUp}
+                          size={18}
+                          className="text-foreground"
+                        />
+                      </Pressable>
+                      <Pressable
+                        onPress={() => handleMoveTile(tile.id, 'down')}
+                        disabled={isLast}
+                        accessibilityRole="button"
+                        accessibilityLabel="حرّك الأداة لتحت"
+                        accessibilityState={{ disabled: isLast }}
+                        className={`min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-background ${
+                          isLast ? 'opacity-40' : ''
+                        }`}
+                      >
+                        <Icon
+                          as={ArrowDown}
+                          size={18}
+                          className="text-foreground"
+                        />
+                      </Pressable>
+                      <View className="min-h-[44px] min-w-[44px] items-center justify-center">
+                        <Switch
+                          value={tile.visible}
+                          onValueChange={() => handleToggleVisibility(tile.id)}
+                          accessibilityRole="switch"
+                          accessibilityLabel="إظهار أو إخفاء الأداة"
+                          accessibilityState={{ checked: tile.visible }}
+                        />
+                      </View>
                     </View>
-                  </Pressable>
-                </Link>
-              );
-            })}
-          </View>
+                  </View>
+                );
+              })}
+            </View>
+          ) : (
+            <View className="gap-4">
+              {visibleTools.map((tile) => {
+                const meta = HOME_TOOL_META[tile.id];
+                return (
+                  <Link key={tile.id} href={meta.route} asChild>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={meta.title}
+                      className="min-h-[44px] flex-row items-center gap-4 rounded-2xl border border-border bg-card p-6"
+                    >
+                      <View className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-muted">
+                        <Icon
+                          as={meta.icon}
+                          size={24}
+                          className="text-accent"
+                        />
+                      </View>
+                      <View className="flex-1 gap-1">
+                        <Text
+                          maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                          className="text-start text-xl font-bold text-foreground"
+                        >
+                          {meta.title}
+                        </Text>
+                        <Text className="text-start text-sm text-muted-foreground">
+                          {meta.subtitle}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  </Link>
+                );
+              })}
+            </View>
+          )}
         </View>
 
         {DEV_TOOLS_ENABLED ? (
