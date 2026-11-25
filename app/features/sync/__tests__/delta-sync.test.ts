@@ -337,4 +337,32 @@ describe('silent 6-hour throttled background delta sync', () => {
       sqlite.close();
     }
   });
+
+  it('rewinds the cursor when the server content version is behind the client (restored backup)', async () => {
+    const { sqlite, db } = openMigratedMemoryDb();
+    try {
+      seedInitialLibrary(db, BASE_MS);
+      const api: SyncApiClient = {
+        fetchSnapshot: vi.fn(),
+        fetchContentDelta: vi.fn().mockResolvedValue({
+          contentVersion: 0,
+          verses: [],
+          namesOfGod: [],
+          blessings: [],
+        } satisfies ContentDeltaResponse),
+      };
+
+      const result = await runDeltaSyncIfDue({
+        db,
+        clock: createFixedClock({ value: BASE_MS + DELTA_SYNC_THROTTLE_MS }),
+        api,
+        isOnline: true,
+      });
+
+      expect(result).toEqual({ status: 'reset', serverContentVersion: 0 });
+      expect(readSyncState(db).lastContentVersion).toBe(0);
+    } finally {
+      sqlite.close();
+    }
+  });
 });

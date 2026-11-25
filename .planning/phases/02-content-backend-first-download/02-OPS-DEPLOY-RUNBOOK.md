@@ -48,6 +48,7 @@ Run inside the running container (`/app/backend`, running as non-root `node`):
    node dist/restore.cjs --backup /data/backups/<verified-backup>.sqlite --db /data/roi-content.sqlite
    ```
    Verifies backup `PRAGMA integrity_check === 'ok'`, atomically replaces `roi-content.sqlite`, and removes stale `-wal`/`-shm` sidecars before starting the API container again.
+   **Version lineage:** a restore rewinds `content_version` to the backup's value. The mobile delta sync detects a client that is ahead of the server and re-runs the first download, but edits made after the restore reuse version numbers other clients may already hold, so keep restores rare and finish them before accepting new admin edits.
 
 ---
 

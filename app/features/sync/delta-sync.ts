@@ -10,6 +10,7 @@ export type DeltaSyncResult =
   | { status: 'skipped'; reason: 'not_initialized' | 'offline' | 'throttled' }
   | { status: 'up_to_date'; contentVersion: number }
   | { status: 'updated'; contentVersion: number }
+  | { status: 'reset'; serverContentVersion: number }
   | { status: 'failed' };
 
 export interface RunDeltaSyncParams {
@@ -68,6 +69,15 @@ export async function runDeltaSyncIfDue({
         });
       });
       return { status: 'updated', contentVersion: delta.contentVersion };
+    }
+
+    if (delta.contentVersion < syncState.lastContentVersion) {
+      // Server is behind this client (e.g. restored from an older backup): the version lineage was
+      // rewound, so deltas can never catch up. Rewind the cursor so the gate re-runs first download.
+      db.transaction((tx) => {
+        upsertSyncMeta(tx, 0, checkedAt);
+      });
+      return { status: 'reset', serverContentVersion: delta.contentVersion };
     }
 
     db.transaction((tx) => {

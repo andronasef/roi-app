@@ -142,6 +142,10 @@ if (isCliEntrypoint()) {
   try {
     const result = runRestore(parseRestoreCliArgs(process.argv.slice(2)));
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    process.stderr.write(
+      'Reminder: content_version is rewound to the backup. Clients ahead of it re-download from scratch; ' +
+        'new edits reuse version numbers clients may have seen. Start the API only after the restore is final.\n',
+    );
   } catch (error) {
     process.stderr.write(
       `Restore failed: ${error instanceof Error ? error.message : String(error)}\n`,

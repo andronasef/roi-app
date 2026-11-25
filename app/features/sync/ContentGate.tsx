@@ -226,6 +226,11 @@ export function ContentGate({ children }: { children: ReactNode }) {
       clock: deviceClock,
       api: createSyncApiClient(),
       isOnline: true,
+    }).then((result) => {
+      if (result.status === 'reset') {
+        // Server lineage was rewound; the auto-start effect re-runs first download from version 0.
+        setLastContentVersion(0);
+      }
     });
   }, [isBypassed, lastContentVersion, isOnline]);
 
