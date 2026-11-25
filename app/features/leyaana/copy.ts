@@ -53,7 +53,11 @@ export function formatVerseForCopy(
   return ref ? `${body}\n— ${ref}` : body;
 }
 
-/** Render a Name of God or Blessing with Markdown stripped and optional verseRef appended. */
+/**
+ * Render a Name of God or Blessing with Markdown stripped and optional verseRef appended.
+ * Pass `plain: true` for personal items: their text is user-typed plain text, so it is copied
+ * verbatim (no Markdown stripping, no personalization).
+ */
 export function formatArticleForCopy(
   item: {
     title: string;
@@ -62,12 +66,13 @@ export function formatArticleForCopy(
     verseRef?: string | null;
   },
   profile: PersonalizeProfile,
+  options: { plain?: boolean } = {},
 ): string {
-  const personalized = personalize(
-    { text: item.text, textFemale: item.textFemale },
-    profile,
-  );
-  const body = stripMarkdownForCopy(personalized);
+  const body = options.plain
+    ? item.text.trim()
+    : stripMarkdownForCopy(
+        personalize({ text: item.text, textFemale: item.textFemale }, profile),
+      );
   const parts: string[] = [];
   const title = item.title.trim();
   if (title) {

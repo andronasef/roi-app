@@ -430,4 +430,14 @@ describe('leyaana catalog, favorites hydration, and copy helpers', () => {
       'الراعي الصالح\n\nوعد\nالرب يرعاكي يا مريم دائماً.\n\n— مزمور ٢٣: ١',
     );
   });
+
+  it('copies personal plain text verbatim when plain is set', () => {
+    expect(
+      formatArticleForCopy(
+        { title: 'شكر', text: '1. شكراً\n- *ربنا* يبارك', verseRef: null },
+        { name: 'مريم', gender: 'female' },
+        { plain: true },
+      ),
+    ).toBe('شكر\n\n1. شكراً\n- *ربنا* يبارك');
+  });
 });

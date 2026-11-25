@@ -433,8 +433,10 @@ export function LeyaanaScreen() {
       text: string;
       textFemale?: string | null;
       verseRef?: string | null;
-    }) => {
-      void copyTextToClipboard(formatArticleForCopy(item, profile));
+    }, plain = false) => {
+      void copyTextToClipboard(
+        formatArticleForCopy(item, profile, { plain }),
+      );
     },
     [copyTextToClipboard, profile],
   );
@@ -468,12 +470,15 @@ export function LeyaanaScreen() {
         });
         return;
       }
-      handleCopyArticle({
-        title: item.title,
-        text: item.text,
-        textFemale: null,
-        verseRef: item.verseRef,
-      });
+      handleCopyArticle(
+        {
+          title: item.title,
+          text: item.text,
+          textFemale: null,
+          verseRef: item.verseRef,
+        },
+        true,
+      );
     },
     [handleCopyArticle, handleCopyVerse],
   );
@@ -894,12 +899,15 @@ export function LeyaanaScreen() {
                         textFemale: item.textFemale,
                       });
                     } else {
-                      handleCopyArticle({
-                        title: item.title,
-                        text: item.text,
-                        textFemale: item.textFemale,
-                        verseRef: item.verseRef,
-                      });
+                      handleCopyArticle(
+                        {
+                          title: item.title,
+                          text: item.text,
+                          textFemale: item.textFemale,
+                          verseRef: item.verseRef,
+                        },
+                        item.source === 'personal',
+                      );
                     }
                   };
 
@@ -944,7 +952,9 @@ export function LeyaanaScreen() {
                               numberOfLines={3}
                               className="text-start text-base text-foreground"
                             >
-                              {stripMarkdownForCopy(personalized)}
+                              {item.source === 'personal'
+                                ? item.text
+                                : stripMarkdownForCopy(personalized)}
                             </Text>
                           </>
                         )}

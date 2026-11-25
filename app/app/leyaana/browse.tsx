@@ -189,7 +189,11 @@ export default function LeyaanaBrowseRoute() {
 
   const handleCopyItem = useCallback(
     (item: BrowseArticle) => {
-      void copyTextToClipboard(formatArticleForCopy(item, profile));
+      void copyTextToClipboard(
+        formatArticleForCopy(item, profile, {
+          plain: item.source === 'personal',
+        }),
+      );
     },
     [copyTextToClipboard, profile],
   );
@@ -227,6 +231,7 @@ export default function LeyaanaBrowseRoute() {
             verseRef: item.verseRef,
           },
           profile,
+          { plain: true },
         ),
       );
     },
@@ -421,15 +426,21 @@ export default function LeyaanaBrowseRoute() {
                 accessibilityRole="button"
                 accessibilityLabel={`${selectedItem.title} — ${uiCopy('leyaanaLongPressHint', profile.gender)}`}
               >
-                <MarkdownBody
-                  markdown={personalize(
-                    {
-                      text: selectedItem.text,
-                      textFemale: selectedItem.textFemale,
-                    },
-                    profile,
-                  )}
-                />
+                {selectedItem.source === 'personal' ? (
+                  <Text className="text-start text-base leading-7 text-foreground">
+                    {selectedItem.text}
+                  </Text>
+                ) : (
+                  <MarkdownBody
+                    markdown={personalize(
+                      {
+                        text: selectedItem.text,
+                        textFemale: selectedItem.textFemale,
+                      },
+                      profile,
+                    )}
+                  />
+                )}
               </Pressable>
 
               <View className="flex-row items-center justify-between gap-2 border-t border-border pt-3">
