@@ -9,8 +9,10 @@ COPY package.json bunfig.toml bun.lock tsconfig.json ./
 COPY shared/package.json ./shared/
 COPY backend/package.json ./backend/
 COPY admin/package.json ./admin/
-COPY app/package.json ./app/
-RUN bun install --frozen-lockfile
+# The Expo app isn't built here: stub it so its React Native deps are never installed,
+# then prune the lockfile to match (no versions change, only app entries drop).
+RUN mkdir -p app && echo '{"name":"@roi/app","private":true}' > app/package.json \
+ && bun install --lockfile-only && bun install --frozen-lockfile
 COPY shared ./shared
 COPY backend ./backend
 COPY admin ./admin
@@ -21,24 +23,27 @@ WORKDIR /app
 COPY package.json bunfig.toml bun.lock ./
 COPY shared/package.json ./shared/
 COPY backend/package.json ./backend/
-COPY admin/package.json ./admin/
-COPY app/package.json ./app/
-RUN bun install --production --frozen-lockfile
+# Runtime only needs backend deps: stub admin (shipped as static dist) and app.
+RUN mkdir -p admin app \
+ && echo '{"name":"@roi/admin","private":true}' > admin/package.json \
+ && echo '{"name":"@roi/app","private":true}' > app/package.json \
+ && bun install --lockfile-only && bun install --production --frozen-lockfile
 
 FROM node:24-slim AS runner
 WORKDIR /app/backend
 
 # Preserve isolated-linker layout so backend/node_modules/* symlinks resolve to ../../node_modules/.bun/*
-COPY --from=prod-deps /app/node_modules /app/node_modules
-COPY --from=prod-deps /app/backend/node_modules /app/backend/node_modules
-COPY --from=builder /app/backend/package.json /app/backend/package.json
-COPY --from=builder /app/backend/dist /app/backend/dist
-COPY --from=builder /app/backend/drizzle /app/backend/drizzle
-COPY --from=builder /app/backend/seed /app/backend/seed
+COPY --chown=node:node --from=prod-deps /app/node_modules /app/node_modules
+COPY --chown=node:node --from=prod-deps /app/backend/node_modules /app/backend/node_modules
+COPY --chown=node:node --from=builder /app/backend/package.json /app/backend/package.json
+COPY --chown=node:node --from=builder /app/backend/dist /app/backend/dist
+COPY --chown=node:node --from=builder /app/backend/drizzle /app/backend/drizzle
+COPY --chown=node:node --from=builder /app/backend/seed /app/backend/seed
 # Built admin SPA only (no admin/node_modules): resolveBackendRoot()=/app/backend -> ../admin/dist
-COPY --from=builder /app/admin/dist /app/admin/dist
+COPY --chown=node:node --from=builder /app/admin/dist /app/admin/dist
 
-RUN mkdir -p /data && chown -R node:node /app /data
+# --chown on COPY above: a recursive chown here duplicated all of node_modules into a new layer.
+RUN mkdir -p /data && chown node:node /data
 
 USER node
 
