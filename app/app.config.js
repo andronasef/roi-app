@@ -28,7 +28,8 @@ function loadSigningEnv() {
 
 function withAndroidReleaseSigning(config) {
   const env = loadSigningEnv();
-  const storePath = KEYSTORE_PATH.replace(/\\/g, '/');
+  // gradle.properties is Latin-1; use an ASCII path relative to android/app/ to avoid corrupting non-ASCII parent folders
+  const storePath = '../../key.jks';
 
   config = withGradleProperties(config, (c) => {
     c.modResults = c.modResults.filter((item) => !SIGNING_KEYS.includes(item.key));
@@ -78,7 +79,27 @@ function withAndroidReleaseSigning(config) {
   return config;
 }
 
+function withGradleHeap(config) {
+  return withGradleProperties(config, (c) => {
+    const idx = c.modResults.findIndex(
+      (item) => item.type === 'property' && item.key === 'org.gradle.jvmargs',
+    );
+    const entry = {
+      type: 'property',
+      key: 'org.gradle.jvmargs',
+      value: '-Xmx4096m -XX:MaxMetaspaceSize=1024m',
+    };
+    if (idx !== -1) {
+      c.modResults[idx] = entry;
+    } else {
+      c.modResults.push(entry);
+    }
+    return c;
+  });
+}
+
 module.exports = ({ config }) => {
+  config = withGradleHeap(config);
   if (fs.existsSync(SIGNING_ENV_PATH) && fs.existsSync(KEYSTORE_PATH)) {
     config = withAndroidReleaseSigning(config);
   }
