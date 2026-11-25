@@ -10,18 +10,23 @@ const path = require('node:path');
 function patchDevLauncherToolbar(appRoot) {
   let devLauncherDir;
   try {
-    devLauncherDir = path.dirname(
-      require.resolve('expo-dev-launcher/package.json', { paths: [appRoot] })
-    );
-  } catch {
-    const devClientDir = path.dirname(
-      require.resolve('expo-dev-client/package.json', { paths: [appRoot] })
-    );
-    devLauncherDir = path.dirname(
-      require.resolve('expo-dev-launcher/package.json', {
-        paths: [devClientDir, appRoot],
-      })
-    );
+    try {
+      devLauncherDir = path.dirname(
+        require.resolve('expo-dev-launcher/package.json', { paths: [appRoot] })
+      );
+    } catch {
+      const devClientDir = path.dirname(
+        require.resolve('expo-dev-client/package.json', { paths: [appRoot] })
+      );
+      devLauncherDir = path.dirname(
+        require.resolve('expo-dev-launcher/package.json', {
+          paths: [devClientDir, appRoot],
+        })
+      );
+    }
+  } catch (error) {
+    console.warn(`[with-xcode27-devlauncher] skipped: cannot resolve expo-dev-launcher (${error.code ?? error.message})`);
+    return false;
   }
 
   const toolbarPath = path.join(
@@ -32,6 +37,7 @@ function patchDevLauncherToolbar(appRoot) {
     'DevLauncherToolbar.swift'
   );
   if (!fs.existsSync(toolbarPath)) {
+    console.warn('[with-xcode27-devlauncher] skipped: DevLauncherToolbar.swift not found');
     return false;
   }
 
@@ -39,6 +45,12 @@ function patchDevLauncherToolbar(appRoot) {
   const target = '#if os(iOS) && compiler(>=6.4)';
   const replacement = '#if os(iOS) && compiler(>=6.5)';
   if (!current.includes(target)) {
+    // Either already patched (idempotent re-run) or upstream changed: the plugin may now be removable.
+    console.warn(
+      current.includes(replacement)
+        ? '[with-xcode27-devlauncher] already patched'
+        : '[with-xcode27-devlauncher] skipped: target guard not found (upstream changed? remove this plugin)'
+    );
     return false;
   }
 
