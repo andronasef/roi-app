@@ -48,6 +48,8 @@ export interface ItemEditorPageProps {
   header?: ReactNode;
   /** Back navigation; guarded by an unsaved-changes dialog when the form is dirty. */
   onBack?: () => void;
+  /** Blocks Save, e.g. when the suggestion was already moderated or a sibling mutation is in flight. */
+  submitDisabled?: boolean;
 }
 
 export function ItemEditorPage({
@@ -57,6 +59,7 @@ export function ItemEditorPage({
   submitLabel,
   header,
   onBack,
+  submitDisabled,
 }: ItemEditorPageProps) {
   const { t } = useI18n();
   const [confirmLeave, setConfirmLeave] = useState(false);
@@ -175,7 +178,7 @@ export function ItemEditorPage({
           ) : null}
 
           <div className="flex flex-wrap items-center gap-3">
-            <Button type="submit" loading={isSubmitting}>
+            <Button type="submit" loading={isSubmitting} disabled={submitDisabled}>
               {submitLabel ?? t.cta.saveChanges}
             </Button>
             {onBack ? (

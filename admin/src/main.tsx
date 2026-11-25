@@ -5,16 +5,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/components/auth/AuthProvider';
 import { AdminShell } from '@/components/layout/AdminShell';
 import { ToasterProvider } from '@/components/ui/toaster';
+import { KIND_BY_ROUTE } from '@/lib/admin-api';
 import { I18nProvider } from '@/lib/i18n';
+import { AuditLogPage } from '@/pages/AuditLogPage';
+import { CatalogPage, ItemEditorRoute } from '@/pages/CatalogPage';
 import { LoginPage } from '@/pages/LoginPage';
 import './index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } },
 });
-
-// Placeholder targets; replaced by the real pages in plan 03-08.
-const placeholder = (name: string) => <h2 className="text-xl font-bold">{name}</h2>;
 
 function AuthGate() {
   const { user } = useAuth();
@@ -25,11 +25,13 @@ function AuthGate() {
     <Routes>
       <Route element={<AdminShell />}>
         <Route index element={<Navigate to="verses" replace />} />
-        <Route path="verses" element={placeholder('verses')} />
-        <Route path="names" element={placeholder('names')} />
-        <Route path="blessings" element={placeholder('blessings')} />
-        <Route path="suggestions" element={placeholder('suggestions')} />
-        <Route path="audit-log" element={placeholder('audit-log')} />
+        {Object.entries(KIND_BY_ROUTE).flatMap(([path, kind]) => [
+          <Route key={path} path={path} element={<CatalogPage kind={kind} />} />,
+          <Route key={`${path}/new`} path={`${path}/new`} element={<ItemEditorRoute kind={kind} />} />,
+          <Route key={`${path}/:id`} path={`${path}/:id`} element={<ItemEditorRoute kind={kind} />} />,
+        ])}
+        <Route path="suggestions" element={<h2 className="text-xl font-bold">suggestions</h2>} />
+        <Route path="audit-log" element={<AuditLogPage />} />
         <Route path="*" element={<Navigate to="/verses" replace />} />
       </Route>
     </Routes>

@@ -43,6 +43,7 @@ const AR_COPY = {
     softDeleteItem: 'حذف العنصر مؤقتاً',
     rejectSuggestion: 'رفض الاقتراح',
     openInEditor: 'فتح في المحرر',
+    reviewSuggestion: 'مراجعة',
     clearNeutral: 'تفريغ للاختبار المحايد',
     close: 'إغلاق',
   },
@@ -101,6 +102,8 @@ const AR_COPY = {
   },
   catalog: {
     searchPlaceholder: 'ابحث بدون تشكيل...',
+    searchLabel: 'بحث',
+    itemCount: 'عدد العناصر',
     activeTab: 'النشطة',
     deletedTab: 'المحذوفات',
     hasNameChip: 'يحتوي {الاسم}',
@@ -157,6 +160,8 @@ const AR_COPY = {
     pendingCount: 'قيد المراجعة',
     moderationNote: 'ملاحظة المراجعة',
     refreshQueue: 'تحديث القائمة',
+    emptyOther: 'لا توجد اقتراحات في هذا التبويب',
+    suggestion: 'الاقتراح',
   },
   audit: {
     actionFilter: 'نوع الإجراء',
@@ -217,6 +222,7 @@ const EN_COPY: AdminCopy = {
     softDeleteItem: 'Soft Delete Item',
     rejectSuggestion: 'Reject Suggestion',
     openInEditor: 'Open in Editor',
+    reviewSuggestion: 'Review',
     clearNeutral: 'Clear for neutral',
     close: 'Close',
   },
@@ -275,6 +281,8 @@ const EN_COPY: AdminCopy = {
   },
   catalog: {
     searchPlaceholder: 'Search without diacritics...',
+    searchLabel: 'Search',
+    itemCount: 'Items',
     activeTab: 'Active',
     deletedTab: 'Deleted',
     hasNameChip: 'Uses {الاسم}',
@@ -331,6 +339,8 @@ const EN_COPY: AdminCopy = {
     pendingCount: 'Pending',
     moderationNote: 'Moderation Note',
     refreshQueue: 'Refresh Queue',
+    emptyOther: 'No suggestions in this tab',
+    suggestion: 'Suggestion',
   },
   audit: {
     actionFilter: 'Action',
