@@ -105,7 +105,7 @@ Plans:
 - [ ] 02-05-PLAN.md
 - [ ] 02-06-PLAN.md
 - [ ] 02-07-PLAN.md
-- [ ] 02-08-PLAN.md
+- [x] 02-08-PLAN.md
 
 **UI hint**: yes
 **Inherited End-of-Phase Verification (from Phase 1, moved per owner 2026-11-25):** Run Android Release APK (`app-release.apk`) & local Xcode Release Simulator `RELEASE_RESULT` checks, Firebase Console Release triggers (`spike_test`, Test Crash, Sentinel `E_UNCAUGHT` scrub), iOS `otool -L` `AdSupport` check, and `01-REVIEW-FIX.md` (`WR-01`, `WR-02`, `WR-03`, `WR-06`) human verification at Phase 2 sign-off.
@@ -240,7 +240,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
-| 2. Content Backend & First Download | 2/8 | In Progress | - |
+| 2. Content Backend & First Download | 3/8 | In Progress | - |
 | 3. Admin Panel & Moderation | 0/TBD | Not started | - |
 | 4. Onboarding, Personalization & Identity | 0/TBD | Not started | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
