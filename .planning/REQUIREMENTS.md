@@ -129,12 +129,12 @@
 ### Admin Panel (ADM)
 
 - [x] **ADM-01**: Admin signs in with Google; only allowlisted emails get in (multiple admins), with a short-lived session
-- [ ] **ADM-02**: Admin can add, edit and soft-delete verses, names of God and blessings
-- [ ] **ADM-03**: A "same text for male/female" switch shows side-by-side fields when off; both are required when off
-- [ ] **ADM-04**: Admin inserts `{الاسم}` through an atomic, draggable chip and never sees the raw token
-- [ ] **ADM-05**: Admin sees a live preview with a test name and gender toggle
-- [ ] **ADM-06**: Validation rejects any token other than `{الاسم}` and warns when only one version has the name
-- [ ] **ADM-07**: Admin can review, edit, accept or reject suggestions
+- [x] **ADM-02**: Admin can add, edit and soft-delete verses, names of God and blessings
+- [x] **ADM-03**: (Verses only) A "same text for male/female" switch shows side-by-side fields when off; both are required when off. Names of God and blessings are title + single text
+- [x] **ADM-04**: Admin inserts `{الاسم}` through an atomic, draggable chip and never sees the raw token
+- [x] **ADM-05**: Admin sees a live preview with a test name and gender toggle
+- [x] **ADM-06**: Validation rejects any token other than `{الاسم}` and warns when only one version has the name
+- [x] **ADM-07**: Admin can review, edit, accept or reject suggestions
 
 ### Privacy & Release (REL)
 
@@ -192,12 +192,12 @@
 | HOME-06 | Phase 2 | Complete |
 | HOME-07 | Phase 2 | Complete |
 | ADM-01 | Phase 3 | Complete |
-| ADM-02 | Phase 3 | Pending |
-| ADM-03 | Phase 3 | Pending |
-| ADM-04 | Phase 3 | Pending |
-| ADM-05 | Phase 3 | Pending |
-| ADM-06 | Phase 3 | Pending |
-| ADM-07 | Phase 3 | Pending |
+| ADM-02 | Phase 3 | Complete |
+| ADM-03 | Phase 3 | Complete |
+| ADM-04 | Phase 3 | Complete |
+| ADM-05 | Phase 3 | Complete |
+| ADM-06 | Phase 3 | Complete |
+| ADM-07 | Phase 3 | Complete |
 | HOME-01 | Phase 4 | Pending |
 | HOME-02 | Phase 4 | Pending |
 | HOME-03 | Phase 4 | Pending |
