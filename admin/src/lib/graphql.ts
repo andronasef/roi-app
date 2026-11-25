@@ -5,7 +5,8 @@ import { ClientError, GraphQLClient } from 'graphql-request';
  * `credentials: 'include'`, and the non-simple `x-roi-admin: 1` header is the CSRF gate the
  * backend AdminAuthGuard requires. Same-origin in production, Vite-proxied in dev.
  */
-const client = new GraphQLClient('/graphql', {
+// graphql-request builds `new URL(url)`, which rejects relative paths, so anchor on the page origin.
+const client = new GraphQLClient(new URL('/graphql', window.location.origin).href, {
   credentials: 'include',
   headers: { 'x-roi-admin': '1' },
 });
