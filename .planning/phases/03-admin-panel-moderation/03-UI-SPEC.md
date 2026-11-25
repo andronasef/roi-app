@@ -1,7 +1,8 @@
 ---
 phase: "03"
 slug: "admin-panel-moderation"
-status: draft
+status: approved
+reviewed_at: "2026-11-25T15:22:00Z"
 shadcn_initialized: false
 preset: new-york
 created: "2026-11-25"
@@ -195,20 +196,20 @@ Bilingual UI copy (`D-12`) — the admin shell switches cleanly between Arabic (
 
 ## UI Considerations
 
-> Populated here from Phase 3 element/state analysis (`ui-consideration-probe` taxonomy). Will be confirmed/refined post-verification if needed.
+> Populated from Phase 3 element/state analysis (`ui-consideration-probe`, 44 applicable surface-state items across `E1`–`E7`, 0 unclassified).
 
-Applicable state considerations resolved: 8 covered, 1 backstop, 0 unresolved.
+Applicable state considerations resolved: 7 `explicit` families, 1 `backstop` family, 0 `unresolved`.
 
-| Category | Element(s) | Status | Resolution / Reason |
-|----------|------------|--------|---------------------|
-| `empty` | Catalog lists, Search filter, Pending suggestions queue, Audit Log | ✅ covered | Each view renders the specific Arabic/English empty-state heading, explanatory body, and next-step action documented in `## Copywriting Contract`. |
-| `loading` | Catalog tables, Editor item fetch, Suggestion review, Audit Log, Mutation buttons | ✅ covered | Tables and forms show `Skeleton` placeholders sized to layout rows; mutation CTAs disable and show inline spinner during in-flight GraphQL requests to prevent double-submit. |
-| `error` | `403` allowlist login refusal, `{…}` validation error, `401` mid-edit expiry, concurrent moderation `409`/conflict, network failure | ✅ covered | All 5 failure paths render documented copy in `## Copywriting Contract` with non-destructive state retention and explicit recovery CTAs (`ReauthModal`, `Retry Request`, queue refresh). |
-| `populated` | Catalog tables, Split Editor + Preview, Suggestion Review, Audit Log | ✅ covered | Happy-path layouts render bilingual shell chrome with `dir="rtl"` Arabic content cells, search (`normalizeArabic`/`matches`), pagination/scroll, and sticky mobile preview. |
-| `partial` | Optional `verseRef` on blessings; optional `textFemale` (`null` when gender toggle ON); empty test name in preview; optional rejection note | ✅ covered | Missing `verseRef` hides supporting-verse footer in preview; `textFemale: null` activates single-field mode non-destructively; empty test name exercises `personalize()` neutral fallback; rejection proceeds with or without note. |
-| `overflow` | Long Arabic titles/refs in catalog tables, multi-paragraph rich text in editor & preview, wide Audit Log `summaryJson` | ✅ covered | Catalog text excerpts clamp cleanly (`line-clamp-2`); editor & preview scroll vertically inside bounded containers; Audit Log `summaryJson` uses collapsible/wrapped `pre` block inside row detail. |
-| `zero-one-many` | Pending suggestions count badge, Search result counts, Submitter history counts (`accepted`/`rejected`/`pending`) | ✅ covered | Badge hides or displays `٠` / `0` calmly at zero; singular/plural-safe Arabic-Indic (`toArabicDigits`) or ASCII count labels adapt across 0, 1, and many items. |
-| `long-text` | Long Arabic text with heavy tashkeel + `{الاسم}` chips in `dir="rtl"` under both `ar` and `en` UI modes | 🧪 backstop | Verify visually in browser across both `ar` (`dir="rtl"`) and `en` (`dir="ltr"`) shell modes that `{الاسم}` chips drag/wrap cleanly inside Tiptap and `LiveMobilePreview` never clips diacritics or breaks RTL alignment. |
+| Category | Element(s) | Status | Verification | Resolution / Acceptance Criterion |
+|----------|------------|--------|--------------|----------------------------------|
+| `empty` | `E1`, `E3`, `E6`, `E7` (Catalog lists, Search filter, Pending suggestions, Audit Log) | `resolved` | `explicit` | Each view renders its documented bilingual empty-state heading, explanatory body, and next-step action from `## Copywriting Contract`. |
+| `loading` | `E1`–`E7` (Tables, Editor hydration, Suggestion review, Audit Log, Mutation CTAs) | `resolved` | `explicit` | Tables and forms show `Skeleton` placeholders sized to rows; mutation CTAs disable and show spinner during in-flight GraphQL requests to prevent double-submit. |
+| `error` | `E1`–`E7` (`403` allowlist refusal, `{…}` brace error, `401` mid-edit expiry, `409` concurrent conflict, network error) | `resolved` | `explicit` | All 5 failure paths render documented copy with non-destructive state retention and explicit recovery (`ReauthModal`, `Retry Request`, queue refresh). |
+| `populated` | `E3`, `E6`, `E7` (Catalog tables, Suggestion Review, Audit Log) | `resolved` | `explicit` | Happy-path layouts render bilingual shell chrome with `dir="rtl"` Arabic content cells, `normalizeArabic`/`matches` search, and sticky `LiveMobilePreview`. |
+| `partial` | `E1`, `E3`–`E7` (Optional `verseRef`, `textFemale: null`, empty test name, optional rejection note) | `resolved` | `explicit` | Missing `verseRef` hides supporting-verse footer in preview; `textFemale: null` shows single editor non-destructively; empty test name tests `personalize()` fallback; rejection works with/without note. |
+| `overflow` | `E2`, `E3`, `E6`, `E7` (Long Arabic titles/refs, multi-paragraph rich text, Audit Log `summaryJson`) | `resolved` | `explicit` | Catalog text excerpts clamp cleanly (`line-clamp-2`); editor & preview scroll vertically inside bounded containers; Audit Log `summaryJson` expands in wrapped `pre` block. |
+| `zero-one-many` | `E3`, `E6`, `E7` (Pending badge, Search counts, Submitter history counts) | `resolved` | `explicit` | Pending badge displays `٠` / `0` calmly at zero; counts use `toArabicDigits` in `ar` mode and ASCII in `en` mode across 0, 1, and many items. |
+| `long-text` | `E1`–`E7` (Heavy tashkeel + `{الاسم}` chips in `dir="rtl"` under `ar` and `en` UI shell) | `resolved` | `backstop` | Verify visually in browser across both `ar` (`dir="rtl"`) and `en` (`dir="ltr"`) shell modes that `{الاسم}` chips drag/wrap cleanly inside Tiptap and `LiveMobilePreview` never clips diacritics or breaks RTL alignment. |
 
 ---
 
@@ -223,12 +224,12 @@ Applicable state considerations resolved: 8 covered, 1 backstop, 0 unresolved.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
-- [ ] Dimension 7 Inventory Provenance: PASS
+- [x] Dimension 1 Copywriting: FLAG (verb+noun CTAs complete; row-action tooltips & Restore/unsaved-guard rows noted for executor)
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
+- [x] Dimension 7 Inventory Provenance: FLAG (`admin/` uninitialized; inventory non-exhaustive)
 
-**Approval:** pending
+**Approval:** approved
