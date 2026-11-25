@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 4
 current_phase_name: Onboarding, Personalization & Identity
 status: executing
-stopped_at: Completed 04-05-PLAN.md
-last_updated: "2026-11-25T21:17:41.171Z"
+stopped_at: Completed 04-06-PLAN.md
+last_updated: "2026-11-25T21:21:15.426Z"
 last_activity: 2026-11-25
 last_activity_desc: Phase 4 execution started
-state_head: e443476a9aff0a2a543d48b3e98b771578ad155e
+state_head: 9218152f20f5301203d1daee051f2ed408aa5846
 progress:
   total_phases: 9
   completed_phases: 1
   total_plans: 40
-  completed_plans: 38
+  completed_plans: 39
   percent: 11
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 ## Current Position
 
 Phase: 4 (Onboarding, Personalization & Identity) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-11-25 — Phase 4 execution started
 
@@ -81,6 +81,7 @@ Progress: [█░░░░░░░░░] 11%
 | Phase 04 P03 | 4min | 2 tasks | 12 files |
 | Phase 4 P04 | 3min | 2 tasks | 6 files |
 | Phase 4 P05 | 5 min | 3 tasks | 9 files |
+| Phase 04 P06 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-03: Persist all 4 canonical home_tiles in SQLite settings while filtering rendered Home tiles to IMPLEMENTED_HOME_TOOLS (['leyaana']) and bumping ContentRefreshContext on delta sync updates.
 - [Phase 4]: 04-04: Exposed requestGoogleDriveScopeUpgrade alongside signInWithGoogleDriveScope and narrowed SignInSilentlyResponse explicitly in app/features/google/auth.ts.
 - [Phase 4]: 04-05: Exposed headerRight and renderTabExtra on LeyaanaScreen for Plan 04-07 personal items and derived SQLite snapshots via useMemo + refreshTick.
+- [Phase 04]: 04-06: Route Settings Google connect through requestGoogleDriveScopeUpgrade when signed in without drive.appdata and signInWithGoogleDriveScope otherwise, guarding async support/Google actions with ref locks.
 
 ### Pending Todos
 
@@ -138,6 +140,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-25T21:17:41.073Z
-Stopped at: Completed 04-05-PLAN.md
-Resume file: .planning/phases/04-onboarding-personalization-identity/04-05-SUMMARY.md
+Last session: 2026-11-25T21:21:15.233Z
+Stopped at: Completed 04-06-PLAN.md
+Resume file: .planning/phases/04-onboarding-personalization-identity/04-06-SUMMARY.md

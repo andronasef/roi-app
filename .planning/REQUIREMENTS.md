@@ -93,7 +93,7 @@
 
 ### Settings & Notifications (SET)
 
-- [ ] **SET-01**: Global settings: dark mode, rate app, request help, WhatsApp contact
+- [x] **SET-01**: Global settings: dark mode, rate app, request help, WhatsApp contact
 - [ ] **SET-02**: Per-tool settings as listed in PROJECT.md (weekly-verse day/time; review time and new-verse cap; prayer reminder time and default sort; gratitude time)
 - [ ] **SET-03**: Local notifications fire for review, prayer, gratitude and the weekly verse
 - [ ] **SET-04**: Notification text is generic by default
@@ -215,7 +215,7 @@
 | ME-07 | Phase 4 | Complete |
 | ME-08 | Phase 4 | Pending |
 | ME-09 | Phase 4 | Pending |
-| SET-01 | Phase 4 | Pending |
+| SET-01 | Phase 4 | Complete |
 | INT-01 | Phase 5 | Pending |
 | INT-02 | Phase 5 | Pending |
 | INT-03 | Phase 5 | Pending |
