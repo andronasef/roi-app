@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   contentDeltaResponseSchema,
   uuidv7,
@@ -34,6 +34,8 @@ export interface ApplyContentMutationOptions<TResult> {
 
 @Injectable()
 export class ContentService {
+  private readonly logger = new Logger(ContentService.name);
+
   constructor(
     @Inject(DRIZZLE_DB) private readonly db: BackendDatabase,
     @Inject(SQLITE_DB) private readonly sqlite: Database.Database,
@@ -179,7 +181,13 @@ export class ContentService {
 
     // IMMEDIATE takes the write lock up front so the version read-then-write cannot race another process.
     const txOut = executeTx.immediate();
-    this.snapshotService.refreshCache(nowMs);
+    // The row is committed; a rebuild failure must not surface as a failed mutation (invites duplicate retries).
+    // getSnapshot's stale check rebuilds lazily on the next read.
+    try {
+      this.snapshotService.refreshCache(nowMs);
+    } catch (error) {
+      this.logger.error('snapshot refresh failed after commit; will rebuild lazily', error);
+    }
     return txOut;
   }
 }

@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { snapshotEnvelopeSchema } from '@roi/shared';
 import request from 'supertest';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { SnapshotService } from '../content/snapshot.service';
 import { createAdminTestApp, extractCookieHeader } from './admin-test-helpers';
 
 const ADMIN_LOGIN_MUTATION = /* GraphQL */ `
@@ -745,6 +746,32 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
       await gql(SOFT_DELETE_MUTATION, { kind: 'verse', id }, '198.51.100.43');
       const deleted = await gql(update, { id, input: { ...input, text: 'نص ٤' } }, '198.51.100.44');
       expect(deleted.errors?.[0]?.message).toContain('CONTENT_ALREADY_DELETED');
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('returns the committed result when the post-commit snapshot rebuild fails, and heals on the next read (WR-06)', async () => {
+    const { app, moduleRef } = await createAdminTestApp({ dataDir: makeTempDir() });
+    try {
+      const server = app.getHttpServer();
+      const cookie = await loginAsAdmin(server);
+      const snapshots = moduleRef.get(SnapshotService);
+      const spy = vi.spyOn(snapshots, 'refreshCache').mockImplementationOnce(() => {
+        throw new Error('disk full');
+      });
+      const res = await request(server)
+        .post('/graphql')
+        .set('Cookie', cookie)
+        .set('x-roi-admin', '1')
+        .set('X-Forwarded-For', '198.51.100.50')
+        .send({ query: CREATE_VERSE_MUTATION, variables: { input: { ref: 'مزمور ١', text: 'نص' } } })
+        .expect(200);
+      expect(res.body.errors).toBeUndefined();
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      const snap = await request(server).get('/snapshots/verses').expect(200);
+      expect(snap.body.items.some((i: { id: string }) => i.id === res.body.data.createVerse.id)).toBe(true);
     } finally {
       await app.close();
     }
