@@ -13,6 +13,7 @@ import {
   BookOpen,
   Copy,
   History,
+  Plus,
   Star,
 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
@@ -44,6 +45,13 @@ import {
 } from './CopyVerseDialog';
 import { MarkdownBody } from './MarkdownBody';
 import {
+  DeletePersonalItemDialog,
+  PersonalItemDialog,
+  PersonalItemsSection,
+  SuggestSignInDialog,
+  usePersonalSuggestion,
+} from './PersonalItemDialog';
+import {
   favoriteId,
   getOrAssignPeriodVerse,
   listLiveFavoriteIds,
@@ -65,6 +73,11 @@ import {
   needsRecipientPrompt,
   stripMarkdownForCopy,
 } from './copy';
+import {
+  deletePersonalItem,
+  listPersonalItems,
+  type PersonalItemRow,
+} from './personal-items';
 
 export type LeyaanaTab = 'verses' | 'names' | 'blessings' | 'favorites';
 
@@ -170,6 +183,9 @@ interface LeyaanaSnapshot {
   dailyBlessing: BlessingRow | null;
   favoriteIds: Set<string>;
   favoritesList: HydratedFavoriteItem[];
+  personalVerses: PersonalItemRow[];
+  personalNames: PersonalItemRow[];
+  personalBlessings: PersonalItemRow[];
 }
 
 function loadLeyaanaSnapshot(): LeyaanaSnapshot {
@@ -182,6 +198,9 @@ function loadLeyaanaSnapshot(): LeyaanaSnapshot {
     dailyBlessing: pickDailyBlessing(db, now),
     favoriteIds: new Set(listLiveFavoriteIds(db)),
     favoritesList: listHydratedFavorites(db),
+    personalVerses: listPersonalItems(db, 'verse'),
+    personalNames: listPersonalItems(db, 'name_of_god'),
+    personalBlessings: listPersonalItems(db, 'blessing'),
   };
 }
 
@@ -367,7 +386,14 @@ export function LeyaanaScreen({
   const [refreshTick, setRefreshTick] = useState(0);
   const [copyDialogVerse, setCopyDialogVerse] =
     useState<CopyVerseTarget | null>(null);
+  const [itemDialogOpen, setItemDialogOpen] = useState(false);
+  const [itemDialogKind, setItemDialogKind] = useState<ContentKind>('verse');
+  const [editingPersonalItem, setEditingPersonalItem] =
+    useState<PersonalItemRow | null>(null);
+  const [deletingPersonalItem, setDeletingPersonalItem] =
+    useState<PersonalItemRow | null>(null);
   const { copiedVisible, copyTextToClipboard } = useCopiedToast();
+  const suggestion = usePersonalSuggestion(profile.gender);
 
   const refreshData = useCallback(() => {
     setRefreshTick((tick) => tick + 1);
@@ -424,6 +450,53 @@ export function LeyaanaScreen({
     [copyTextToClipboard, profile],
   );
 
+  const defaultKindForTab: ContentKind =
+    activeTab === 'names'
+      ? 'name_of_god'
+      : activeTab === 'blessings'
+        ? 'blessing'
+        : 'verse';
+
+  const openCreatePersonalDialog = useCallback((kind: ContentKind) => {
+    setEditingPersonalItem(null);
+    setItemDialogKind(kind);
+    setItemDialogOpen(true);
+  }, []);
+
+  const openEditPersonalDialog = useCallback((item: PersonalItemRow) => {
+    setEditingPersonalItem(item);
+    setItemDialogKind(item.kind);
+    setItemDialogOpen(true);
+  }, []);
+
+  const handleCopyPersonalItem = useCallback(
+    (item: PersonalItemRow) => {
+      if (item.kind === 'verse') {
+        handleCopyVerse({
+          ref: item.title,
+          text: item.text,
+          textFemale: null,
+        });
+        return;
+      }
+      handleCopyArticle({
+        title: item.title,
+        text: item.text,
+        textFemale: null,
+        verseRef: item.verseRef,
+      });
+    },
+    [handleCopyArticle, handleCopyVerse],
+  );
+
+  const handleConfirmDeletePersonalItem = useCallback(
+    (item: PersonalItemRow) => {
+      deletePersonalItem(db, deviceClock, item.id);
+      refreshData();
+    },
+    [refreshData],
+  );
+
   const filteredFavorites = useMemo(() => {
     if (favFilter === 'all') {
       return snapshot.favoritesList;
@@ -453,7 +526,19 @@ export function LeyaanaScreen({
             {ar.leyaanaTitle}
           </Text>
         </View>
-        {headerRight ?? null}
+        {headerRight ?? (
+          <Pressable
+            onPress={() => openCreatePersonalDialog(defaultKindForTab)}
+            accessibilityRole="button"
+            accessibilityLabel="أضف عنصر شخصي"
+            className="min-h-[44px] flex-row items-center gap-1 rounded-xl border border-border bg-card px-3 py-2"
+          >
+            <Icon as={Plus} size={16} className="text-foreground" />
+            <Text className="text-sm font-bold text-foreground">
+              {ar.addPersonalItem}
+            </Text>
+          </Pressable>
+        )}
       </View>
 
       <View
@@ -579,6 +664,23 @@ export function LeyaanaScreen({
                 />
               </Pressable>
             </Link>
+
+            <PersonalItemsSection
+              items={snapshot.personalVerses}
+              favoriteIds={snapshot.favoriteIds}
+              accentHex={accentHex}
+              gender={profile.gender}
+              suggestingItemId={suggestion.suggestingItemId}
+              suggestFeedback={suggestion.suggestFeedback}
+              onAddPress={() => openCreatePersonalDialog('verse')}
+              onToggleFavorite={(item) =>
+                handleToggleFavorite('personal', item.kind, item.id)
+              }
+              onCopy={handleCopyPersonalItem}
+              onEdit={openEditPersonalDialog}
+              onDelete={setDeletingPersonalItem}
+              onSuggest={(item) => void suggestion.handleSuggest(item)}
+            />
           </View>
         ) : null}
 
@@ -637,6 +739,23 @@ export function LeyaanaScreen({
                 </Text>
               </Pressable>
             </Link>
+
+            <PersonalItemsSection
+              items={snapshot.personalNames}
+              favoriteIds={snapshot.favoriteIds}
+              accentHex={accentHex}
+              gender={profile.gender}
+              suggestingItemId={suggestion.suggestingItemId}
+              suggestFeedback={suggestion.suggestFeedback}
+              onAddPress={() => openCreatePersonalDialog('name_of_god')}
+              onToggleFavorite={(item) =>
+                handleToggleFavorite('personal', item.kind, item.id)
+              }
+              onCopy={handleCopyPersonalItem}
+              onEdit={openEditPersonalDialog}
+              onDelete={setDeletingPersonalItem}
+              onSuggest={(item) => void suggestion.handleSuggest(item)}
+            />
           </View>
         ) : null}
 
@@ -696,6 +815,23 @@ export function LeyaanaScreen({
                 </Text>
               </Pressable>
             </Link>
+
+            <PersonalItemsSection
+              items={snapshot.personalBlessings}
+              favoriteIds={snapshot.favoriteIds}
+              accentHex={accentHex}
+              gender={profile.gender}
+              suggestingItemId={suggestion.suggestingItemId}
+              suggestFeedback={suggestion.suggestFeedback}
+              onAddPress={() => openCreatePersonalDialog('blessing')}
+              onToggleFavorite={(item) =>
+                handleToggleFavorite('personal', item.kind, item.id)
+              }
+              onCopy={handleCopyPersonalItem}
+              onEdit={openEditPersonalDialog}
+              onDelete={setDeletingPersonalItem}
+              onSuggest={(item) => void suggestion.handleSuggest(item)}
+            />
           </View>
         ) : null}
 
@@ -885,6 +1021,42 @@ export function LeyaanaScreen({
         onCopy={(formatted) => {
           void copyTextToClipboard(formatted);
         }}
+      />
+
+      <PersonalItemDialog
+        open={itemDialogOpen}
+        onOpenChange={setItemDialogOpen}
+        initialKind={itemDialogKind}
+        editingItem={editingPersonalItem}
+        gender={profile.gender}
+        onSaved={refreshData}
+      />
+
+      <DeletePersonalItemDialog
+        open={deletingPersonalItem !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeletingPersonalItem(null);
+          }
+        }}
+        item={deletingPersonalItem}
+        gender={profile.gender}
+        onConfirmDelete={handleConfirmDeletePersonalItem}
+      />
+
+      <SuggestSignInDialog
+        open={suggestion.signInDialogItem !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            suggestion.setSignInDialogItem(null);
+            suggestion.setSignInError(null);
+          }
+        }}
+        submitting={suggestion.signInSubmitting}
+        errorMessage={suggestion.signInError}
+        onConfirmSignInAndSubmit={() =>
+          void suggestion.handleConfirmSignInAndSubmit()
+        }
       />
 
       <CopiedToast visible={copiedVisible} />

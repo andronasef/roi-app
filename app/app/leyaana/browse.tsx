@@ -4,7 +4,7 @@ import {
   useLocalSearchParams,
   useRouter,
 } from 'expo-router';
-import { ArrowRight, Copy, Search, Star } from 'lucide-react-native';
+import { ArrowRight, Copy, Plus, Search, Star } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, ScrollView, TextInput, View } from 'react-native';
@@ -25,6 +25,13 @@ import { db, deviceClock } from '@/features/db/client';
 import { CopiedToast, useCopiedToast } from '@/features/leyaana/LeyaanaScreen';
 import { MarkdownBody } from '@/features/leyaana/MarkdownBody';
 import {
+  DeletePersonalItemDialog,
+  PersonalItemDialog,
+  PersonalItemsSection,
+  SuggestSignInDialog,
+  usePersonalSuggestion,
+} from '@/features/leyaana/PersonalItemDialog';
+import {
   favoriteId,
   listLiveFavoriteIds,
   toggleFavorite,
@@ -38,6 +45,11 @@ import {
   type NameOfGodRow,
 } from '@/features/leyaana/catalog';
 import { formatArticleForCopy } from '@/features/leyaana/copy';
+import {
+  deletePersonalItem,
+  listPersonalItems,
+  type PersonalItemRow,
+} from '@/features/leyaana/personal-items';
 import { useProfile } from '@/features/profile/context';
 import { uiCopy } from '@/features/profile/ui-copy';
 import { useContentVersion } from '@/features/sync/ContentGate';
@@ -90,7 +102,13 @@ export default function LeyaanaBrowseRoute() {
   const [refreshTick, setRefreshTick] = useState(0);
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<BrowseArticle | null>(null);
+  const [itemDialogOpen, setItemDialogOpen] = useState(false);
+  const [editingPersonalItem, setEditingPersonalItem] =
+    useState<PersonalItemRow | null>(null);
+  const [deletingPersonalItem, setDeletingPersonalItem] =
+    useState<PersonalItemRow | null>(null);
   const { copiedVisible, copyTextToClipboard } = useCopiedToast();
+  const suggestion = usePersonalSuggestion(profile.gender);
 
   const refresh = useCallback(() => {
     setRefreshTick((tick) => tick + 1);
@@ -108,6 +126,12 @@ export default function LeyaanaBrowseRoute() {
     return loadBrowseItems(kind);
   }, [kind, refreshTick, contentVersion]);
 
+  const personalRows = useMemo(() => {
+    void refreshTick;
+    void contentVersion;
+    return listPersonalItems(db, kind);
+  }, [kind, refreshTick, contentVersion]);
+
   const favoriteIds = useMemo(() => {
     void refreshTick;
     void contentVersion;
@@ -120,6 +144,13 @@ export default function LeyaanaBrowseRoute() {
     }
     return searchNamesOfGod(items, query);
   }, [items, kind, query]);
+
+  const filteredPersonalItems = useMemo(() => {
+    if (kind === 'blessing') {
+      return searchBlessings(personalRows, query);
+    }
+    return searchNamesOfGod(personalRows, query);
+  }, [personalRows, kind, query]);
 
   const handleBack = useCallback(() => {
     if (router.canGoBack()) {
@@ -148,6 +179,53 @@ export default function LeyaanaBrowseRoute() {
     [copyTextToClipboard, profile],
   );
 
+  const openCreatePersonal = useCallback(() => {
+    setEditingPersonalItem(null);
+    setItemDialogOpen(true);
+  }, []);
+
+  const openEditPersonal = useCallback((item: PersonalItemRow) => {
+    setEditingPersonalItem(item);
+    setItemDialogOpen(true);
+  }, []);
+
+  const handleTogglePersonalFav = useCallback(
+    (item: PersonalItemRow) => {
+      toggleFavorite(db, deviceClock, {
+        source: 'personal',
+        kind: item.kind,
+        itemId: item.id,
+      });
+      refresh();
+    },
+    [refresh],
+  );
+
+  const handleCopyPersonal = useCallback(
+    (item: PersonalItemRow) => {
+      void copyTextToClipboard(
+        formatArticleForCopy(
+          {
+            title: item.title,
+            text: item.text,
+            textFemale: null,
+            verseRef: item.verseRef,
+          },
+          profile,
+        ),
+      );
+    },
+    [copyTextToClipboard, profile],
+  );
+
+  const handleConfirmDeletePersonal = useCallback(
+    (item: PersonalItemRow) => {
+      deletePersonalItem(db, deviceClock, item.id);
+      refresh();
+    },
+    [refresh],
+  );
+
   const screenTitle = kind === 'blessing' ? 'كل البركات' : 'كل أسماء الله';
   const searchPlaceholder =
     kind === 'blessing' ? 'ابحث في البركات...' : 'ابحث في أسماء الله...';
@@ -155,22 +233,35 @@ export default function LeyaanaBrowseRoute() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
-      <View className="flex-row items-center gap-3 px-6 py-4">
+      <View className="flex-row items-center justify-between gap-3 px-6 py-4">
+        <View className="flex-row items-center gap-3">
+          <Pressable
+            onPress={handleBack}
+            accessibilityRole="button"
+            accessibilityLabel="ارجع لليا أنا"
+            className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-card"
+          >
+            <Icon as={ArrowRight} size={20} className="text-foreground" />
+          </Pressable>
+          <Text
+            accessibilityRole="header"
+            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+            className="text-start text-xl font-bold text-foreground"
+          >
+            {screenTitle}
+          </Text>
+        </View>
         <Pressable
-          onPress={handleBack}
+          onPress={openCreatePersonal}
           accessibilityRole="button"
-          accessibilityLabel="ارجع لليا أنا"
-          className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-card"
+          accessibilityLabel="أضف عنصر شخصي"
+          className="min-h-[44px] flex-row items-center gap-1 rounded-xl border border-border bg-card px-3 py-2"
         >
-          <Icon as={ArrowRight} size={20} className="text-foreground" />
+          <Icon as={Plus} size={16} className="text-foreground" />
+          <Text className="text-sm font-bold text-foreground">
+            {ar.addPersonalItem}
+          </Text>
         </Pressable>
-        <Text
-          accessibilityRole="header"
-          maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-          className="text-start text-xl font-bold text-foreground"
-        >
-          {screenTitle}
-        </Text>
       </View>
 
       <View className="px-6 pb-4">
@@ -193,6 +284,33 @@ export default function LeyaanaBrowseRoute() {
         keyExtractor={(item) => item.id}
         keyboardShouldPersistTaps="handled"
         contentContainerClassName="flex-grow gap-3 px-6 pb-10"
+        ListFooterComponent={
+          <View className="pt-4">
+            <PersonalItemsSection
+              items={filteredPersonalItems}
+              favoriteIds={favoriteIds}
+              accentHex={accentHex}
+              gender={profile.gender}
+              suggestingItemId={suggestion.suggestingItemId}
+              suggestFeedback={suggestion.suggestFeedback}
+              onAddPress={openCreatePersonal}
+              onToggleFavorite={handleTogglePersonalFav}
+              onCopy={handleCopyPersonal}
+              onEdit={openEditPersonal}
+              onDelete={setDeletingPersonalItem}
+              onSuggest={(item) => void suggestion.handleSuggest(item)}
+              onPressItem={(item) =>
+                setSelectedItem({
+                  id: item.id,
+                  title: item.title,
+                  text: item.text,
+                  textFemale: null,
+                  verseRef: item.verseRef,
+                })
+              }
+            />
+          </View>
+        }
         ListEmptyComponent={
           <View className="items-center gap-2 rounded-2xl border border-border bg-card p-6">
             <Text
@@ -374,6 +492,42 @@ export default function LeyaanaBrowseRoute() {
           </DialogContent>
         ) : null}
       </Dialog>
+
+      <PersonalItemDialog
+        open={itemDialogOpen}
+        onOpenChange={setItemDialogOpen}
+        initialKind={kind}
+        editingItem={editingPersonalItem}
+        gender={profile.gender}
+        onSaved={refresh}
+      />
+
+      <DeletePersonalItemDialog
+        open={deletingPersonalItem !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeletingPersonalItem(null);
+          }
+        }}
+        item={deletingPersonalItem}
+        gender={profile.gender}
+        onConfirmDelete={handleConfirmDeletePersonal}
+      />
+
+      <SuggestSignInDialog
+        open={suggestion.signInDialogItem !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            suggestion.setSignInDialogItem(null);
+            suggestion.setSignInError(null);
+          }
+        }}
+        submitting={suggestion.signInSubmitting}
+        errorMessage={suggestion.signInError}
+        onConfirmSignInAndSubmit={() =>
+          void suggestion.handleConfirmSignInAndSubmit()
+        }
+      />
 
       <CopiedToast visible={copiedVisible} />
     </SafeAreaView>
