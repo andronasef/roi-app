@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 4
 current_phase_name: Onboarding, Personalization & Identity
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-11-25T21:01:18.044Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-11-25T21:06:49.531Z"
 last_activity: 2026-11-25
 last_activity_desc: Phase 4 execution started
-state_head: 52bd24b1d4c0c9a221674623e9fe049347782b1e
+state_head: 6f5e167958e7dd1570e4568adb025288dbf2bd4f
 progress:
   total_phases: 9
   completed_phases: 1
   total_plans: 40
-  completed_plans: 35
+  completed_plans: 36
   percent: 11
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 ## Current Position
 
 Phase: 4 (Onboarding, Personalization & Identity) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-11-25 — Phase 4 execution started
 
@@ -78,6 +78,7 @@ Progress: [█░░░░░░░░░] 11%
 | Phase 03 P02 | 4min | 2 tasks | 17 files |
 | Phase 03 P04 | 4min | 2 tasks | 16 files |
 | Phase 04 P02 | 3min | 2 tasks | 13 files |
+| Phase 04 P03 | 4min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-04: Scoped admin/tsconfig.json to src/ and used fileURLToPath in Vite/Vitest configs so tsc -p admin/tsconfig.json runs without adding @types/node.
 - [Phase 03]: 03-04: Implemented I18nProvider in admin/src/lib/i18n.ts using React.createElement to preserve the planned .ts file path.
 - [Phase 04]: 04-02: Track shared seen-counts across weekly and monthly verse_assignments and pick from minimum-count live tier for non-repeat cycle reset
+- [Phase 04]: 04-03: Persist all 4 canonical home_tiles in SQLite settings while filtering rendered Home tiles to IMPLEMENTED_HOME_TOOLS (['leyaana']) and bumping ContentRefreshContext on delta sync updates.
 
 ### Pending Todos
 
@@ -132,6 +134,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-25T21:01:17.894Z
-Stopped at: Completed 04-02-PLAN.md
-Resume file: .planning/phases/04-onboarding-personalization-identity/04-02-SUMMARY.md
+Last session: 2026-11-25T21:06:49.454Z
+Stopped at: Completed 04-03-PLAN.md
+Resume file: .planning/phases/04-onboarding-personalization-identity/04-03-SUMMARY.md

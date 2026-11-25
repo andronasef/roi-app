@@ -146,6 +146,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [x] 03-09-PLAN.md — Express 5 /admin static serving, GIS Helmet CSP, multi-stage Dockerfile, and smoke verification
+
 **UI hint**: yes
 
 ### Phase 4: Onboarding, Personalization & Identity
@@ -161,7 +162,7 @@ Plans:
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
 
-**Plans:** 2/7 plans executed
+**Plans:** 3/7 plans executed
 
 Plans:
 **Wave 1**
@@ -171,7 +172,7 @@ Plans:
 - [x] 04-02-PLAN.md — Install approved packages, Drizzle 0002 migration, expo prebuild, and non-repeat verse assignment engine
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 04-03-PLAN.md — Tracer slice: personalization engine, ProfileProvider, uiCopy, ContentRefreshContext, and Home (أدواتك)
+- [x] 04-03-PLAN.md — Tracer slice: personalization engine, ProfileProvider, uiCopy, ContentRefreshContext, and Home (أدواتك)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 04-04-PLAN.md — 3-screen Onboarding flow, first-win starter verses, and skippable drive.appdata Google Sign-In
@@ -180,6 +181,7 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 04-06-PLAN.md — Global Settings screen (theme, Scripture size, editable name/gender, Google connect, Share/Rate/Help/WhatsApp)
 - [ ] 04-07-PLAN.md — Local personal items CRUD across all 3 kinds and Google-authenticated public suggestions (submitSuggestion)
+
 **UI hint**: yes
 
 ### Phase 5: Intercession & Gratitude
@@ -282,7 +284,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
 | 3. Admin Panel & Moderation | 9/9 | In Progress | - |
-| 4. Onboarding, Personalization & Identity | 2/7 | In Progress | - |
+| 4. Onboarding, Personalization & Identity | 3/7 | In Progress | - |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
 | 7. Widgets | 0/TBD | Not started | - |

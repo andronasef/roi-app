@@ -28,18 +28,18 @@
 
 - [ ] **HOME-01**: First launch shows 3 onboarding screens (what Ro'i is; name + gender; pick a first verse or "later")
 - [ ] **HOME-02**: User reaches a first win (a verse, a prayer card or a gratitude line saved) within the first minute
-- [ ] **HOME-03**: Home shows a tile per tool; the user can show, hide and reorder tiles, and the choice persists
+- [x] **HOME-03**: Home shows a tile per tool; the user can show, hide and reorder tiles, and the choice persists
 - [ ] **HOME-04**: Home shows what is due today as counts (verses to review, prayers waiting, tonight's gratitude)
-- [ ] **HOME-05**: A one-time intro message explains the home screen
+- [x] **HOME-05**: A one-time intro message explains the home screen
 - [x] **HOME-06**: First launch without internet shows a friendly screen with a retry button; after the first download everything works offline
 - [x] **HOME-07**: The first content download is resumable and applied transactionally
 
 ### Personalization (PERS)
 
 - [ ] **PERS-01**: User enters name and gender; both can be changed later in Settings
-- [ ] **PERS-02**: Content renders from `text` / `textFemale` / `{الاسم}` using the one shared `personalize()` function
-- [ ] **PERS-03**: When the name is missing, the content falls back to a neutral form
-- [ ] **PERS-04**: UI strings are also gender-aware
+- [x] **PERS-02**: Content renders from `text` / `textFemale` / `{الاسم}` using the one shared `personalize()` function
+- [x] **PERS-03**: When the name is missing, the content falls back to a neutral form
+- [x] **PERS-04**: UI strings are also gender-aware
 
 ### ليا أنا (ME)
 
@@ -200,12 +200,12 @@
 | ADM-07 | Phase 3 | Complete |
 | HOME-01 | Phase 4 | Pending |
 | HOME-02 | Phase 4 | Pending |
-| HOME-03 | Phase 4 | Pending |
-| HOME-05 | Phase 4 | Pending |
+| HOME-03 | Phase 4 | Complete |
+| HOME-05 | Phase 4 | Complete |
 | PERS-01 | Phase 4 | Pending |
-| PERS-02 | Phase 4 | Pending |
-| PERS-03 | Phase 4 | Pending |
-| PERS-04 | Phase 4 | Pending |
+| PERS-02 | Phase 4 | Complete |
+| PERS-03 | Phase 4 | Complete |
+| PERS-04 | Phase 4 | Complete |
 | ME-01 | Phase 4 | Complete |
 | ME-02 | Phase 4 | Complete |
 | ME-03 | Phase 4 | Complete |
