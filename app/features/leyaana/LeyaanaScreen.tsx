@@ -23,7 +23,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -80,13 +79,6 @@ import {
 } from './personal-items';
 
 export type LeyaanaTab = 'verses' | 'names' | 'blessings' | 'favorites';
-
-export interface LeyaanaScreenProps {
-  /** Optional trailing header action slot (e.g., Plan 04-07 personal item CTA). */
-  headerRight?: ReactNode;
-  /** Optional per-tab footer/extra slot (e.g., Plan 04-07 personal items list). */
-  renderTabExtra?: (activeTab: LeyaanaTab) => ReactNode;
-}
 
 const TABS: readonly { id: LeyaanaTab; label: string }[] = [
   { id: 'verses', label: ar.tabVerses },
@@ -371,10 +363,7 @@ function DailyArticleCard({
  * 4-tab ليا أنا screen (ME-01..ME-07, D-08..D-10, D-13):
  * الآيات (weekly + monthly + السجل) | أسماء الله | البركات | المفضلة
  */
-export function LeyaanaScreen({
-  headerRight,
-  renderTabExtra,
-}: LeyaanaScreenProps) {
+export function LeyaanaScreen() {
   const router = useRouter();
   const { profile } = useProfile();
   const contentVersion = useContentVersion();
@@ -526,19 +515,17 @@ export function LeyaanaScreen({
             {ar.leyaanaTitle}
           </Text>
         </View>
-        {headerRight ?? (
-          <Pressable
-            onPress={() => openCreatePersonalDialog(defaultKindForTab)}
-            accessibilityRole="button"
-            accessibilityLabel="أضف عنصر شخصي"
-            className="min-h-[44px] flex-row items-center gap-1 rounded-xl border border-border bg-card px-3 py-2"
-          >
-            <Icon as={Plus} size={16} className="text-foreground" />
-            <Text className="text-sm font-bold text-foreground">
-              {ar.addPersonalItem}
-            </Text>
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => openCreatePersonalDialog(defaultKindForTab)}
+          accessibilityRole="button"
+          accessibilityLabel="أضف عنصر شخصي"
+          className="min-h-[44px] flex-row items-center gap-1 rounded-xl border border-border bg-card px-3 py-2"
+        >
+          <Icon as={Plus} size={16} className="text-foreground" />
+          <Text className="text-sm font-bold text-foreground">
+            {ar.addPersonalItem}
+          </Text>
+        </Pressable>
       </View>
 
       <View
@@ -1005,8 +992,6 @@ export function LeyaanaScreen({
             )}
           </View>
         ) : null}
-
-        {renderTabExtra ? renderTabExtra(activeTab) : null}
       </ScrollView>
 
       <CopyVerseDialog

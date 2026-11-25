@@ -12,7 +12,7 @@ import {
   Star,
   Trash2,
 } from 'lucide-react-native';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -103,6 +103,8 @@ export function usePersonalSuggestion(gender: Gender) {
   const [signInError, setSignInError] = useState<string | null>(null);
   const [suggestFeedback, setSuggestFeedback] =
     useState<SuggestFeedback | null>(null);
+  const suggestLockRef = useRef(false);
+  const signInLockRef = useRef(false);
 
   const submitWithToken = useCallback(
     async (item: PersonalItemRow, idToken: string): Promise<boolean> => {
@@ -121,28 +123,29 @@ export function usePersonalSuggestion(gender: Gender) {
 
   const handleSuggest = useCallback(
     async (item: PersonalItemRow) => {
-      if (suggestingItemId !== null) {
+      if (suggestLockRef.current || suggestingItemId !== null) {
         return;
       }
+      suggestLockRef.current = true;
       setSuggestFeedback(null);
       setSignInError(null);
 
       try {
-        const net = await Network.getNetworkStateAsync();
-        if (!net.isConnected || net.isInternetReachable === false) {
-          setSuggestFeedback({
-            type: 'error',
-            message: uiCopy('leyaanaSuggestOfflineError', gender),
-            itemId: item.id,
-          });
-          return;
+        try {
+          const net = await Network.getNetworkStateAsync();
+          if (!net.isConnected || net.isInternetReachable === false) {
+            setSuggestFeedback({
+              type: 'error',
+              message: uiCopy('leyaanaSuggestOfflineError', gender),
+              itemId: item.id,
+            });
+            return;
+          }
+        } catch {
+          // Proceed if network probe itself throws; fetch will handle offline errors.
         }
-      } catch {
-        // Proceed if network probe itself throws; fetch will handle offline errors.
-      }
 
-      setSuggestingItemId(item.id);
-      try {
+        setSuggestingItemId(item.id);
         const session = await getGoogleSessionToken();
         if (session.status === 'unauthenticated') {
           setSignInDialogItem(item);
@@ -187,6 +190,7 @@ export function usePersonalSuggestion(gender: Gender) {
           });
         }
       } finally {
+        suggestLockRef.current = false;
         setSuggestingItemId(null);
       }
     },
@@ -194,9 +198,10 @@ export function usePersonalSuggestion(gender: Gender) {
   );
 
   const handleConfirmSignInAndSubmit = useCallback(async () => {
-    if (!signInDialogItem || signInSubmitting) {
+    if (!signInDialogItem || signInLockRef.current || signInSubmitting) {
       return;
     }
+    signInLockRef.current = true;
     const targetItem = signInDialogItem;
     setSignInSubmitting(true);
     setSignInError(null);
@@ -213,6 +218,7 @@ export function usePersonalSuggestion(gender: Gender) {
     } catch (err) {
       setSignInError(mapSuggestionErrorMessage(err, gender));
     } finally {
+      signInLockRef.current = false;
       setSignInSubmitting(false);
     }
   }, [gender, signInDialogItem, signInSubmitting, submitWithToken]);

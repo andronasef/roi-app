@@ -166,7 +166,7 @@ export function SettingsScreen() {
         ? await requestGoogleDriveScopeUpgrade()
         : await signInWithGoogleDriveScope();
 
-      if (result.status === 'success') {
+      if (result.status === 'success' && result.hasDriveScope) {
         try {
           track('drive_backup_connected');
         } catch {
@@ -177,6 +177,7 @@ export function SettingsScreen() {
         return;
       }
 
+      await loadGoogleStatus();
       setGoogleDialogOpen(false);
       setGoogleNotice(uiCopy('onboardingGoogleError', profile.gender));
     } finally {

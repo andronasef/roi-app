@@ -59,6 +59,7 @@ type BrowseKind = 'name_of_god' | 'blessing';
 
 interface BrowseArticle {
   id: string;
+  source: 'public' | 'personal';
   title: string;
   text: string;
   textFemale: string | null;
@@ -69,6 +70,7 @@ function loadBrowseItems(kind: BrowseKind): BrowseArticle[] {
   if (kind === 'blessing') {
     return listLiveBlessings(db).map((b: BlessingRow) => ({
       id: b.id,
+      source: 'public',
       title: b.title,
       text: b.text,
       textFemale: b.textFemale ?? null,
@@ -77,6 +79,7 @@ function loadBrowseItems(kind: BrowseKind): BrowseArticle[] {
   }
   return listLiveNamesOfGod(db).map((n: NameOfGodRow) => ({
     id: n.id,
+    source: 'public',
     title: n.title,
     text: n.text,
     textFemale: n.textFemale ?? null,
@@ -166,6 +169,18 @@ export default function LeyaanaBrowseRoute() {
         source: 'public',
         kind,
         itemId,
+      });
+      refresh();
+    },
+    [kind, refresh],
+  );
+
+  const handleToggleSelectedFav = useCallback(
+    (article: BrowseArticle) => {
+      toggleFavorite(db, deviceClock, {
+        source: article.source,
+        kind,
+        itemId: article.id,
       });
       refresh();
     },
@@ -302,6 +317,7 @@ export default function LeyaanaBrowseRoute() {
               onPressItem={(item) =>
                 setSelectedItem({
                   id: item.id,
+                  source: 'personal',
                   title: item.title,
                   text: item.text,
                   textFemale: null,
@@ -418,16 +434,18 @@ export default function LeyaanaBrowseRoute() {
 
               <View className="flex-row items-center justify-between gap-2 border-t border-border pt-3">
                 <Pressable
-                  onPress={() => handleToggleFav(selectedItem.id)}
+                  onPress={() => handleToggleSelectedFav(selectedItem)}
                   accessibilityRole="button"
                   accessibilityLabel={
-                    favoriteIds.has(favoriteId('public', kind, selectedItem.id))
+                    favoriteIds.has(
+                      favoriteId(selectedItem.source, kind, selectedItem.id),
+                    )
                       ? 'إزالة من المفضلة'
                       : 'أضف للمفضلة'
                   }
                   accessibilityState={{
                     selected: favoriteIds.has(
-                      favoriteId('public', kind, selectedItem.id),
+                      favoriteId(selectedItem.source, kind, selectedItem.id),
                     ),
                   }}
                   className="min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-border bg-card px-4"
@@ -437,21 +455,21 @@ export default function LeyaanaBrowseRoute() {
                     size={20}
                     color={
                       favoriteIds.has(
-                        favoriteId('public', kind, selectedItem.id),
+                        favoriteId(selectedItem.source, kind, selectedItem.id),
                       )
                         ? accentHex
                         : undefined
                     }
                     fill={
                       favoriteIds.has(
-                        favoriteId('public', kind, selectedItem.id),
+                        favoriteId(selectedItem.source, kind, selectedItem.id),
                       )
                         ? accentHex
                         : 'transparent'
                     }
                     className={
                       favoriteIds.has(
-                        favoriteId('public', kind, selectedItem.id),
+                        favoriteId(selectedItem.source, kind, selectedItem.id),
                       )
                         ? 'text-accent'
                         : 'text-muted-foreground'

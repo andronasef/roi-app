@@ -11,7 +11,7 @@ import {
   type LucideIcon,
 } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -135,9 +135,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   );
   const [identityError, setIdentityError] = useState<string | null>(null);
 
-  const [liveVerses, setLiveVerses] = useState<StarterVerseItem[]>(() =>
-    loadLiveVerses(),
-  );
+  const liveVerses = useMemo(() => {
+    void contentVersion;
+    return loadLiveVerses();
+  }, [contentVersion]);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(() =>
     loadFavoriteIdSet(),
   );
@@ -148,11 +149,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [googleNotice, setGoogleNotice] = useState<string | null>(null);
 
   const firstWinTrackedRef = useRef(false);
-
-  useEffect(() => {
-    setLiveVerses(loadLiveVerses());
-    setFavoriteIds(loadFavoriteIdSet());
-  }, [contentVersion]);
+  const googleSignInLockRef = useRef(false);
 
   const effectiveGender: Gender = selectedGender ?? profile.gender;
 
@@ -218,6 +215,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   }, []);
 
   const handleConfirmGoogleSignIn = useCallback(async () => {
+    if (googleSignInLockRef.current) {
+      return;
+    }
+    googleSignInLockRef.current = true;
     setIsSigningIn(true);
     setGoogleNotice(null);
     try {
@@ -236,6 +237,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       setGoogleDialogOpen(false);
       setGoogleNotice(uiCopy('onboardingGoogleError', profile.gender));
     } finally {
+      googleSignInLockRef.current = false;
       setIsSigningIn(false);
     }
   }, [completeOnboarding, profile.gender]);
