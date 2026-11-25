@@ -59,5 +59,19 @@
   "spikeManualTestCrash": "تشغيل تعطل اختباري",
   "spikeManualSentinelError": "إطلاق خطأ حارس غير ملتقط",
   "spikeManualGoogleSignIn": "تسجيل الدخول عبر جوجل",
-  "spikeManualWidgetInstructions": "أضف ودجت روعي إلى الشاشة الرئيسية، وتحقق من الآية والعداد، ثم اضغط عليه لفتح هذه الشاشة."
+  "spikeManualWidgetInstructions": "أضف ودجت روعي إلى الشاشة الرئيسية، وتحقق من الآية والعداد، ثم اضغط عليه لفتح هذه الشاشة.",
+  "offlineGateTitle": "محتاجين إنترنت أول مرة بس",
+  "offlineGateBody": "محتاجين إنترنت أول مرة بس عشان ننزّل لك مكتبة روعي، وبعدها كل حاجة شغالة أوفلاين",
+  "retryButton": "جرّب تاني",
+  "downloadingTitle": "بنجهّز لك مكتبة روعي...",
+  "stageVerses": "جاري تنزيل: الآيات",
+  "stageNamesOfGod": "جاري تنزيل: أسماء الله",
+  "stageBlessings": "جاري تنزيل: البركات",
+  "downloadPausedNotice": "الاتصال انقطع — هنكمّل تلقائي من آخر جزء أول ما الإنترنت يرجع",
+  "downloadErrorNotice": "حصلت مشكلة في التنزيل دلوقتي — تأكد من الإنترنت واضغط جرّب تاني",
+  "libraryReadyTitle": "المكتبة جاهزة",
+  "libraryReadyBody": "كل حاجة بقت على جهازك وشغالة أوفلاين",
+  "countVersesLabel": "الآيات",
+  "countNamesOfGodLabel": "أسماء الله",
+  "countBlessingsLabel": "البركات"
 }

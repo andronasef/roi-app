@@ -16,6 +16,8 @@ export const ALLOWED_EVENTS = [
   'prayer_logged',
   'gratitude_saved',
   'drive_backup_connected',
+  'first_download_started',
+  'first_download_completed',
 ] as const;
 
 export type AllowedEvent = (typeof ALLOWED_EVENTS)[number];
