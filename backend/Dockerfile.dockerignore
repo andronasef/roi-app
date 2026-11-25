@@ -1,0 +1,12 @@
+.git
+.planning
+**/node_modules
+backend/dist
+backend/.build-tsc
+backend/data
+*.sqlite*
+.env*
+app/*
+!app/package.json
+admin/*
+!admin/package.json
