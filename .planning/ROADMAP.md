@@ -161,7 +161,22 @@ Plans:
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
 
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+**Wave 1**
+- [ ] 04-01-PLAN.md — Package legitimacy gate for react-native-marked@8.3.4 and expo-clipboard@~58.0.4
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 04-02-PLAN.md — Tracer slice: Drizzle 0002 schema, personalization engine, weekly/monthly assignments, Home (أدواتك), and native prebuild
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 04-03-PLAN.md — 3-screen Onboarding flow, first-win starter verses, and skippable drive.appdata Google Sign-In
+- [ ] 04-04-PLAN.md — ليا أنا 4-tab reader, السجل history, Names/Blessings RTL Markdown cards, Favorites ⭐, and recipient-aware copy
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 04-05-PLAN.md — Global Settings screen (theme, Scripture size, editable name/gender, Google connect, Share/Rate/Help/WhatsApp)
+- [ ] 04-06-PLAN.md — Local personal items CRUD across all 3 kinds and Google-authenticated public suggestions (submitSuggestion)
 **UI hint**: yes
 
 ### Phase 5: Intercession & Gratitude
