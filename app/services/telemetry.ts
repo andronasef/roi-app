@@ -23,7 +23,8 @@ let scrubberInstalled = false;
 
 /**
  * Ensures Crashlytics has installed its global uncaught JS handler, then wraps
- * ErrorUtils so every uncaught error is scrubbed to a known error code first.
+ * ErrorUtils so every uncaught error is scrubbed to a known error code first
+ * (release builds only; dev builds pass the original error through).
  */
 export function installGlobalErrorScrubber(): void {
   if (scrubberInstalled) {
@@ -39,7 +40,8 @@ export function installGlobalErrorScrubber(): void {
 
   const previousHandler = ErrorUtils.getGlobalHandler();
   ErrorUtils.setGlobalHandler((error: unknown, isFatal?: boolean) => {
-    previousHandler(scrubError(error), isFatal);
+    // Dev builds keep the real error so the red-box stays debuggable; scrubbing only protects data leaving the device.
+    previousHandler(__DEV__ ? error : scrubError(error), isFatal);
   });
 }
 
