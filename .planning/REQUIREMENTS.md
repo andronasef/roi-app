@@ -50,8 +50,8 @@
 - [x] **ME-05**: User can read blessings (first-person title, rich text, supporting verse)
 - [x] **ME-06**: User can favorite any item with ⭐ and see all favorites
 - [x] **ME-07**: User can long-press to copy any item, with its reference, to share outside the app
-- [ ] **ME-08**: User can add personal items locally
-- [ ] **ME-09**: User can optionally suggest a personal item to everyone
+- [x] **ME-08**: User can add personal items locally
+- [x] **ME-09**: User can optionally suggest a personal item to everyone
 
 ### حفظ الآيات (MEM)
 
@@ -213,8 +213,8 @@
 | ME-05 | Phase 4 | Complete |
 | ME-06 | Phase 4 | Complete |
 | ME-07 | Phase 4 | Complete |
-| ME-08 | Phase 4 | Pending |
-| ME-09 | Phase 4 | Pending |
+| ME-08 | Phase 4 | Complete |
+| ME-09 | Phase 4 | Complete |
 | SET-01 | Phase 4 | Complete |
 | INT-01 | Phase 5 | Pending |
 | INT-02 | Phase 5 | Pending |

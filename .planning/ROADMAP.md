@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Native Spike** - RTL Arabic on real phones, sync-ready schema, shared package, all native integrations proven together *(Release & Firebase Console checks deferred to end of Phase 2)*
 - [ ] **Phase 2: Content Backend & First Download** - Deployed backend, Sanity import, and a resumable first content download that then works offline
 - [ ] **Phase 3: Admin Panel & Moderation** - Google-gated admin to author content with the name-chip editor and review user suggestions
-- [ ] **Phase 4: Onboarding, Personalization & Identity** - Onboarding, name/gender personalization, Home grid, Settings and the full ليا أنا tool
+- [x] **Phase 4: Onboarding, Personalization & Identity** - Onboarding, name/gender personalization, Home grid, Settings and the full ليا أنا tool (completed 2026-11-26)
 - [ ] **Phase 5: Intercession & Gratitude** - تشفع prayer cards with "most neglected" sorting, and the دفتر الشكر daily gratitude line
 - [ ] **Phase 6: Memorization & the Daily Loop** - حفظ الآيات spaced-repetition tool, Home "due today" counts and per-tool reminders
 - [ ] **Phase 7: Widgets** - One privacy-safe widget per tool on iOS and Android that deep-links into the app
@@ -162,7 +162,7 @@ Plans:
   4. In ليا أنا the user sees a weekly verse (Saturday to Friday) and a monthly verse that stay the same on every reopen, never repeat one already received, and stay in history after the content is edited.
   5. The user reads names of God and blessings as rich-text cards, favorites any item with ⭐ and sees all favorites, long-presses to copy an item with its reference, adds personal items, and can suggest one to everyone.
 
-**Plans:** 7/7 plans executed
+**Plans:** 7/7 plans complete
 
 Plans:
 **Wave 1**
@@ -284,7 +284,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Native Spike | 16/16 | Complete *(Release checks deferred to Ph 2)* | 2026-11-25 |
 | 2. Content Backend & First Download | 7/8 | In Progress | - |
 | 3. Admin Panel & Moderation | 9/9 | In Progress | - |
-| 4. Onboarding, Personalization & Identity | 7/7 | In Progress | - |
+| 4. Onboarding, Personalization & Identity | 7/7 | Complete    | 2026-11-26 |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
 | 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
 | 7. Widgets | 0/TBD | Not started | - |

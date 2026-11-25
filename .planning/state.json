@@ -21,7 +21,7 @@
     {
       "number": "4",
       "name": "Onboarding, Personalization & Identity",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "number": "5",
@@ -51,8 +51,8 @@
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 3 of 9 · 11% · executing"
+    "label": "Advance to the next step (verify)",
+    "reason": "Phase 2 of 9 · 22% · ready to verify"
   },
-  "updated_at": "2026-11-25T16:11:06.915Z"
+  "updated_at": "2026-11-25T22:36:39.053Z"
 }
