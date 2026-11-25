@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { OAuth2Client } from 'google-auth-library';
+import { GOOGLE_OAUTH_CLIENT, GoogleAuthGuard } from './common/google-auth.guard';
 import { GqlThrottlerGuard } from './common/gql-throttler.guard';
 import { loadEnv } from './config/env';
 import { ContentResolver } from './content/content.resolver';
@@ -15,6 +17,8 @@ import { SnapshotController } from './content/snapshot.controller';
 import { SnapshotService } from './content/snapshot.service';
 import { DrizzleModule } from './db/drizzle.module';
 import { HealthController } from './health/health.controller';
+import { SuggestionsResolver } from './suggestions/suggestions.resolver';
+import { SuggestionsService } from './suggestions/suggestions.service';
 
 /**
  * Preserve HTTP 429 status on GraphQL responses when `GqlThrottlerGuard` rejects
@@ -95,6 +99,13 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
     SnapshotService,
     ContentService,
     ContentResolver,
+    {
+      provide: GOOGLE_OAUTH_CLIENT,
+      useFactory: () => new OAuth2Client(),
+    },
+    GoogleAuthGuard,
+    SuggestionsService,
+    SuggestionsResolver,
     {
       provide: APP_GUARD,
       useClass: GqlThrottlerGuard,
