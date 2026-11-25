@@ -46,10 +46,10 @@
 - [x] **ME-01**: User sees a weekly verse picked pseudo-randomly from their own seed, stable for the whole week (Saturday to Friday), never repeating a verse they already got
 - [x] **ME-02**: User sees a monthly verse with the same rules for the month
 - [x] **ME-03**: Past assignments are saved, so history survives content edits
-- [ ] **ME-04**: User can read names of God as rich-text article cards
-- [ ] **ME-05**: User can read blessings (first-person title, rich text, supporting verse)
-- [ ] **ME-06**: User can favorite any item with ⭐ and see all favorites
-- [ ] **ME-07**: User can long-press to copy any item, with its reference, to share outside the app
+- [x] **ME-04**: User can read names of God as rich-text article cards
+- [x] **ME-05**: User can read blessings (first-person title, rich text, supporting verse)
+- [x] **ME-06**: User can favorite any item with ⭐ and see all favorites
+- [x] **ME-07**: User can long-press to copy any item, with its reference, to share outside the app
 - [ ] **ME-08**: User can add personal items locally
 - [ ] **ME-09**: User can optionally suggest a personal item to everyone
 
@@ -209,10 +209,10 @@
 | ME-01 | Phase 4 | Complete |
 | ME-02 | Phase 4 | Complete |
 | ME-03 | Phase 4 | Complete |
-| ME-04 | Phase 4 | Pending |
-| ME-05 | Phase 4 | Pending |
-| ME-06 | Phase 4 | Pending |
-| ME-07 | Phase 4 | Pending |
+| ME-04 | Phase 4 | Complete |
+| ME-05 | Phase 4 | Complete |
+| ME-06 | Phase 4 | Complete |
+| ME-07 | Phase 4 | Complete |
 | ME-08 | Phase 4 | Pending |
 | ME-09 | Phase 4 | Pending |
 | SET-01 | Phase 4 | Pending |
