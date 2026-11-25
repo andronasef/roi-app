@@ -259,6 +259,20 @@ export function runSeed(options: RunSeedOptions): SeedResult {
   }
 
   const applyTx = sqlite.transaction(() => {
+    // The plan above was computed from reads outside this transaction. A live-server mutation may
+    // have committed since; with the write lock held, bail out rather than reuse a version number.
+    const liveVersion =
+      db
+        .select()
+        .from(contentMeta)
+        .where(eq(contentMeta.id, CONTENT_META_SINGLETON_ID))
+        .get()?.contentVersion ?? 0;
+    if (liveVersion !== currentVersion) {
+      throw new Error(
+        `content_version changed during seed (${currentVersion} -> ${liveVersion}); re-run the seed.`,
+      );
+    }
+
     db.insert(contentMeta)
       .values({
         id: CONTENT_META_SINGLETON_ID,
@@ -352,7 +366,7 @@ export function runSeed(options: RunSeedOptions): SeedResult {
       .run();
   });
 
-  applyTx();
+  applyTx.immediate();
   rebuildAllSnapshots(db, dataDir, nowMs);
 
   return {

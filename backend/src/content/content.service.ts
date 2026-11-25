@@ -181,7 +181,8 @@ export class ContentService {
       return { contentVersion: nextVersion, result };
     });
 
-    const txOut = executeTx();
+    // IMMEDIATE takes the write lock up front so the version read-then-write cannot race another process.
+    const txOut = executeTx.immediate();
     this.snapshotService.refreshCache(nowMs);
     return txOut;
   }
