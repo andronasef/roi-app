@@ -54,9 +54,9 @@ files_reviewed_list:
   - bun.lock
 findings:
   critical: 0
-  warning: 5
+  warning: 4
   info: 7
-  total: 12
+  total: 11
   necessity: 0
 status: issues_found
 ---
@@ -129,7 +129,9 @@ if (err instanceof SuggestionSubmitError && err.code === 'unauthenticated') {
 }
 ```
 
-### WR-02: Suggestion sign-in silently requests the Drive `appdata` scope its consent copy does not mention
+### ~~WR-02: Suggestion sign-in silently requests the Drive `appdata` scope its consent copy does not mention~~ — ACCEPTED (by design)
+
+**Disposition:** Accepted by owner (2026-11-26). Requesting `drive.appdata` at the suggestion sign-in is intentional so the grant is already in place for the later Drive backup. Not counted in totals; excluded from `--fix`.
 
 **File:** `app/features/google/auth.ts:56-62, 78-116` (called from `app/features/leyaana/PersonalItemDialog.tsx:210`; copy at `PersonalItemDialog.tsx:575-578`)
 **Issue:** `SuggestSignInDialog` explains: "to review suggestions and prevent spam we need to sign in with Google, without uploading any other personal data." `handleConfirmSignInAndSubmit` calls `signInWithGoogleDriveScope()`. That function configures `scopes: [DRIVE_APPDATA_SCOPE]` and runs `addScopes` if the scope is missing. The user therefore sees a Drive-access consent screen that the explanation never mentioned, and the app takes a Drive grant it does not need for submitting a suggestion (only an ID token is needed). This contradicts the project constraint to request the scope after an explanatory screen. It is also a store-review and privacy-disclosure risk, because the privacy posture is "no network egress of personal content except explicit actions".
