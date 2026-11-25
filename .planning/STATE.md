@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 4
 current_phase_name: Onboarding, Personalization & Identity
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-11-25T21:06:49.531Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-11-25T21:11:30.805Z"
 last_activity: 2026-11-25
 last_activity_desc: Phase 4 execution started
-state_head: 6f5e167958e7dd1570e4568adb025288dbf2bd4f
+state_head: 09d0e85c7703fcdea7dad7d7ba042fc55943b903
 progress:
   total_phases: 9
   completed_phases: 1
   total_plans: 40
-  completed_plans: 36
+  completed_plans: 37
   percent: 11
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 ## Current Position
 
 Phase: 4 (Onboarding, Personalization & Identity) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-11-25 — Phase 4 execution started
 
@@ -79,6 +79,7 @@ Progress: [█░░░░░░░░░] 11%
 | Phase 03 P04 | 4min | 2 tasks | 16 files |
 | Phase 04 P02 | 3min | 2 tasks | 13 files |
 | Phase 04 P03 | 4min | 2 tasks | 12 files |
+| Phase 4 P04 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-04: Implemented I18nProvider in admin/src/lib/i18n.ts using React.createElement to preserve the planned .ts file path.
 - [Phase 04]: 04-02: Track shared seen-counts across weekly and monthly verse_assignments and pick from minimum-count live tier for non-repeat cycle reset
 - [Phase 04]: 04-03: Persist all 4 canonical home_tiles in SQLite settings while filtering rendered Home tiles to IMPLEMENTED_HOME_TOOLS (['leyaana']) and bumping ContentRefreshContext on delta sync updates.
+- [Phase 4]: 04-04: Exposed requestGoogleDriveScopeUpgrade alongside signInWithGoogleDriveScope and narrowed SignInSilentlyResponse explicitly in app/features/google/auth.ts.
 
 ### Pending Todos
 
@@ -134,6 +136,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-25T21:06:49.454Z
-Stopped at: Completed 04-03-PLAN.md
-Resume file: .planning/phases/04-onboarding-personalization-identity/04-03-SUMMARY.md
+Last session: 2026-11-25T21:11:30.679Z
+Stopped at: Completed 04-04-PLAN.md
+Resume file: .planning/phases/04-onboarding-personalization-identity/04-04-SUMMARY.md

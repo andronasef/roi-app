@@ -26,8 +26,8 @@
 
 ### Onboarding & Home (HOME)
 
-- [ ] **HOME-01**: First launch shows 3 onboarding screens (what Ro'i is; name + gender; pick a first verse or "later")
-- [ ] **HOME-02**: User reaches a first win (a verse, a prayer card or a gratitude line saved) within the first minute
+- [x] **HOME-01**: First launch shows 3 onboarding screens (what Ro'i is; name + gender; pick a first verse or "later")
+- [x] **HOME-02**: User reaches a first win (a verse, a prayer card or a gratitude line saved) within the first minute
 - [x] **HOME-03**: Home shows a tile per tool; the user can show, hide and reorder tiles, and the choice persists
 - [ ] **HOME-04**: Home shows what is due today as counts (verses to review, prayers waiting, tonight's gratitude)
 - [x] **HOME-05**: A one-time intro message explains the home screen
@@ -36,7 +36,7 @@
 
 ### Personalization (PERS)
 
-- [ ] **PERS-01**: User enters name and gender; both can be changed later in Settings
+- [x] **PERS-01**: User enters name and gender; both can be changed later in Settings
 - [x] **PERS-02**: Content renders from `text` / `textFemale` / `{الاسم}` using the one shared `personalize()` function
 - [x] **PERS-03**: When the name is missing, the content falls back to a neutral form
 - [x] **PERS-04**: UI strings are also gender-aware
@@ -198,11 +198,11 @@
 | ADM-05 | Phase 3 | Complete |
 | ADM-06 | Phase 3 | Complete |
 | ADM-07 | Phase 3 | Complete |
-| HOME-01 | Phase 4 | Pending |
-| HOME-02 | Phase 4 | Pending |
+| HOME-01 | Phase 4 | Complete |
+| HOME-02 | Phase 4 | Complete |
 | HOME-03 | Phase 4 | Complete |
 | HOME-05 | Phase 4 | Complete |
-| PERS-01 | Phase 4 | Pending |
+| PERS-01 | Phase 4 | Complete |
 | PERS-02 | Phase 4 | Complete |
 | PERS-03 | Phase 4 | Complete |
 | PERS-04 | Phase 4 | Complete |
