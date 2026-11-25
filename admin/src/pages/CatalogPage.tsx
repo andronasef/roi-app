@@ -174,8 +174,8 @@ export function CatalogPage({ kind }: { kind: ContentKind }) {
             <TableRow>
               <TableHead>{refHeading}</TableHead>
               <TableHead>{t.editor.singleTextLabel}</TableHead>
-              <TableHead>{t.catalog.updatedAt}</TableHead>
-              <TableHead>{t.catalog.version}</TableHead>
+              <TableHead className="hidden md:table-cell">{t.catalog.updatedAt}</TableHead>
+              <TableHead className="hidden md:table-cell">{t.catalog.version}</TableHead>
               <TableHead>{t.catalog.actions}</TableHead>
             </TableRow>
           </TableHeader>
@@ -185,7 +185,7 @@ export function CatalogPage({ kind }: { kind: ContentKind }) {
                 <TableCell dir="rtl" lang="ar" className="font-bold">
                   {item.label}
                 </TableCell>
-                <TableCell className="max-w-md">
+                <TableCell className="min-w-[10rem] max-w-md">
                   <p dir="rtl" lang="ar" className="line-clamp-2">
                     {item.text}
                   </p>
@@ -196,8 +196,8 @@ export function CatalogPage({ kind }: { kind: ContentKind }) {
                     {item.textFemale ? <Badge variant="secondary">{t.catalog.dualGender}</Badge> : null}
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">{formatTimestamp(item.updatedAt)}</TableCell>
-                <TableCell>{formatNumber(item.version)}</TableCell>
+                <TableCell className="hidden text-sm md:table-cell">{formatTimestamp(item.updatedAt)}</TableCell>
+                <TableCell className="hidden md:table-cell">{formatNumber(item.version)}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <RowAction label={t.cta.editItem} onClick={() => navigate(`/${route}/${item.id}`)}>
