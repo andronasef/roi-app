@@ -168,7 +168,7 @@ Bilingual UI copy (`D-12`) — the admin shell switches cleanly between Arabic (
   - `name_of_god` & `blessing`: Rich-text mode supporting ONLY **Bold**, **Italic**, **H2**, **H3**, **Bullet List**, **Blockquote**, and atomic **`nameChip`**.
 - **Atomic `{الاسم}` Chip Node (`ADM-04`):**
   - Rendered via Tiptap `Node.create({ name: 'nameChip', group: 'inline', inline: true, atom: true, draggable: true })` and React `NodeViewWrapper`.
-  - Visual chip: `inline-flex items-center gap-1 rounded-md border border-accent/40 bg-accent/15 px-2 py-0.5 text-sm font-bold text-accent align-baseline select-none` displaying a small user icon + `"الاسم"`. Raw `{الاسم}` NEVER appears in the editor surface.
+  - Visual chip: `inline-flex items-center gap-1 rounded-md border border-accent/40 bg-accent/15 px-2 py-1 text-sm font-bold text-accent align-baseline select-none` displaying a small user icon + `"الاسم"`. Raw `{الاسم}` NEVER appears in the editor surface.
   - **Required interactions (acceptance-tested):**
     1. Toolbar button `"إدراج {الاسم}"` / `"Insert Name Chip"` inserts the chip at the current selection and refocuses the editor.
     2. Dragging a chip mid-sentence moves it cleanly without deleting it (`CLAUDE.md` §5 regression check).
