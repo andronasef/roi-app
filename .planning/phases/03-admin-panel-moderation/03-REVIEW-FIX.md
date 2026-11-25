@@ -1,12 +1,12 @@
 ---
 phase: 03-admin-panel-moderation
-fixed_at: 2026-11-25T19:10:00+02:00
+fixed_at: 2026-11-25T20:20:00Z
 review_path: .planning/phases/03-admin-panel-moderation/03-REVIEW.md
 iteration: 1
-findings_in_scope: 7
-fixed: 7
-skipped: 0
-status: all_fixed
+findings_in_scope: 5
+fixed: 3
+skipped: 2
+status: partial
 ---
 
 # Phase 3: Code Review Fix Report
@@ -15,65 +15,59 @@ status: all_fixed
 **Source review:** .planning/phases/03-admin-panel-moderation/03-REVIEW.md
 **Iteration:** 1
 
-**Summary:**
-- Findings in scope: 7 (CR-01, WR-01..WR-06; Info findings excluded)
-- Fixed: 7 (WR-02 and WR-03 are partial, see below)
-- Skipped: 0
+This report supersedes the earlier 03-REVIEW-FIX.md, which covered CR-01 and WR-01..06 of the previous review round. Finding IDs below refer to the current 03-REVIEW.md.
 
-**Verification:** run in the main checkout (`use_worktrees` bypassed per orchestrator instruction). `bun run test` passes (41 files, 275 tests). `bun run typecheck` passes.
+**Summary:**
+- Findings in scope: 5 (Critical: 0, Warning: 5; `fix_scope: critical_warning`)
+- Fixed: 3
+- Skipped: 2 (both need a product or owner decision)
 
 ## Fixed Issues
 
-### CR-01: `ADMIN_GOOGLE_CLIENT_ID` never used as ID-token audience
-
-**Files modified:** `backend/src/admin-auth/admin-auth.service.ts`, `backend/src/__tests__/admin-auth-audience.test.ts` (new)
-**Commit:** b20cbfb
-**Applied fix:** Added `adminAudience()`. It returns `[ADMIN_GOOGLE_CLIENT_ID]` when set, otherwise `GOOGLE_CLIENT_IDS`. `authenticateGoogleIdToken` now verifies against it. Added a unit test for both cases.
-**Status:** fixed: requires human verification (auth logic; confirm a real GIS login against the deployed web client ID).
-
-### WR-01: Hard-coded JWT secret / deferred failure
-
-**Files modified:** `backend/src/config/env.ts`, `backend/src/main.ts`, `backend/src/admin-auth/admin-auth.service.ts`, `backend/src/__tests__/config.test.ts`
-**Commit:** bed56c4
-**Applied fix:** Added `assertProductionConfig(env)`, called from `bootstrap()`. It throws at boot when `NODE_ENV=production` and `ADMIN_JWT_SECRET` is shorter than 32 chars. The public constant is replaced by a per-process random secret for non-production. The check lives in `bootstrap()` rather than the zod schema so existing integration tests that boot production apps without a secret keep working. The login-time `ADMIN_AUTH_MISCONFIGURED` guard stays as a second line of defence. Note: in non-production, admin sessions no longer survive a backend restart unless `ADMIN_JWT_SECRET` is set.
-**Status:** fixed: requires human verification (the `NODE_ENV` default is still `development`, so a deploy that omits it still runs the non-production path, though it can no longer be forged).
-
-### WR-02: Sessions cannot be revoked / failed logout shows "signed out" (partial)
-
-**Files modified:** `admin/src/components/auth/AuthProvider.tsx`, `admin/src/components/layout/AdminShell.tsx`
-**Commit:** f591104
-**Applied fix:** SPA half only. `logout()` clears local state only after the server confirms. On failure the user stays signed in and `AdminShell` shows an error toast. `queryClient.clear()` runs only after a successful logout.
-**Not done:** server-side revocation (`jti` denylist or session epoch). It needs a persistent store, so a new table and drizzle migration, and the 14-day lifetime is a D-02 decision. An in-memory denylist would be lost on restart and give false assurance. Recommend a follow-up plan.
-**Status:** fixed: requires human verification (partial).
-
-### WR-03: Unvalidated Markdown reaching public content
+### WR-01: Link/HTML rule on the read path
 
 **Files modified:** `shared/src/schemas.ts`, `shared/src/__tests__/schemas.test.ts`
-**Commit:** 657134d
-**Applied fix:** `personalizedTextSchema` now rejects Markdown links `](`, images `![`, and raw HTML tags `<x` in `text` and `textFemale`. It applies to suggestion submit, admin create/update and accept. Blockquotes and a bare `<` are still allowed. Test added.
-**Not done:** SPA pre-submit normalisation. It cannot strip links, and the server now rejects them, so the admin sees the validation error instead of a silent publish. Existing pending suggestions containing links can no longer be accepted as-is.
-**Status:** fixed: requires human verification (regex heuristic; confirm no legitimate seed or Arabic content trips it. The full suite, including seed tests, passes).
+**Commit:** ffe68de
+**Applied fix:** Split read and write schemas. The item, envelope and delta schemas (`verseItemSchema`, `nameOfGodItemSchema`, `blessingItemSchema`, snapshot and delta responses) now use a structural-only text shape (non-empty, max 5000, `{الاسم}`-only braces). `personalizedTextSchema` and `plainTextSchema` keep the link/HTML rule and remain the schemas used by admin mutations, accept and submit. A stored row or tombstone that violates the rule can no longer make `getContentDelta`, `rebuildAllSnapshots` or the mobile parse throw. A regression test covers the read path accepting legacy link text and the write path rejecting it. Existing rows are still served as stored. The production data was not scanned (no access). The review's optional one-off scan is not needed for correctness any more, but it would still be worth running to find legacy content that should be cleaned.
 
-### WR-04: Audit log lacks before/after; accepts under wrong entity
+### WR-02: Reference-style links and bare URLs
 
-**Files modified:** `backend/src/admin-content/admin-content.service.ts`, `backend/src/admin-moderation/admin-moderation.service.ts`, `backend/src/__tests__/admin-content.test.ts`, `backend/src/__tests__/admin-moderation.test.ts`
-**Commit:** 55ddf08
-**Applied fix:** Updates now write `before` and `after` (ref/title, verseRef, text, textFemale) into `summaryJson`. No schema change, since `summaryJson` is free-form text and the fields are already length-capped by the shared schema. `accept_suggestion` is now logged with `entityType: 'suggestion'` and `entityId: <suggestionId>`. `newItemId` and `kind` remain in the summary. Soft-delete/restore summaries are unchanged (state toggle, nothing to diff).
-**Status:** fixed
+**Files modified:** `shared/src/schemas.ts`, `shared/src/__tests__/schemas.test.ts`
+**Commit:** 13a53c2
+**Applied fix:** The write-side rule now also rejects reference links (`][`), reference definitions (`[x]: ...`, including the `<url>` form), bare `http(s)://` and `www.` URLs, and bare emails, in addition to inline links, images and raw HTML. I used a wider block-list rather than the full allow-list from the review. An allow-list would need a Markdown parser in shared and would also run on the seed. New tests cover the bypass strings and a few look-alike strings that must still pass (`[٢٣]`, `@` in prose). The seed content still validates. The stronger control the review mentions (disabling link and autolink handling in the mobile `react-native-marked` renderer) is a mobile-side change for a later phase. Content already stored is not re-checked, by design (see WR-01). Known side effect: `]` followed by `[` with optional whitespace is rejected, so two adjacent bracketed spans such as `[٢٣] [٢٤]` are blocked.
 
-### WR-05: Last-writer-wins edits and edits to soft-deleted items
+### WR-04: Content-conflict dead end
 
-**Files modified:** `backend/src/admin-content/admin-content.service.ts`, `backend/src/admin-content/admin-content.resolver.ts`, `backend/src/__tests__/admin-content.test.ts`, `admin/src/lib/admin-api.ts`, `admin/src/lib/i18n.ts`, `admin/src/pages/CatalogPage.tsx`
-**Commit:** 11f162c
-**Applied fix:** `updateVerse`, `updateNameOfGod` and `updateBlessing` take an optional `expectedVersion: Int`. They throw `ConflictException('CONTENT_VERSION_CONFLICT')` on mismatch. They always throw `CONTENT_ALREADY_DELETED` for soft-deleted rows. The argument is optional, so existing clients keep working. The SPA sends the version the form was first loaded from (held in a ref, so a post-conflict refetch cannot silently rebase the draft). It shows a localized conflict message (ar/en) and refetches the list.
-**Status:** fixed: requires human verification (concurrency logic).
+**Files modified:** `admin/src/pages/CatalogPage.tsx`, `admin/src/lib/i18n.ts`
+**Commit:** 2435110
+**Status:** fixed: requires human verification (logic change, no UI test added)
+**Applied fix:** On `CONTENT_VERSION_CONFLICT` or `CONTENT_ALREADY_DELETED`, the route now awaits the catalog refetch and rebases `loaded.current.version` to the fresh version. The draft is kept and the next explicit Save overwrites the other admin's change, instead of conflicting forever. This also fixes the lost-response retry case. The Arabic and English `contentConflict` messages now say that saving again overwrites the other admin's edit, and that the admin should copy the draft and reopen the page to review the latest version first. This is the review's "minimum" option plus the overwrite path. A side-by-side diff view was not built. A deleted item still fails with `CONTENT_ALREADY_DELETED` on retry, as intended. The write of `loaded.current` during render was left as is, because it is idempotent.
 
-### WR-06: Post-commit snapshot rebuild failure reports error
+## Skipped Issues
 
-**Files modified:** `backend/src/content/content.service.ts`, `backend/src/__tests__/admin-content.test.ts`
-**Commit:** 1987ab9
-**Applied fix:** `refreshCache` after commit is wrapped in try/catch and logged. The mutation returns its committed result, and `SnapshotService.refreshIfStale` rebuilds on the next read. Test simulates a rebuild failure and checks the mutation succeeds and the snapshot heals.
-**Status:** fixed
+### WR-03: `{الاسم}` token still offered and accepted for names of God and blessings
+
+**File:** `admin/src/components/editor/RichContentEditor.tsx:86`, `shared/src/schemas.ts` (`plainTextSchema`), `admin/src/components/editor/LivePreviewCard.tsx:73-75`
+**Reason:** Skipped: the suggested fix contradicts documented product decisions and existing content, so it needs an owner decision. 03-CONTEXT.md D-04 specifies that names of God and blessings use the Tiptap editor "plus the atomic, draggable `{الاسم}` name chip". The seed file `backend/seed/initial-content.json` has `{الاسم}` in 9 of 12 names of God and 11 of 12 blessings. Making `plainTextSchema` reject braces would fail seeding and every existing item on edit. Hiding the chip button would stop admins adding the token to new items. The gender variant was removed in d607ee9, 1c1abe5 and 5a17fcd, but the token was not, and the "test name" preview control was hidden deliberately in 5a17fcd. The intended behavior is unclear. Either (a) names and blessings are still name-personalized, so the preview should substitute a name and the mobile app must personalize them, or (b) they are not, so the token must be stripped from the seed, the chip hidden and the schema tightened. No code was changed.
+**Original issue:** The token is still offered, accepted and advertised (catalog badge) for kinds that are no longer personalized, so readers could see a literal `{الاسم}`.
+
+### WR-05: `textFemale` removed from public GraphQL types with no deprecation window
+
+**File:** `backend/src/content/content.resolver.ts:49-85`, `app/features/sync/api.ts:56-80`
+**Reason:** Skipped: decision recorded, no code change, per the instruction not to reintroduce the field without a clearly safe path. A deprecated nullable `textFemale` that always resolves to `null` would technically be safe. I judged it speculative: the repo has no release tags, no store or EAS release config and no evidence of a shipped client. The only mobile consumer in the repo (`CONTENT_DELTA_QUERY`) was already updated in 1c1abe5. The old-client break is real only if a TestFlight or internal build with the old query exists. Rollout implication: the updated mobile build must ship with or before the backend change. An old build against the new backend gets `GRAPHQL_VALIDATION_FAILED` on the whole `contentDelta` query, verses included. If a pre-change build is out there, add `@Field(() => String, { nullable: true, deprecationReason: 'Removed; always null' }) textFemale?: string | null` to `NameOfGodDto` and `BlessingDto` for one release. That addition is safe because the field resolves to null when absent and old clients parse it as nullable.
+**Original issue:** Removing the field outright breaks any mobile build whose delta query still selects it.
+
+## Verification
+
+- Where the gates ran: edits and per-fix checks ran in an isolated git worktree (`.claude/worktrees/rf-03-...`). The worktree borrowed the main checkout's `node_modules` through a link and copies of the small workspace `node_modules` directories. After fast-forwarding `main` to the fixes, the full suite was re-run in the main checkout, so the numbers below are reproducible there.
+- Baseline before fixes: 41 files, 275 tests passing.
+- After fixes (in the main checkout): `vitest run` runs the shared, backend, admin and app projects. 41 files, 277 tests, all passing (2 new tests).
+- `npm run typecheck` (root, admin, app) was clean in the worktree after the last fix.
+- Status of WR-04: type-checked and the existing admin suite passes, but there is no automated test for the conflict flow. It needs a manual check in the admin SPA with two sessions.
+
+## Git
+
+Three fix commits (ffe68de, 13a53c2, 2435110) were fast-forwarded onto `main`. The worktree, temp branch and recovery sentinel were cleaned up. `.planning/config.json`, `.planning/state.json` and `.impeccable/` were already modified or untracked before this run and were not touched.
 
 ---
 
