@@ -75,10 +75,14 @@ export const suggestions = sqliteTable(
     textFemale: text('text_female'),
     verseRef: text('verse_ref'),
     status: text('status').notNull().default('pending'),
+    moderationNote: text('moderation_note'),
     googleSub: text('google_sub').notNull(),
     email: text('email').notNull(),
   },
-  (t) => [index('suggestions_sub_created_idx').on(t.googleSub, t.createdAt)],
+  (t) => [
+    index('suggestions_sub_created_idx').on(t.googleSub, t.createdAt),
+    index('suggestions_status_created_idx').on(t.status, t.createdAt),
+  ],
 );
 
 /** Transactional audit trail for all content mutations and seed imports (BE-05). */

@@ -28,6 +28,24 @@ export const envSchema = z.object({
     .string()
     .optional()
     .transform((value) => parseCsvList(value)),
+  ADMIN_EMAILS: z
+    .string()
+    .optional()
+    .transform((value) => parseCsvList(value).map((email) => email.toLowerCase())),
+  ADMIN_JWT_SECRET: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const trimmed = value?.trim();
+      return trimmed && trimmed.length > 0 ? trimmed : undefined;
+    }),
+  ADMIN_GOOGLE_CLIENT_ID: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const trimmed = value?.trim();
+      return trimmed && trimmed.length > 0 ? trimmed : undefined;
+    }),
   GOOGLE_CLIENT_IDS: z
     .string()
     .optional()

@@ -8,6 +8,13 @@
       "when": 1795611404625,
       "tag": "0000_supreme_prowler",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795622828252,
+      "tag": "0001_admin_suggestions_note",
+      "breakpoints": true
     }
   ]
 }

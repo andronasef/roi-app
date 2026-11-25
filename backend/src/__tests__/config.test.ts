@@ -80,31 +80,47 @@ describe('backend Phase 2 foundation (SWC DI, shared schemas, env, paths)', () =
     ).toBe(true);
   });
 
-  it('loadEnv() applies defaults including roi-app-515721 Google client IDs and empty ADMIN_ORIGINS', () => {
+  it('loadEnv() applies defaults including roi-app-515721 Google client IDs, empty ADMIN_ORIGINS, and empty ADMIN_EMAILS', () => {
     const env = loadEnv({});
     expect(env.NODE_ENV).toBe('development');
     expect(env.PORT).toBe(3000);
     expect(env.DATA_DIR).toBe('./data');
     expect(env.ADMIN_ORIGINS).toEqual([]);
+    expect(env.ADMIN_EMAILS).toEqual([]);
+    expect(env.ADMIN_JWT_SECRET).toBeUndefined();
+    expect(env.ADMIN_GOOGLE_CLIENT_ID).toBeUndefined();
     expect(env.GOOGLE_CLIENT_IDS).toEqual([
       '23662840492-h4j3v57k9dpm0suqa61qpkv7qh78qq9v.apps.googleusercontent.com',
       '23662840492-laqcbt3hkft72a3mu0ofcokeskr7sr7a.apps.googleusercontent.com',
     ]);
   });
 
-  it('loadEnv() parses comma-separated ADMIN_ORIGINS, GOOGLE_CLIENT_IDS, PORT, and DATA_DIR', () => {
+  it('loadEnv() parses comma-separated ADMIN_ORIGINS, ADMIN_EMAILS, GOOGLE_CLIENT_IDS, PORT, DATA_DIR, and admin auth fields', () => {
     const env = loadEnv({
       NODE_ENV: 'production',
       PORT: '8080',
       DATA_DIR: '/data',
       ADMIN_ORIGINS: ' https://admin.roi.app , https://staging.roi.app/ ',
+      ADMIN_EMAILS: ' Owner@Example.com , CoAdmin@Example.org , ',
+      ADMIN_JWT_SECRET: '  super-secret-value-at-least-32-chars-long  ',
+      ADMIN_GOOGLE_CLIENT_ID: '  web-client-override.apps.googleusercontent.com  ',
       GOOGLE_CLIENT_IDS: 'client-a, client-b',
     });
     expect(env.NODE_ENV).toBe('production');
     expect(env.PORT).toBe(8080);
     expect(env.DATA_DIR).toBe('/data');
     expect(env.ADMIN_ORIGINS).toEqual(['https://admin.roi.app', 'https://staging.roi.app/']);
+    expect(env.ADMIN_EMAILS).toEqual(['owner@example.com', 'coadmin@example.org']);
+    expect(env.ADMIN_JWT_SECRET).toBe('super-secret-value-at-least-32-chars-long');
+    expect(env.ADMIN_GOOGLE_CLIENT_ID).toBe('web-client-override.apps.googleusercontent.com');
     expect(env.GOOGLE_CLIENT_IDS).toEqual(['client-a', 'client-b']);
+
+    const blankOptional = loadEnv({
+      ADMIN_JWT_SECRET: '   ',
+      ADMIN_GOOGLE_CLIENT_ID: '',
+    });
+    expect(blankOptional.ADMIN_JWT_SECRET).toBeUndefined();
+    expect(blankOptional.ADMIN_GOOGLE_CLIENT_ID).toBeUndefined();
   });
 
   it('loadEnv() rejects invalid PORT, NODE_ENV, or empty DATA_DIR', () => {

@@ -59,6 +59,7 @@ describe('backend SQLite Drizzle schema and WAL client', () => {
       expect(indexNames.has('names_of_god_version_idx')).toBe(true);
       expect(indexNames.has('blessings_version_idx')).toBe(true);
       expect(indexNames.has('suggestions_sub_created_idx')).toBe(true);
+      expect(indexNames.has('suggestions_status_created_idx')).toBe(true);
 
       const metaRows = handle.db.select().from(contentMeta).all();
       expect(metaRows).toHaveLength(1);
@@ -110,6 +111,7 @@ describe('backend SQLite Drizzle schema and WAL client', () => {
       expect(sug?.status).toBe('pending');
       expect(sug?.googleSub).toBe('sub-123');
       expect(sug?.email).toBe('user@example.com');
+      expect(sug?.moderationNote).toBeNull();
     } finally {
       reopened.close();
     }
