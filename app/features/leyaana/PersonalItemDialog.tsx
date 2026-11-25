@@ -1,4 +1,3 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import {
   submitSuggestionInputSchema,
   type ContentKind,
@@ -36,6 +35,7 @@ import ar from '../../locales/ar.json';
 import { db, deviceClock } from '../db/client';
 import {
   getGoogleSessionToken,
+  refreshGoogleIdToken,
   signInWithGoogleDriveScope,
 } from '../google/auth';
 import type { Gender } from '../profile/repository';
@@ -167,17 +167,25 @@ export function usePersonalSuggestion(gender: Gender) {
             err instanceof SuggestionSubmitError &&
             err.code === 'unauthenticated'
           ) {
-            try {
-              const refreshed = await GoogleSignin.getTokens();
-              if (
-                typeof refreshed.idToken === 'string' &&
-                refreshed.idToken.trim().length > 0
-              ) {
-                await submitWithToken(item, refreshed.idToken);
-                return;
+            const refreshed = await refreshGoogleIdToken();
+            if (refreshed && refreshed !== session.idToken) {
+              try {
+                await submitWithToken(item, refreshed);
+              } catch (retryErr) {
+                if (
+                  retryErr instanceof SuggestionSubmitError &&
+                  retryErr.code === 'unauthenticated'
+                ) {
+                  setSignInDialogItem(item);
+                } else {
+                  setSuggestFeedback({
+                    type: 'error',
+                    message: mapSuggestionErrorMessage(retryErr, gender),
+                    itemId: item.id,
+                  });
+                }
               }
-            } catch {
-              // Fall through to inline Google Sign-In dialog
+              return;
             }
             setSignInDialogItem(item);
             return;

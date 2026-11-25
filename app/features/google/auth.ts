@@ -225,6 +225,31 @@ export async function getGoogleSessionToken(): Promise<GoogleSessionTokenResult>
 }
 
 /**
+ * Force a silent session refresh and return a (possibly new) ID token, or null when no
+ * session can be restored. Used to retry after the backend rejects a stale token (WR-01).
+ */
+export async function refreshGoogleIdToken(): Promise<string | null> {
+  configureGoogleSignIn();
+
+  try {
+    const silent = await GoogleSignin.signInSilently();
+    if (isNoSavedCredentialFoundResponse(silent) || silent.type !== 'success') {
+      return null;
+    }
+    const tokens = await GoogleSignin.getTokens();
+    const idToken =
+      typeof tokens.idToken === 'string' && tokens.idToken.trim().length > 0
+        ? tokens.idToken
+        : silent.data.idToken;
+    return typeof idToken === 'string' && idToken.trim().length > 0
+      ? idToken
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Read current on-device Google account status without logging or exposing tokens.
  */
 export async function getGoogleAccountStatus(): Promise<GoogleAccountStatus> {
