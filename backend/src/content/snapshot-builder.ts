@@ -39,7 +39,7 @@ const versesEnvelopeSchema = createSnapshotEnvelopeSchema(verseItemSchema);
 const namesEnvelopeSchema = createSnapshotEnvelopeSchema(nameOfGodItemSchema);
 const blessingsEnvelopeSchema = createSnapshotEnvelopeSchema(blessingItemSchema);
 
-function parseTagsJson(tagsJson: string | null): string[] | null {
+export function parseTagsJson(tagsJson: string | null): string[] | null {
   if (!tagsJson) {
     return null;
   }
