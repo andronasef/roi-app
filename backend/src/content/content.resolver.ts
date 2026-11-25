@@ -1,6 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
 import { Args, Field, Float, ID, Int, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { z } from 'zod';
+import { ZodValidationPipe } from '../common/zod-validation.pipe';
 import { ContentService } from './content.service';
 
 const sinceVersionSchema = z.number().int().nonnegative('sinceVersion must be a non-negative integer');
@@ -128,14 +128,9 @@ export class ContentResolver {
 
   @Query(() => ContentDeltaDto)
   contentDelta(
-    @Args('sinceVersion', { type: () => Int }) sinceVersion: number,
+    @Args('sinceVersion', { type: () => Int }, new ZodValidationPipe(sinceVersionSchema))
+    sinceVersion: number,
   ): ContentDeltaDto {
-    const parsed = sinceVersionSchema.safeParse(sinceVersion);
-    if (!parsed.success) {
-      throw new BadRequestException(
-        parsed.error.issues[0]?.message ?? 'sinceVersion must be a non-negative integer',
-      );
-    }
-    return this.contentService.getContentDelta(parsed.data);
+    return this.contentService.getContentDelta(sinceVersion);
   }
 }

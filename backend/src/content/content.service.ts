@@ -10,14 +10,11 @@ import {
 } from '@roi/shared';
 import type Database from 'better-sqlite3';
 import { asc, eq, gt } from 'drizzle-orm';
-import { z } from 'zod';
 import { CONTENT_META_SINGLETON_ID, type BackendDatabase } from '../db/client';
 import { DRIZZLE_DB, SQLITE_DB } from '../db/drizzle.module';
 import { auditLog, blessings, contentMeta, namesOfGod, verses } from '../db/schema';
 import { parseTagsJson } from './snapshot-builder';
 import { SnapshotService } from './snapshot.service';
-
-const sinceVersionSchema = z.number().int().nonnegative();
 
 export interface ApplyContentMutationContext {
   readonly db: BackendDatabase;
@@ -58,13 +55,12 @@ export class ContentService {
    * with `version > sinceVersion`, ordered monotonically by `(version, id)`.
    */
   getContentDelta(sinceVersion: number): ContentDeltaResponse {
-    const validSince = sinceVersionSchema.parse(sinceVersion);
     const contentVersion = this.getCurrentVersion();
 
     const changedVerses: VerseItem[] = this.db
       .select()
       .from(verses)
-      .where(gt(verses.version, validSince))
+      .where(gt(verses.version, sinceVersion))
       .orderBy(asc(verses.version), asc(verses.id))
       .all()
       .map((row) => ({
@@ -83,7 +79,7 @@ export class ContentService {
     const changedNames: NameOfGodItem[] = this.db
       .select()
       .from(namesOfGod)
-      .where(gt(namesOfGod.version, validSince))
+      .where(gt(namesOfGod.version, sinceVersion))
       .orderBy(asc(namesOfGod.version), asc(namesOfGod.id))
       .all()
       .map((row) => ({
@@ -102,7 +98,7 @@ export class ContentService {
     const changedBlessings: BlessingItem[] = this.db
       .select()
       .from(blessings)
-      .where(gt(blessings.version, validSince))
+      .where(gt(blessings.version, sinceVersion))
       .orderBy(asc(blessings.version), asc(blessings.id))
       .all()
       .map((row) => ({
