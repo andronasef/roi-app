@@ -196,6 +196,81 @@ try {
     'أشكرك على نعمة الهدوء والرجاء اليوم',
   );
 
+  if (version !== 'v1') {
+    const insertVerse = sqlite.prepare(
+      'INSERT INTO verses (id, created_at, updated_at, deleted_at, ref, text, text_female, version, sort_order, tags_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    );
+    insertVerse.run(
+      '01936000-0005-7000-8000-000000000001',
+      BASE_TS + 31_000,
+      BASE_TS + 31_000,
+      null,
+      'مزمور ٢٣: ١',
+      'اَلرَّبُّ رَاعِيَّ فَلاَ يُعْوِزُنِي شَيْءٌ.',
+      null,
+      1,
+      1,
+      JSON.stringify(['سلام', 'رعاية']),
+    );
+    insertVerse.run(
+      '01936000-0005-7000-8000-000000000002',
+      BASE_TS + 32_000,
+      BASE_TS + 35_000,
+      BASE_TS + 35_000,
+      'مزمور ١٢١: ١',
+      'آية مؤرشفة تجريبية',
+      null,
+      1,
+      2,
+      null,
+    );
+
+    const insertNameOfGod = sqlite.prepare(
+      'INSERT INTO names_of_god (id, created_at, updated_at, deleted_at, title, text, text_female, version, sort_order, tags_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    );
+    insertNameOfGod.run(
+      '01936000-0006-7000-8000-000000000001',
+      BASE_TS + 33_000,
+      BASE_TS + 33_000,
+      null,
+      'يهوه رعي',
+      'الرب راعي نفسي يقودني إلى مراعٍ خضر.',
+      'الرب راعي نفسي يقودكِ إلى مراعٍ خضر.',
+      1,
+      1,
+      JSON.stringify(['رعاية']),
+    );
+
+    const insertBlessing = sqlite.prepare(
+      'INSERT INTO blessings (id, created_at, updated_at, deleted_at, title, text, text_female, verse_ref, version, sort_order, tags_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    );
+    insertBlessing.run(
+      '01936000-0007-7000-8000-000000000001',
+      BASE_TS + 34_000,
+      BASE_TS + 34_000,
+      null,
+      'بركة السلام',
+      'ليملأ الرب قلبك سلاماً وفرحاً في هذا اليوم يا {الاسم}.',
+      'ليملأ الرب قلبكِ سلاماً وفرحاً في هذا اليوم يا {الاسم}.',
+      'فيلبي ٤: ٧',
+      1,
+      1,
+      JSON.stringify(['سلام']),
+    );
+
+    const insertSyncMeta = sqlite.prepare(
+      'INSERT INTO sync_meta (id, created_at, updated_at, deleted_at, last_content_version, last_checked_at) VALUES (?, ?, ?, ?, ?, ?)',
+    );
+    insertSyncMeta.run(
+      'content_sync',
+      BASE_TS + 36_000,
+      BASE_TS + 36_000,
+      null,
+      1,
+      BASE_TS + 36_000,
+    );
+  }
+
   sqlite.exec('VACUUM');
   sqlite.close();
 

@@ -6,6 +6,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { isNull } from 'drizzle-orm';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
@@ -28,7 +29,7 @@ function readJournalEntryCount(): number {
 }
 
 describe('fixture database migrations', () => {
-  it.each(['v1'])(
+  it.each(['v1', 'v2'])(
     'migrates copied fixture %s to latest while keeping all rows, tombstones, and events intact',
     (version) => {
       const tempDir = mkdtempSync(path.join(tmpdir(), 'roi-migrate-'));
@@ -75,6 +76,36 @@ describe('fixture database migrations', () => {
         expect(settingRows).toHaveLength(1);
         expect(settingRows[0]?.value).toBe('last_boot:1732483200000');
 
+        const allVerses = db.select().from(schema.verses).all();
+        const allNames = db.select().from(schema.namesOfGod).all();
+        const allBlessings = db.select().from(schema.blessings).all();
+        const allSyncMeta = db.select().from(schema.syncMeta).all();
+
+        if (version === 'v1') {
+          expect(allVerses).toHaveLength(0);
+          expect(allNames).toHaveLength(0);
+          expect(allBlessings).toHaveLength(0);
+          expect(allSyncMeta).toHaveLength(0);
+        } else {
+          const liveVerses = allVerses.filter((row) => row.deletedAt === null);
+          const tombstonedVerses = allVerses.filter(
+            (row) => row.deletedAt !== null,
+          );
+          expect(allVerses).toHaveLength(2);
+          expect(liveVerses).toHaveLength(1);
+          expect(tombstonedVerses).toHaveLength(1);
+
+          expect(allNames).toHaveLength(1);
+          expect(allNames[0]?.deletedAt).toBeNull();
+
+          expect(allBlessings).toHaveLength(1);
+          expect(allBlessings[0]?.deletedAt).toBeNull();
+
+          expect(allSyncMeta).toHaveLength(1);
+          expect(allSyncMeta[0]?.id).toBe(schema.CONTENT_SYNC_META_ID);
+          expect(allSyncMeta[0]?.lastContentVersion).toBe(1);
+        }
+
         expect(sqlite.pragma('integrity_check', { simple: true })).toBe('ok');
 
         const migrationCount = sqlite
@@ -88,7 +119,7 @@ describe('fixture database migrations', () => {
     },
   );
 
-  it('migrates an empty database to the latest schema with all six tables', () => {
+  it('migrates an empty database to the latest schema with all ten tables', () => {
     const tempDir = mkdtempSync(path.join(tmpdir(), 'roi-empty-'));
     const tempDbPath = path.join(tempDir, 'empty.sqlite');
     const sqlite = new Database(tempDbPath);
@@ -104,12 +135,16 @@ describe('fixture database migrations', () => {
         .all() as { name: string }[];
 
       expect(tableRows.map((r) => r.name)).toEqual([
+        'blessings',
         'gratitude_lines',
         'mem_verses',
+        'names_of_god',
         'prayer_events',
         'prayers',
         'review_events',
         'settings',
+        'sync_meta',
+        'verses',
       ]);
       expect(sqlite.pragma('integrity_check', { simple: true })).toBe('ok');
 
@@ -120,6 +155,75 @@ describe('fixture database migrations', () => {
     } finally {
       sqlite.close();
       rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('supports idempotent upsert and deletedAt tombstone updates on public content tables', () => {
+    const sqlite = new Database(':memory:');
+    try {
+      const db = drizzle(sqlite, { schema });
+      migrate(db, { migrationsFolder: DRIZZLE_DIR });
+
+      const now = 1_732_483_200_000;
+      db.insert(schema.verses)
+        .values({
+          id: 'verse-1',
+          ref: 'مزمور ٢٣: ١',
+          text: 'الرب راعي فلا يعوزني شيء',
+          textFemale: null,
+          version: 1,
+          sortOrder: 1,
+          tagsJson: '["سلام"]',
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null,
+        })
+        .onConflictDoUpdate({
+          target: schema.verses.id,
+          set: {
+            text: 'الرب راعي فلا يعوزني شيء',
+            version: 1,
+            updatedAt: now,
+            deletedAt: null,
+          },
+        })
+        .run();
+
+      db.insert(schema.verses)
+        .values({
+          id: 'verse-1',
+          ref: 'مزمور ٢٣: ١',
+          text: 'الرب راعي فلا يعوزني شيء',
+          textFemale: null,
+          version: 2,
+          sortOrder: 1,
+          tagsJson: '["سلام"]',
+          createdAt: now,
+          updatedAt: now + 1000,
+          deletedAt: now + 1000,
+        })
+        .onConflictDoUpdate({
+          target: schema.verses.id,
+          set: {
+            version: 2,
+            updatedAt: now + 1000,
+            deletedAt: now + 1000,
+          },
+        })
+        .run();
+
+      const allRows = db.select().from(schema.verses).all();
+      const liveRows = db
+        .select()
+        .from(schema.verses)
+        .where(isNull(schema.verses.deletedAt))
+        .all();
+      expect(allRows).toHaveLength(1);
+      expect(allRows[0]?.version).toBe(2);
+      expect(allRows[0]?.deletedAt).toBe(now + 1000);
+      expect(liveRows).toHaveLength(0);
+    } finally {
+      sqlite.close();
     }
   });
 });
