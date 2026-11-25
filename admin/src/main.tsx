@@ -10,6 +10,8 @@ import { I18nProvider } from '@/lib/i18n';
 import { AuditLogPage } from '@/pages/AuditLogPage';
 import { CatalogPage, ItemEditorRoute } from '@/pages/CatalogPage';
 import { LoginPage } from '@/pages/LoginPage';
+import { ModerationQueuePage } from '@/pages/ModerationQueuePage';
+import { SuggestionReviewPage } from '@/pages/SuggestionReviewPage';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -30,7 +32,8 @@ function AuthGate() {
           <Route key={`${path}/new`} path={`${path}/new`} element={<ItemEditorRoute kind={kind} />} />,
           <Route key={`${path}/:id`} path={`${path}/:id`} element={<ItemEditorRoute kind={kind} />} />,
         ])}
-        <Route path="suggestions" element={<h2 className="text-xl font-bold">suggestions</h2>} />
+        <Route path="suggestions" element={<ModerationQueuePage />} />
+        <Route path="suggestions/:id" element={<SuggestionReviewPage />} />
         <Route path="audit-log" element={<AuditLogPage />} />
         <Route path="*" element={<Navigate to="/verses" replace />} />
       </Route>
