@@ -13,6 +13,8 @@ export const SETTINGS_KEYS = {
   USER_PROFILE: 'user_profile',
   HOME_TILES: 'home_tiles',
   VERSE_SEED: 'verse_seed',
+  INTERCESSION_SORT: 'intercession_sort',
+  GRATITUDE_REMINDER: 'gratitude_reminder',
 } as const;
 
 export const ROUTES = {
@@ -21,6 +23,11 @@ export const ROUTES = {
   leyaana: '/leyaana',
   leyaanaHistory: '/leyaana/history',
   leyaanaBrowse: '/leyaana/browse',
+  intercession: '/intercession',
+  intercessionPerson: '/intercession/person',
+  intercessionPrayer: '/intercession/prayer',
+  intercessionAnswered: '/intercession/answered',
+  gratitude: '/gratitude',
   torture: '/torture',
   spike: '/spike',
 } as const;

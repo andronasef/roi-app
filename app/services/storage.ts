@@ -16,6 +16,7 @@ export const STORAGE_KEYS = {
   TELEMETRY_CONSENT: 'pref.telemetry_consent',
   ONBOARDING_COMPLETED: 'pref.onboarding_completed',
   HOME_INTRO_DISMISSED: 'pref.home_intro_dismissed',
+  GRATITUDE_NOTIFICATION_ID: 'notif.gratitude_id',
 } as const;
 
 function isThemePreference(value: string | undefined): value is ThemePreference {
@@ -69,4 +70,16 @@ export function getHomeIntroDismissed(): boolean {
 
 export function setHomeIntroDismissed(dismissed: boolean): void {
   storage.set(STORAGE_KEYS.HOME_INTRO_DISMISSED, dismissed);
+}
+
+export function getGratitudeNotificationId(): string | null {
+  return storage.getString(STORAGE_KEYS.GRATITUDE_NOTIFICATION_ID) ?? null;
+}
+
+export function setGratitudeNotificationId(id: string | null): void {
+  if (id === null) {
+    storage.remove(STORAGE_KEYS.GRATITUDE_NOTIFICATION_ID);
+    return;
+  }
+  storage.set(STORAGE_KEYS.GRATITUDE_NOTIFICATION_ID, id);
 }
