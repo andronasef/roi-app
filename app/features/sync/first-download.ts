@@ -202,6 +202,12 @@ export async function runFirstDownload({
     throw new Error('Staged contentVersion mismatch before atomic SQLite commit.');
   }
 
+  if (uniformVersion <= 0) {
+    // An unpublished (v0) library must not look "ready": the gate would restart the download in a loop.
+    await staging.clear();
+    throw new Error('Server library is not published yet (contentVersion 0).');
+  }
+
   const checkedAt = clock.now();
   db.transaction((tx) => {
     upsertContentBatch(tx, {

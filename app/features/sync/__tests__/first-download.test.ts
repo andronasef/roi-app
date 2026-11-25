@@ -355,4 +355,24 @@ describe('resumable transactional first download', () => {
       sqlite.close();
     }
   });
+
+  it('rejects an unpublished v0 library and clears staging instead of reporting success', async () => {
+    const { sqlite, db } = openMigratedMemoryDb();
+    try {
+      const staging = createMemoryStagingStore();
+      const api: SyncApiClient = {
+        fetchSnapshot: vi.fn(async (type) => makeEnvelope(type, 0)),
+        fetchContentDelta: vi.fn(),
+      };
+
+      await expect(
+        runFirstDownload({ db, clock: createClock(), api, staging }),
+      ).rejects.toThrow(/not published/);
+
+      expect(readSyncState(db).lastContentVersion).toBe(0);
+      expect(staging.hasManifest()).toBe(false);
+    } finally {
+      sqlite.close();
+    }
+  });
 });
