@@ -1,17 +1,17 @@
 ---
 gsd_state_version: "1.0"
 current_phase: 02
-current_phase_name: Content Backend & First Download
+current_phase_name: content-backend-first-download
 status: planning
-stopped_at: Phase 2 context gathered
-last_updated: "2026-11-25T11:49:49.716Z"
+stopped_at: Phase 2 UI-SPEC approved
+last_updated: "2026-11-25T12:45:06.511Z"
 last_activity: 2026-11-25
 last_activity_desc: Phase 01 closed (01-16-SUMMARY, 01-SPIKE-DECISIONS, remaining Release checks moved to end of Phase 2)
-state_head: 2e1a678f162606da99e7aac9b84625003c18598a
+state_head: ea547c5669732f6c5f7315513cdc1fd0ad149d19
 progress:
   total_phases: 9
   completed_phases: 1
-  total_plans: 16
+  total_plans: 24
   completed_plans: 16
   percent: 11
 ---
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 
 ## Current Position
 
-Phase: 02 (Content Backend & First Download) — DISCUSS / PLAN
+Phase: 02 (content-backend-first-download) — READY TO EXECUTE
 Plan: 0 of TBD
 Status: Ready to discuss
 Last activity: 2026-11-25 — Closed Phase 01 (deferred Release/Firebase checks to end of Phase 2)
@@ -108,6 +108,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-25T11:49:49.623Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-content-backend-first-download/02-CONTEXT.md
+Last session: 2026-11-25T12:12:56.379Z
+Stopped at: Phase 2 UI-SPEC approved
+Resume file: .planning/phases/02-content-backend-first-download/02-UI-SPEC.md
