@@ -104,7 +104,7 @@ Plans:
 - [x] 02-04-PLAN.md
 - [x] 02-05-PLAN.md
 - [x] 02-06-PLAN.md
-- [ ] 02-07-PLAN.md
+- [x] 02-07-PLAN.md
 - [x] 02-08-PLAN.md
 
 **UI hint**: yes
