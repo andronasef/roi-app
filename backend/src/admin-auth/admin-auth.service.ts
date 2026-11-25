@@ -74,6 +74,13 @@ export class AdminAuthService {
     return this.env.ADMIN_GOOGLE_CLIENT_ID ?? this.env.GOOGLE_CLIENT_IDS[0] ?? '';
   }
 
+  /** ID-token audience: the dedicated admin web client when set, else the configured client IDs. */
+  private adminAudience(): string[] {
+    return this.env.ADMIN_GOOGLE_CLIENT_ID
+      ? [this.env.ADMIN_GOOGLE_CLIENT_ID]
+      : [...this.env.GOOGLE_CLIENT_IDS];
+  }
+
   getCookieOptions(isProd = this.env.NODE_ENV === 'production'): AdminCookieOptions {
     return {
       httpOnly: true,
@@ -102,7 +109,7 @@ export class AdminAuthService {
     try {
       const ticket = await this.oauthClient.verifyIdToken({
         idToken,
-        audience: this.env.GOOGLE_CLIENT_IDS,
+        audience: this.adminAudience(),
       });
       payload = ticket.getPayload();
     } catch {
