@@ -686,6 +686,13 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
         contentVersion: 8,
       });
 
+      // WR-04: updates record before/after of the editable fields
+      const updateLog = logs.find((l) => l.action === 'update_verse');
+      expect(updateLog).toBeDefined();
+      const updateSummary = JSON.parse((updateLog as unknown as { summaryJson: string }).summaryJson);
+      expect(updateSummary.before.ref).not.toBe(updateSummary.after.ref);
+      expect(updateSummary.after).toMatchObject({ ref: 'مزمور ٢٣: ١-٢', text: 'الرب راعيك يا {الاسم}', textFemale: null });
+
       const filteredAuditRes = await request(server)
         .post('/graphql')
         .set('Cookie', cookie)

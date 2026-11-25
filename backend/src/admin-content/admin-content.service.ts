@@ -45,6 +45,23 @@ function normalizeOptionalVerseRef(value: string | null | undefined): string | n
   return trimmed.length === 0 ? null : trimmed;
 }
 
+/** Editable fields recorded as audit before/after (text fields are already length-capped by the shared schema). */
+function auditSnapshot(row: {
+  ref?: string;
+  title?: string;
+  verseRef?: string | null;
+  text: string;
+  textFemale?: string | null;
+}): Record<string, unknown> {
+  return {
+    ref: row.ref,
+    title: row.title,
+    verseRef: row.verseRef,
+    text: row.text,
+    textFemale: row.textFemale ?? null,
+  };
+}
+
 function mapVerseRow(row: typeof verses.$inferSelect): VerseDto {
   return {
     id: row.id,
@@ -232,18 +249,20 @@ export class AdminContentService {
   updateVerse(actorEmail: string, id: string, input: CreateVersePayload): VerseDto {
     const ref = input.ref.trim();
     const textFemale = normalizeOptionalText(input.textFemale);
+    let before: Record<string, unknown> | undefined;
 
     const { result } = this.contentService.applyContentMutation<VerseDto>({
       actorEmail,
       action: 'update_verse',
       entityType: 'verse',
       entityId: id,
-      summarize: (item) => ({ ref: item.ref }),
+      summarize: (item) => ({ ref: item.ref, before, after: auditSnapshot(item) }),
       mutate: ({ db, nextVersion, nowMs }) => {
         const existing = db.select().from(verses).where(eq(verses.id, id)).get();
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        before = auditSnapshot(existing);
 
         db.update(verses)
           .set({
@@ -310,18 +329,20 @@ export class AdminContentService {
   updateNameOfGod(actorEmail: string, id: string, input: CreateNameOfGodPayload): NameOfGodDto {
     const title = input.title.trim();
     const textFemale = normalizeOptionalText(input.textFemale);
+    let before: Record<string, unknown> | undefined;
 
     const { result } = this.contentService.applyContentMutation<NameOfGodDto>({
       actorEmail,
       action: 'update_name_of_god',
       entityType: 'name_of_god',
       entityId: id,
-      summarize: (item) => ({ title: item.title }),
+      summarize: (item) => ({ title: item.title, before, after: auditSnapshot(item) }),
       mutate: ({ db, nextVersion, nowMs }) => {
         const existing = db.select().from(namesOfGod).where(eq(namesOfGod.id, id)).get();
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        before = auditSnapshot(existing);
 
         db.update(namesOfGod)
           .set({
@@ -391,18 +412,25 @@ export class AdminContentService {
     const title = input.title.trim();
     const verseRef = normalizeOptionalVerseRef(input.verseRef);
     const textFemale = normalizeOptionalText(input.textFemale);
+    let before: Record<string, unknown> | undefined;
 
     const { result } = this.contentService.applyContentMutation<BlessingDto>({
       actorEmail,
       action: 'update_blessing',
       entityType: 'blessing',
       entityId: id,
-      summarize: (item) => ({ title: item.title, verseRef: item.verseRef ?? null }),
+      summarize: (item) => ({
+        title: item.title,
+        verseRef: item.verseRef ?? null,
+        before,
+        after: auditSnapshot(item),
+      }),
       mutate: ({ db, nextVersion, nowMs }) => {
         const existing = db.select().from(blessings).where(eq(blessings.id, id)).get();
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        before = auditSnapshot(existing);
 
         db.update(blessings)
           .set({

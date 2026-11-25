@@ -507,6 +507,8 @@ describe('AdminModerationModule (ADM-07, D-09, D-10, D-11)', () => {
       expect(logs).toHaveLength(4);
       expect(logs.filter((l) => l.action === 'accept_suggestion')).toHaveLength(2);
       expect(logs.filter((l) => l.action === 'reject_suggestion')).toHaveLength(2);
+      // WR-04: accepts are filed under the suggestion entity, like rejects
+      expect(logs.every((l) => l.entityType === 'suggestion')).toBe(true);
     } finally {
       await app.close();
     }

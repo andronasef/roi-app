@@ -173,8 +173,8 @@ export class AdminModerationService {
     const { result } = this.contentService.applyContentMutation<AdminSuggestionRecord>({
       actorEmail,
       action: 'accept_suggestion',
-      entityType: input.kind,
-      entityId: newItemId,
+      entityType: 'suggestion',
+      entityId: id,
       nowMs,
       summarize: () => ({
         suggestionId: id,
