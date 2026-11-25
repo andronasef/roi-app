@@ -10,6 +10,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AdminAuditModule } from './admin-audit/admin-audit.module';
 import { AdminAuthModule } from './admin-auth/admin-auth.module';
 import { AdminContentModule } from './admin-content/admin-content.module';
+import { AdminModerationModule } from './admin-moderation/admin-moderation.module';
 import { GoogleAuthGuard } from './common/google-auth.guard';
 import { GqlThrottlerGuard } from './common/gql-throttler.guard';
 import { loadEnv } from './config/env';
@@ -18,6 +19,13 @@ import { DrizzleModule } from './db/drizzle.module';
 import { HealthController } from './health/health.controller';
 import { SuggestionsResolver } from './suggestions/suggestions.resolver';
 import { SuggestionsService } from './suggestions/suggestions.service';
+
+const HTTP_STATUS_ERROR_CODES: Record<number, string> = {
+  404: 'NOT_FOUND',
+  409: 'CONFLICT',
+  429: 'TOO_MANY_REQUESTS',
+  503: 'SERVICE_UNAVAILABLE',
+};
 
 /**
  * Preserve HTTP 429 status on GraphQL responses when `GqlThrottlerGuard` rejects
@@ -52,6 +60,7 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
     AdminAuthModule,
     AdminContentModule,
     AdminAuditModule,
+    AdminModerationModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: () => {
@@ -76,12 +85,15 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
           hideSchemaDetailsFromClientErrors: isProd,
           preserveHttpStatusForExecutionErrors: false,
           formatError: (formattedError) => {
-            if (formattedError.extensions?.status === 429) {
+            const status = formattedError.extensions?.status;
+            const mappedCode =
+              typeof status === 'number' ? HTTP_STATUS_ERROR_CODES[status] : undefined;
+            if (mappedCode) {
               return {
                 ...formattedError,
                 extensions: {
                   ...formattedError.extensions,
-                  code: 'TOO_MANY_REQUESTS',
+                  code: mappedCode,
                 },
               };
             }
