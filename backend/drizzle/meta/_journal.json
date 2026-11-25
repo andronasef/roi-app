@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1795611404625,
+      "tag": "0000_supreme_prowler",
+      "breakpoints": true
+    }
+  ]
+}
