@@ -91,7 +91,7 @@ Typography rules:
 | Dominant (60%) | `bg-background` (`#FAF5EB` light / `#1D1A16` dark) | Full-screen canvas across **تشفع**, Person Detail, Prayer Detail, Answered Archive, **دفتر الشكر**, and the Reanimated full-screen writing overlay |
 | Secondary (30%) | `bg-card` (`#F3ECDD` light / `#28241F` dark) + `border-border` (`#DAD2C3` / `#433E37`) + `bg-muted` (`#E9E3D8` / `#322F29`) + `bg-secondary` (`#E7DFCF` / `#35302B`) | Prayer cards, Person group cards, Answered archive cards, Today & Past gratitude cards, 2-tab bar container (`bg-card`), search/note `TextInput` surfaces (`bg-card border-input`), and Settings/gear sheet cards |
 | Accent (10%) | `bg-accent` / `text-accent` / `border-accent` (`#8B7B3C` light / `#C2B26B` dark) | Reserved decorative/status accent elements listed below only |
-| Primary Action Ink Surface (semantic) | `bg-primary` (`#2C2721` light / `#ECE5D4` dark) with `text-primary-foreground` | Primary CTA buttons (`"أضف صلاة"`, `"صليت"`, `"صليت لكلهم"`, `"احفظ الصلاة"`, `"تأكيد"`, `"اكتب في دفتر الشكر"`, `"أضف شكر تاني"`, `"احفظ"`), active sort option chip |
+| Primary Action Ink Surface (semantic) | `bg-primary` (`#2C2721` light / `#ECE5D4` dark) with `text-primary-foreground` | Primary CTA buttons (`"أضف صلاة"`, `"صليت"`, `"صليت لكلهم"`, `"احفظ الصلاة"`, `"سجّل الصلاة"`, `"اكتب في دفتر الشكر"`, `"أضف شكر تاني"`, `"احفظ الشكر"`), active sort option chip |
 | Destructive | `text-destructive` / `bg-destructive` (`#C23329` light / `#D45349` dark) with `text-destructive-foreground` | Inline validation errors and soft-delete confirmation actions (`"احذف الصلاة"`, `"احذف السطر"`) only |
 
 Accent (`bg-accent` / `text-accent` / `border-accent`, canonical `#8B7B3C` light / `#C2B26B` dark) reserved for:
@@ -120,7 +120,7 @@ Accent (`bg-accent` / `text-accent` / `border-accent`, canonical `#8B7B3C` light
 | **تشفع** 2 tabs (`D-01`) | `"الصلوات"` · `"الأشخاص"` |
 | **تشفع** progress banner (`D-01`) | Incomplete: `"فاضل {N} من {M}"` · Complete: `"خلصت كل صلوات النهاردة ✓"` |
 | **تشفع** 5 sort labels (`D-02`) | `"عشوائي"` · `"الأكتر إهمالاً"` · `"الأقدم إضافة"` · `"الأحدث إضافة"` · `"أبجدي"` |
-| `صليت` optional note dialog (`D-04`) | Title: `"تسجيل صلاة"` · Placeholder: `"ملاحظة (اختياري)..."` · Confirm CTA: `"تأكيد"` · Cancel CTA: `"إغلاق النافذة"` |
+| `صليت` optional note dialog (`D-04`) | Title: `"تسجيل صلاة"` · Placeholder: `"ملاحظة (اختياري)..."` · Confirm CTA: `"سجّل الصلاة"` · Cancel CTA: `"إغلاق النافذة"` |
 | `اتستجابت` outcome dialog (`D-06`) | Title: `"اتستجابت الصلاة"` · Placeholder: `"النتيجة (اختياري)..."` · Confirm CTA: `"حفظ في المكتمل"` · Cancel CTA: `"إغلاق النافذة"` |
 | Answered → Gratitude prefill template (`D-07`) | With outcome: `"الحمد لله على استجابة الصلاة ({personOrGeneral}): {outcome}"` · Without outcome: `"الحمد لله على استجابة الصلاة: {bodySnippet}"` |
 | **دفتر الشكر** today placeholder (`GRT-01`) | `"اكتب حاجة بتشكر ربنا عليها النهاردة..."` |
@@ -170,11 +170,11 @@ Accent (`bg-accent` / `text-accent` / `border-accent`, canonical `#8B7B3C` light
     - Confirm `"احفظ الصلاة"` (`bg-primary`) / `"إغلاق النافذة"`
 - **Tab 1 — `الصلوات` (`D-01`, `D-02`, `D-04`):**
   - **Progress Header:** `bg-card rounded-2xl border border-border p-4 flex-row items-center justify-between` showing `countedPrayers()` status (`"فاضل {toArabicDigits(remaining)} من {toArabicDigits(total)}"` or `"خلصت كل صلوات النهاردة ✓"` in `text-accent font-bold`).
-  - **Prayer Card Anatomy (`bg-card rounded-2xl border border-border p-4 gap-3`):**
+  - **Prayer Card Anatomy (`bg-card rounded-2xl border border-border p-4 gap-4`):**
     - Top row: `personName` pill (`bg-muted px-2 py-1 rounded-lg text-sm font-bold`, or `"عام"` if empty) + `Pin` icon (`text-accent` when pinned) + `"اتصلى النهاردة ✓"` muted badge if prayed today (`lastPrayedLocalDate === todayKey`) + overflow menu `Pressable` (`MoreVertical`, `min-h-[44px] min-w-[44px]`, `accessibilityLabel="خيارات الصلاة"`).
     - Body: `prayer.body` (`text-base text-foreground text-start`, tappable to open `/intercession/prayer?id=...`).
     - Bottom row: Metadata (`"من {sinceFormatted}"` + `"• اتصلت {toArabicDigits(count)} مرة"` in `text-sm text-muted-foreground`) on `start`; **`"صليت"`** `Pressable` (`min-h-[44px] rounded-xl bg-primary px-4 py-2`, `text-sm font-bold text-primary-foreground`) on `end`.
-  - **Tapping `"صليت"` (`D-04`):** Opens the quick optional note `Dialog` (`"تسجيل صلاة"`, optional `note` input, `"تأكيد"` / `"إغلاق النافذة"`). Confirming inserts a live `prayer_events` row (`logPrayed`), updates `prayedCount` + `lastPrayedAt`, and sinks the card into the prayed-today group (`D-02`).
+  - **Tapping `"صليت"` (`D-04`):** Opens the quick optional note `Dialog` (`"تسجيل صلاة"`, optional `note` input, `"سجّل الصلاة"` / `"إغلاق النافذة"`). Confirming inserts a live `prayer_events` row (`logPrayed`), updates `prayedCount` + `lastPrayedAt`, and sinks the card into the prayed-today group (`D-02`).
   - **Prayer Menu (`MoreVertical`):** `Dialog` with 4 actions (`min-h-[44px]` each): `تثبيت` / `إلغاء التثبيت`, `تعديل`, `اتستجابت` (opens outcome `Dialog`), and `حذف` (opens `حذف الصلاة` destructive confirmation `Dialog`).
 - **Tab 2 — `الأشخاص` (`INT-03`, `D-01`):**
   - Groups active prayers by normalized `personName` (`"عام"` for unattributed prayers), sorted alphabetically (`normalizeArabic`) with active count pill (`toArabicDigits(activeCount)`).
@@ -187,11 +187,11 @@ Accent (`bg-accent` / `text-accent` / `border-accent`, canonical `#8B7B3C` light
   - Collapsible **`المكتمل ({toArabicDigits(answeredCount)})`** section at bottom (`min-h-[44px]` toggle header) listing answered prayers for that person with `outcome` and `"رجّعها"` button (`min-h-[44px]`).
 - **Prayer Detail (`/intercession/prayer`):**
   - Header: Back button + `"تفاصيل الصلاة"` + `MoreVertical` menu.
-  - Top summary card (`bg-card rounded-2xl border border-border p-6 gap-3`): `personName`, full `body`, `sinceLocalDate`, total `prayedCount`, and `"صليت"` CTA.
+  - Top summary card (`bg-card rounded-2xl border border-border p-6 gap-4`): `personName`, full `body`, `sinceLocalDate`, total `prayedCount`, and `"صليت"` CTA.
   - Chronological `prayer_events` timeline (`bg-card rounded-2xl border border-border p-4 gap-2` per event): formatted Arabic date/time (`formatArabicDate` + `toArabicDigits`) and optional `note` if present.
 - **Answered Archive (`/intercession/answered`) (`INT-06`, `INT-07`, `D-06`, `D-07`):**
   - Header: Back button + `"الصلوات المستجابة ({toArabicDigits(count)})"`.
-  - Answered cards (`bg-card rounded-2xl border border-border p-4 gap-3`): `personName` pill + `"اتستجابت"` `text-accent` badge, `body`, relative/Arabic `answeredAt` date + total `prayedCount`, optional `outcome` box (`bg-muted/50 rounded-xl p-3 border-s-2 border-accent`), and bottom action row:
+  - Answered cards (`bg-card rounded-2xl border border-border p-4 gap-4`): `personName` pill + `"اتستجابت"` `text-accent` badge, `body`, relative/Arabic `answeredAt` date + total `prayedCount`, optional `outcome` box (`bg-muted/50 rounded-xl p-4 border-s-2 border-accent`), and bottom action row:
     - **`"اكتب في دفتر الشكر"`** `Pressable` (`min-h-[44px] rounded-xl bg-primary px-4 py-2 flex-row items-center gap-2`) → navigates to `/gratitude` with pre-filled text (`D-07`).
     - **`"رجّعها"`** `Pressable` (`min-h-[44px] rounded-xl border border-border px-4 py-2`) → clears `answeredAt`/`outcome` and returns prayer to active.
 
@@ -200,7 +200,7 @@ Accent (`bg-accent` / `text-accent` / `border-accent`, canonical `#8B7B3C` light
 - **Top Header Bar:**
   - `start` side: Back button (`ArrowRight`, `min-h-[44px] min-w-[44px]`) + title `"دفتر الشكر"` (`text-xl font-bold text-foreground`).
   - `end` side:
-    1. `"ضيف ليوم فات"` `Pressable` (`CalendarPlus` + label, `min-h-[44px] px-3 py-2 rounded-xl border border-border bg-card`) opening `ArabicDatePickerModal` (restricted to past dates `<= yesterday`, rendered in Arabic-Indic digits + `EGYPTIAN_MONTHS`). Picking a past date opens a past-day edit `Dialog` (`gratitudeId(selectedDate)`) with multiline `TextInput` and `"احفظ"` / `"إغلاق النافذة"`.
+    1. `"ضيف ليوم فات"` `Pressable` (`CalendarPlus` + label, `min-h-[44px] px-4 py-2 rounded-xl border border-border bg-card`) opening `ArabicDatePickerModal` (restricted to past dates `<= yesterday`, rendered in Arabic-Indic digits + `EGYPTIAN_MONTHS`). Picking a past date opens a past-day edit `Dialog` (`gratitudeId(selectedDate)`) with multiline `TextInput` and `"احفظ الشكر"` / `"إغلاق النافذة"`.
     2. Gear button (`Settings` icon, `min-h-[44px] min-w-[44px]`, `accessibilityLabel="إعدادات دفتر الشكر"`) opening the **دفتر الشكر** reminder `Dialog`:
        - Nightly reminder `Switch` (`min-h-[44px]`, defaults `false`; toggling `true` triggers `ensureReminderPermissions()` + schedules `21:00` / `٩:٠٠ مساءً` daily notification).
        - Time row (`min-h-[44px]`, `"ميعاد التذكير: {toArabicDigits(timeLabel)}"`) opening `ArabicTimePickerModal` (pure-JS hour/minute steppers in 12h Arabic-Indic format `صباحاً` / `مساءً`).
