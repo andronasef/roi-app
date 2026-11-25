@@ -109,6 +109,12 @@ describe('personalize', () => {
     expect(blank).toBe('الرب مع دائماً');
   });
 
+  it('keeps paragraph and list breaks when name is missing', () => {
+    expect(personalize({ text: '## عنوان\n\nيا {الاسم} سلام\n\n- نقطة' }, {})).toBe(
+      '## عنوان\n\nيا سلام\n\n- نقطة',
+    );
+  });
+
   it('inserts $& literally without replacement pattern expansion', () => {
     expect(personalize({ text: 'يا {الاسم}، سلام' }, { name: '$&' })).toBe('يا $&، سلام');
   });

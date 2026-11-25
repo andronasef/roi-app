@@ -76,5 +76,5 @@ export function personalize(item: PersonalizeItem, profile: PersonalizeProfile):
   if (name) {
     return raw.replaceAll(NAME_TOKEN, () => name);
   }
-  return raw.replaceAll(NAME_TOKEN, '').replace(/\s{2,}/g, ' ').trim();
+  return raw.replaceAll(NAME_TOKEN, '').replace(/[ \t ]{2,}/g, ' ').trim();
 }
