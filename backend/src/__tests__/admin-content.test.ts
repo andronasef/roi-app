@@ -40,7 +40,6 @@ const ADMIN_NAMES_QUERY = /* GraphQL */ `
       id
       title
       text
-      textFemale
       version
       sortOrder
       tags
@@ -58,7 +57,6 @@ const ADMIN_BLESSINGS_QUERY = /* GraphQL */ `
       title
       verseRef
       text
-      textFemale
       version
       sortOrder
       tags
@@ -109,7 +107,6 @@ const CREATE_NAME_MUTATION = /* GraphQL */ `
       id
       title
       text
-      textFemale
       version
       sortOrder
       tags
@@ -124,7 +121,6 @@ const UPDATE_NAME_MUTATION = /* GraphQL */ `
       id
       title
       text
-      textFemale
       version
     }
   }
@@ -137,7 +133,6 @@ const CREATE_BLESSING_MUTATION = /* GraphQL */ `
       title
       verseRef
       text
-      textFemale
       version
       sortOrder
       tags
@@ -153,7 +148,6 @@ const UPDATE_BLESSING_MUTATION = /* GraphQL */ `
       title
       verseRef
       text
-      textFemale
       version
     }
   }
@@ -202,7 +196,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         id
         title
         text
-        textFemale
         version
         deletedAt
       }
@@ -211,7 +204,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         title
         verseRef
         text
-        textFemale
         version
         deletedAt
       }
@@ -331,10 +323,10 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
         .set('Cookie', cookie)
         .set('x-roi-admin', '1')
         .send({
-          query: CREATE_NAME_MUTATION,
+          query: CREATE_VERSE_MUTATION,
           variables: {
             input: {
-              title: 'الراعي الصالح',
+              ref: 'مزمور ٢٣: ١',
               text: 'الرب راعيك يا {الاسم}',
               textFemale: 'الرب راعيتك يا {user}',
             },
@@ -376,7 +368,6 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
               title: 'بركة السلام',
               verseRef: '   ',
               text: 'سلام الله يحفظك يا {الاسم}',
-              textFemale: null,
             },
           },
         })
@@ -385,7 +376,6 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
       expect(createBlessingRes.body.data.createBlessing).toMatchObject({
         title: 'بركة السلام',
         verseRef: null,
-        textFemale: null,
         sortOrder: null,
         tags: null,
         deletedAt: null,
@@ -464,7 +454,6 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
               title: 'بركة النور',
               verseRef: 'العدد ٦: ٢٥',
               text: 'ليضئ الرب وجهه عليك يا {الاسم}',
-              textFemale: null,
             },
           },
         })

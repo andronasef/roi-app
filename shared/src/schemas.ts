@@ -55,6 +55,9 @@ export const personalizedTextSchema = z.object({
     .optional(),
 });
 
+/** Title + single text (no male/female variant, no personalization): names of God and blessings. */
+export const plainTextSchema = personalizedTextSchema.pick({ text: true });
+
 /** Content kinds supported for public library items and user suggestions. */
 export const contentKindSchema = z.enum(['verse', 'name_of_god', 'blessing']);
 
@@ -73,7 +76,7 @@ export const verseItemSchema = syncRowSchema
 
 /** Public Name of God item contract shared between backend snapshots/deltas and mobile SQLite. */
 export const nameOfGodItemSchema = syncRowSchema
-  .extend(personalizedTextSchema.shape)
+  .extend(plainTextSchema.shape)
   .extend({
     title: titleOrRefSchema,
     version: versionSchema,
@@ -83,7 +86,7 @@ export const nameOfGodItemSchema = syncRowSchema
 
 /** Public blessing item contract shared between backend snapshots/deltas and mobile SQLite. */
 export const blessingItemSchema = syncRowSchema
-  .extend(personalizedTextSchema.shape)
+  .extend(plainTextSchema.shape)
   .extend({
     title: titleOrRefSchema,
     verseRef: optionalVerseRefSchema,
@@ -124,22 +127,24 @@ export const submitSuggestionInputSchema = personalizedTextSchema.extend({
   verseRef: optionalVerseRefSchema,
 });
 
-const seedBaseSchema = personalizedTextSchema.extend({
+const seedCommonShape = {
   id: z.string().min(1).max(64),
   sortOrder: sortOrderSchema,
   tags: tagsSchema,
   deletedAt: epochMsSchema.nullable().optional(),
-});
+};
+const seedBaseSchema = personalizedTextSchema.extend(seedCommonShape);
+const seedPlainBaseSchema = plainTextSchema.extend(seedCommonShape);
 
 export const seedVerseItemSchema = seedBaseSchema.extend({
   ref: titleOrRefSchema,
 });
 
-export const seedNameOfGodItemSchema = seedBaseSchema.extend({
+export const seedNameOfGodItemSchema = seedPlainBaseSchema.extend({
   title: titleOrRefSchema,
 });
 
-export const seedBlessingItemSchema = seedBaseSchema.extend({
+export const seedBlessingItemSchema = seedPlainBaseSchema.extend({
   title: titleOrRefSchema,
   verseRef: optionalVerseRefSchema,
 });

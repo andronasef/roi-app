@@ -118,7 +118,6 @@ function isSameNameOfGod(
   return (
     existing.title === item.title &&
     existing.text === item.text &&
-    (existing.textFemale ?? null) === (item.textFemale ?? null) &&
     (existing.sortOrder ?? null) === (item.sortOrder ?? null) &&
     (existing.tagsJson ?? null) === serializeTags(item.tags) &&
     (existing.deletedAt ?? null) === (item.deletedAt ?? null)
@@ -132,7 +131,6 @@ function isSameBlessing(
   return (
     existing.title === item.title &&
     existing.text === item.text &&
-    (existing.textFemale ?? null) === (item.textFemale ?? null) &&
     (existing.verseRef ?? null) === (item.verseRef ?? null) &&
     (existing.sortOrder ?? null) === (item.sortOrder ?? null) &&
     (existing.tagsJson ?? null) === serializeTags(item.tags) &&
@@ -199,7 +197,6 @@ export function runSeed(options: RunSeedOptions): SeedResult {
       id: item.id,
       title: item.title,
       text: item.text,
-      textFemale: item.textFemale ?? null,
       version: nextVersion,
       sortOrder: item.sortOrder ?? null,
       tagsJson: serializeTags(item.tags),
@@ -217,7 +214,6 @@ export function runSeed(options: RunSeedOptions): SeedResult {
       id: item.id,
       title: item.title,
       text: item.text,
-      textFemale: item.textFemale ?? null,
       verseRef: item.verseRef ?? null,
       version: nextVersion,
       sortOrder: item.sortOrder ?? null,
@@ -315,7 +311,6 @@ export function runSeed(options: RunSeedOptions): SeedResult {
           set: {
             title: entry.row.title,
             text: entry.row.text,
-            textFemale: entry.row.textFemale,
             version: entry.row.version,
             sortOrder: entry.row.sortOrder,
             tagsJson: entry.row.tagsJson,
@@ -334,7 +329,6 @@ export function runSeed(options: RunSeedOptions): SeedResult {
           set: {
             title: entry.row.title,
             text: entry.row.text,
-            textFemale: entry.row.textFemale,
             verseRef: entry.row.verseRef,
             version: entry.row.version,
             sortOrder: entry.row.sortOrder,

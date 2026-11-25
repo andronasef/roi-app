@@ -65,7 +65,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         id
         title
         text
-        textFemale
         version
         sortOrder
         tags
@@ -78,7 +77,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         title
         verseRef
         text
-        textFemale
         version
         sortOrder
         tags

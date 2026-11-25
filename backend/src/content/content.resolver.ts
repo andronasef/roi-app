@@ -49,9 +49,6 @@ export class NameOfGodDto {
   @Field(() => String)
   text!: string;
 
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
-
   @Field(() => Int)
   version!: number;
 
@@ -84,9 +81,6 @@ export class BlessingDto {
 
   @Field(() => String)
   text!: string;
-
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
 
   @Field(() => Int)
   version!: number;

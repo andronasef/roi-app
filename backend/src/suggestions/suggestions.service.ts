@@ -72,7 +72,7 @@ export class SuggestionsService {
           kind: input.kind,
           title: input.title,
           text: input.text,
-          textFemale: input.textFemale ?? null,
+          textFemale: input.kind === 'verse' ? (input.textFemale ?? null) : null,
           verseRef: input.verseRef ?? null,
           status: 'pending',
           googleSub: user.googleSub,

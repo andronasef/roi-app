@@ -68,14 +68,12 @@ export function upsertContentBatch(
 
   for (const item of payload.namesOfGod) {
     const tagsJson = serializeTags(item.tags);
-    const textFemale = item.textFemale ?? null;
     const sortOrder = item.sortOrder ?? null;
     tx.insert(namesOfGod)
       .values({
         id: item.id,
         title: item.title,
         text: item.text,
-        textFemale,
         version: item.version,
         sortOrder,
         tagsJson,
@@ -88,7 +86,6 @@ export function upsertContentBatch(
         set: {
           title: item.title,
           text: item.text,
-          textFemale,
           version: item.version,
           sortOrder,
           tagsJson,
@@ -101,7 +98,6 @@ export function upsertContentBatch(
 
   for (const item of payload.blessings) {
     const tagsJson = serializeTags(item.tags);
-    const textFemale = item.textFemale ?? null;
     const sortOrder = item.sortOrder ?? null;
     const verseRef = item.verseRef ?? null;
     tx.insert(blessings)
@@ -110,7 +106,6 @@ export function upsertContentBatch(
         title: item.title,
         verseRef,
         text: item.text,
-        textFemale,
         version: item.version,
         sortOrder,
         tagsJson,
@@ -124,7 +119,6 @@ export function upsertContentBatch(
           title: item.title,
           verseRef,
           text: item.text,
-          textFemale,
           version: item.version,
           sortOrder,
           tagsJson,

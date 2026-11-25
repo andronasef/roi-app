@@ -8,13 +8,18 @@ export const syncCols = () => ({
   deletedAt: integer('deleted_at'),
 });
 
-const publicContentCols = () => ({
+const plainContentCols = () => ({
   ...syncCols(),
   text: text('text').notNull(),
-  textFemale: text('text_female'),
   version: integer('version').notNull(),
   sortOrder: integer('sort_order'),
   tagsJson: text('tags_json'),
+});
+
+/** Verses alone carry the optional male/female variant. */
+const publicContentCols = () => ({
+  ...plainContentCols(),
+  textFemale: text('text_female'),
 });
 
 /** Singleton row (id = 1) tracking the global monotonic content version (BE-02). */
@@ -41,7 +46,7 @@ export const verses = sqliteTable(
 export const namesOfGod = sqliteTable(
   'names_of_god',
   {
-    ...publicContentCols(),
+    ...plainContentCols(),
     title: text('title').notNull(),
   },
   (t) => [
@@ -54,7 +59,7 @@ export const namesOfGod = sqliteTable(
 export const blessings = sqliteTable(
   'blessings',
   {
-    ...publicContentCols(),
+    ...plainContentCols(),
     title: text('title').notNull(),
     verseRef: text('verse_ref'),
   },

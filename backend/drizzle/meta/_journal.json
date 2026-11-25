@@ -15,6 +15,13 @@
       "when": 1795622828252,
       "tag": "0001_admin_suggestions_note",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795629819518,
+      "tag": "0002_easy_stellaris",
+      "breakpoints": true
     }
   ]
 }

@@ -21,6 +21,7 @@ export { mergeRecords, type SyncRow } from './merge';
 export {
   syncRowSchema,
   personalizedTextSchema,
+  plainTextSchema,
   contentKindSchema,
   snapshotTypeSchema,
   verseItemSchema,

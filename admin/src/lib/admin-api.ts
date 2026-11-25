@@ -61,7 +61,7 @@ export const KIND_CONFIG = {
     create: 'createNameOfGod',
     update: 'updateNameOfGod',
     input: 'title',
-    fields: 'id title text textFemale version updatedAt deletedAt',
+    fields: 'id title text version updatedAt deletedAt',
   },
   blessing: {
     route: 'blessings',
@@ -69,7 +69,7 @@ export const KIND_CONFIG = {
     create: 'createBlessing',
     update: 'updateBlessing',
     input: 'title',
-    fields: 'id title verseRef text textFemale version updatedAt deletedAt',
+    fields: 'id title verseRef text version updatedAt deletedAt',
   },
 } as const satisfies Record<ContentKind, object>;
 
@@ -139,7 +139,7 @@ function toContentInput(kind: ContentKind, p: ContentPayload) {
     [KIND_CONFIG[kind].input]: p.refOrTitle,
     ...(kind === 'blessing' ? { verseRef: p.verseRef } : {}),
     text: p.text,
-    textFemale: p.textFemale,
+    ...(kind === 'verse' ? { textFemale: p.textFemale } : {}),
   };
 }
 

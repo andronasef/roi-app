@@ -20,14 +20,12 @@ export interface CreateVersePayload {
 export interface CreateNameOfGodPayload {
   readonly title: string;
   readonly text: string;
-  readonly textFemale?: string | null;
 }
 
 export interface CreateBlessingPayload {
   readonly title: string;
   readonly verseRef?: string | null;
   readonly text: string;
-  readonly textFemale?: string | null;
 }
 
 function normalizeOptionalText(value: string | null | undefined): string | null {
@@ -95,7 +93,6 @@ function mapNameOfGodRow(row: typeof namesOfGod.$inferSelect): NameOfGodDto {
     id: row.id,
     title: row.title,
     text: row.text,
-    textFemale: row.textFemale,
     version: row.version,
     sortOrder: row.sortOrder,
     tags: parseTagsJson(row.tagsJson),
@@ -111,7 +108,6 @@ function mapBlessingRow(row: typeof blessings.$inferSelect): BlessingDto {
     title: row.title,
     verseRef: row.verseRef,
     text: row.text,
-    textFemale: row.textFemale,
     version: row.version,
     sortOrder: row.sortOrder,
     tags: parseTagsJson(row.tagsJson),
@@ -309,7 +305,6 @@ export class AdminContentService {
     const nowMs = Date.now();
     const id = uuidv7(nowMs, randomBytes);
     const title = input.title.trim();
-    const textFemale = normalizeOptionalText(input.textFemale);
 
     const { result } = this.contentService.applyContentMutation<NameOfGodDto>({
       actorEmail,
@@ -324,7 +319,6 @@ export class AdminContentService {
             id,
             title,
             text: input.text,
-            textFemale,
             version: nextVersion,
             sortOrder: null,
             tagsJson: null,
@@ -352,7 +346,6 @@ export class AdminContentService {
     expectedVersion?: number | null,
   ): NameOfGodDto {
     const title = input.title.trim();
-    const textFemale = normalizeOptionalText(input.textFemale);
     let before: Record<string, unknown> | undefined;
 
     const { result } = this.contentService.applyContentMutation<NameOfGodDto>({
@@ -373,7 +366,6 @@ export class AdminContentService {
           .set({
             title,
             text: input.text,
-            textFemale,
             version: nextVersion,
             updatedAt: nowMs,
           })
@@ -396,7 +388,6 @@ export class AdminContentService {
     const id = uuidv7(nowMs, randomBytes);
     const title = input.title.trim();
     const verseRef = normalizeOptionalVerseRef(input.verseRef);
-    const textFemale = normalizeOptionalText(input.textFemale);
 
     const { result } = this.contentService.applyContentMutation<BlessingDto>({
       actorEmail,
@@ -412,7 +403,6 @@ export class AdminContentService {
             title,
             verseRef,
             text: input.text,
-            textFemale,
             version: nextVersion,
             sortOrder: null,
             tagsJson: null,
@@ -441,7 +431,6 @@ export class AdminContentService {
   ): BlessingDto {
     const title = input.title.trim();
     const verseRef = normalizeOptionalVerseRef(input.verseRef);
-    const textFemale = normalizeOptionalText(input.textFemale);
     let before: Record<string, unknown> | undefined;
 
     const { result } = this.contentService.applyContentMutation<BlessingDto>({
@@ -468,7 +457,6 @@ export class AdminContentService {
             title,
             verseRef,
             text: input.text,
-            textFemale,
             version: nextVersion,
             updatedAt: nowMs,
           })

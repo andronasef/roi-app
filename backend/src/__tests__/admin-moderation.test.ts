@@ -124,7 +124,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         id
         title
         text
-        textFemale
         version
       }
       blessings {
@@ -132,7 +131,6 @@ const CONTENT_DELTA_QUERY = /* GraphQL */ `
         title
         verseRef
         text
-        textFemale
         version
       }
     }

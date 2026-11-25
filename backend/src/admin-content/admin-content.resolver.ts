@@ -14,6 +14,7 @@ import {
   type ContentKind,
   contentKindSchema,
   personalizedTextSchema,
+  plainTextSchema,
 } from '@roi/shared';
 import { z } from 'zod';
 import { AdminAuthGuard } from '../admin-auth/admin-auth.guard';
@@ -56,11 +57,11 @@ export const verseMutationInputSchema = personalizedTextSchema.extend({
   ref: trimmedTitleOrRefSchema,
 });
 
-export const nameOfGodMutationInputSchema = personalizedTextSchema.extend({
+export const nameOfGodMutationInputSchema = plainTextSchema.extend({
   title: trimmedTitleOrRefSchema,
 });
 
-export const blessingMutationInputSchema = personalizedTextSchema.extend({
+export const blessingMutationInputSchema = plainTextSchema.extend({
   title: trimmedTitleOrRefSchema,
   verseRef: coercedOptionalVerseRefSchema.optional(),
 });
@@ -96,9 +97,6 @@ export class CreateNameOfGodInput {
 
   @Field(() => String)
   text!: string;
-
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
 }
 
 @InputType()
@@ -108,9 +106,6 @@ export class UpdateNameOfGodInput {
 
   @Field(() => String)
   text!: string;
-
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
 }
 
 @InputType()
@@ -123,9 +118,6 @@ export class CreateBlessingInput {
 
   @Field(() => String)
   text!: string;
-
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
 }
 
 @InputType()
@@ -138,9 +130,6 @@ export class UpdateBlessingInput {
 
   @Field(() => String)
   text!: string;
-
-  @Field(() => String, { nullable: true })
-  textFemale?: string | null;
 }
 
 function requireActorEmail(ctx: { req: AdminRequest }): string {

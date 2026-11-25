@@ -168,7 +168,7 @@ export class AdminModerationService {
     const newItemId = uuidv7(nowMs, randomBytes);
     const title = input.title.trim();
     const verseRef = normalizeTrimmedOptional(input.verseRef);
-    const textFemale = normalizeOptionalText(input.textFemale);
+    const textFemale = input.kind === 'verse' ? normalizeOptionalText(input.textFemale) : null;
 
     const { result } = this.contentService.applyContentMutation<AdminSuggestionRecord>({
       actorEmail,
@@ -219,7 +219,6 @@ export class AdminModerationService {
               id: newItemId,
               title,
               text: input.text,
-              textFemale,
               version: nextVersion,
               sortOrder: null,
               tagsJson: null,
@@ -235,7 +234,6 @@ export class AdminModerationService {
               title,
               verseRef,
               text: input.text,
-              textFemale,
               version: nextVersion,
               sortOrder: null,
               tagsJson: null,
