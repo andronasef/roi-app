@@ -17,6 +17,7 @@ import {
   Pressable,
   ScrollView,
   Share,
+  Switch,
   TextInput,
   View,
 } from 'react-native';
@@ -40,12 +41,29 @@ import {
 import { useThemePreference } from '../../hooks/use-theme-preference';
 import ar from '../../locales/ar.json';
 import { track } from '../../services/telemetry';
+import { db, deviceClock } from '../db/client';
 import {
   getGoogleAccountStatus,
   requestGoogleDriveScopeUpgrade,
   signInWithGoogleDriveScope,
   type GoogleAccountStatus,
 } from '../google/auth';
+import {
+  ArabicTimePickerModal,
+  formatArabicTime12h,
+} from '../gratitude/ArabicPickers';
+import type { GratitudeReminderSettings } from '../gratitude/models';
+import {
+  getGratitudeReminderSettings,
+  setGratitudeReminderSettings,
+} from '../gratitude/repository';
+import { PrayerSortDialog } from '../intercession/IntercessionDialogs';
+import { PRAYER_SORTS, type PrayerSort } from '../intercession/models';
+import {
+  getDefaultIntercessionSort,
+  setDefaultIntercessionSort,
+} from '../intercession/repository';
+import { syncGratitudeReminderSchedule } from '../notifications/scheduler';
 import { useProfile } from '../profile/context';
 import type { Gender } from '../profile/repository';
 import { uiCopy } from '../profile/ui-copy';
@@ -69,6 +87,7 @@ const SCRIPTURE_PREVIEW_SAMPLE = 'اَلرَّبُّ رَاعِيَّ فَلاَ
  * Grouped-card Global Settings screen (SET-01, PERS-01, PERS-04, D-14):
  * - المظهر والقراءة: theme mode + 5-step ScriptureSizeSlider + live <Scripture> preview
  * - حسابك: editable name + gender immediately refreshing app UI/content + Google drive.appdata connect
+ * - تشفع: default sort; دفتر الشكر: nightly reminder toggle + time (D-11, D-12)
  * - المساعدة والتواصل: Share.share, Rate, Support form, WhatsApp
  * - About footer with Arabic-Indic app version
  */
@@ -94,6 +113,16 @@ export function SettingsScreen() {
   const [supportNotice, setSupportNotice] = useState<string | null>(null);
   const [isRunningSupportAction, setIsRunningSupportAction] = useState(false);
 
+  const [defaultSort, setDefaultSort] = useState<PrayerSort>(() =>
+    getDefaultIntercessionSort(db),
+  );
+  const [sortOpen, setSortOpen] = useState(false);
+  const [reminder, setReminder] = useState<GratitudeReminderSettings>(() =>
+    getGratitudeReminderSettings(db),
+  );
+  const [timeOpen, setTimeOpen] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
+
   const googleConnectLockRef = useRef(false);
   const supportActionLockRef = useRef(false);
 
@@ -110,6 +139,9 @@ export function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       refreshProfile();
+      // Keep in sync with the in-tool gear sheets (D-11).
+      setDefaultSort(getDefaultIntercessionSort(db));
+      setReminder(getGratitudeReminderSettings(db));
       let active = true;
       void getGoogleAccountStatus().then((status) => {
         if (active) {
@@ -120,6 +152,25 @@ export function SettingsScreen() {
         active = false;
       };
     }, [refreshProfile]),
+  );
+
+  const handleChangeSort = useCallback((sort: PrayerSort) => {
+    setDefaultSort(setDefaultIntercessionSort(db, deviceClock, sort));
+  }, []);
+
+  const applyReminder = useCallback(
+    async (next: GratitudeReminderSettings) => {
+      const result = await syncGratitudeReminderSchedule(next);
+      if (!result.ok) {
+        // D-12: OS permission refused, keep the switch off and explain.
+        setPermissionDenied(true);
+        next = { ...next, enabled: false };
+      } else {
+        setPermissionDenied(false);
+      }
+      setReminder(setGratitudeReminderSettings(db, deviceClock, next));
+    },
+    [],
   );
 
   const handleBack = useCallback(() => {
@@ -517,7 +568,77 @@ export function SettingsScreen() {
             </View>
           </View>
 
-          {/* Section 3: المساعدة والتواصل */}
+          {/* Section 3: تشفع */}
+          <View className="gap-3">
+            <Text
+              accessibilityRole="header"
+              maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+              className="text-start text-xl font-bold text-foreground"
+            >
+              تشفع
+            </Text>
+            <View className="rounded-2xl border border-border bg-card p-4">
+              <Pressable
+                onPress={() => setSortOpen(true)}
+                accessibilityRole="button"
+                accessibilityLabel="الترتيب الافتراضي في تشفع"
+                className="min-h-[44px] flex-row items-center justify-between gap-3"
+              >
+                <Text className="flex-1 text-start text-base text-foreground">
+                  الترتيب الافتراضي في تشفع
+                </Text>
+                <Text className="text-start text-sm font-bold text-accent">
+                  {PRAYER_SORTS.find((o) => o.id === defaultSort)?.label}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Section 4: دفتر الشكر */}
+          <View className="gap-3">
+            <Text
+              accessibilityRole="header"
+              maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+              className="text-start text-xl font-bold text-foreground"
+            >
+              دفتر الشكر
+            </Text>
+            <View className="gap-3 rounded-2xl border border-border bg-card p-4">
+              <View className="min-h-[44px] flex-row items-center justify-between gap-4">
+                <Text className="flex-1 text-start text-base text-foreground">
+                  تذكير دفتر الشكر بالليل
+                </Text>
+                <Switch
+                  value={reminder.enabled}
+                  onValueChange={(enabled) =>
+                    void applyReminder({ ...reminder, enabled })
+                  }
+                  accessibilityRole="switch"
+                  accessibilityLabel="تذكير دفتر الشكر بالليل"
+                  accessibilityState={{ checked: reminder.enabled }}
+                  className="min-h-[44px] min-w-[44px]"
+                />
+              </View>
+              <Pressable
+                onPress={() => setTimeOpen(true)}
+                accessibilityRole="button"
+                accessibilityLabel="ميعاد التذكير"
+                className="min-h-[44px] justify-center rounded-xl border border-border px-4 py-2"
+              >
+                <Text className="text-start text-base text-foreground">
+                  ميعاد التذكير:{' '}
+                  {formatArabicTime12h(reminder.hour, reminder.minute)}
+                </Text>
+              </Pressable>
+              {permissionDenied ? (
+                <Text className="text-start text-sm text-destructive">
+                  {uiCopy('notificationDeniedError', profile.gender)}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+
+          {/* Section 5: المساعدة والتواصل */}
           <View className="gap-3">
             <Text
               accessibilityRole="header"
@@ -571,6 +692,22 @@ export function SettingsScreen() {
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <PrayerSortDialog
+        open={sortOpen}
+        onOpenChange={setSortOpen}
+        selectedSort={defaultSort}
+        onSelectSort={handleChangeSort}
+      />
+      <ArabicTimePickerModal
+        open={timeOpen}
+        onOpenChange={setTimeOpen}
+        hour={reminder.hour}
+        minute={reminder.minute}
+        onConfirm={(hour, minute) =>
+          void applyReminder({ ...reminder, hour, minute })
+        }
+      />
 
       <Dialog open={googleDialogOpen} onOpenChange={setGoogleDialogOpen}>
         <DialogContent>
