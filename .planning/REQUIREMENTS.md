@@ -121,9 +121,9 @@
 - [x] **BE-01**: API serves public content (verses, names, blessings) from one pre-built gzipped snapshot per type, rebuilt only on admin change
 - [x] **BE-02**: One global monotonic `contentVersion`; clients send their last version and get deltas, including soft-delete tombstones
 - [ ] **BE-03**: Users can submit suggestions as `pending` with a signed anonymous device ID
-- [ ] **BE-04**: Hardening: throttling (stricter on suggestions), zod validation, GraphQL depth/complexity limits, introspection off in production, CORS locked to the admin origin, helmet, payload limits, trust proxy
+- [x] **BE-04**: Hardening: throttling (stricter on suggestions), zod validation, GraphQL depth/complexity limits, introspection off in production, CORS locked to the admin origin, helmet, payload limits, trust proxy
 - [x] **BE-05**: An audit log records every admin change
-- [ ] **BE-06**: Deployed with Docker on Dokploy with a persistent volume, a tested backup and an uptime monitor
+- [x] **BE-06**: Deployed with Docker on Dokploy with a persistent volume, a tested backup and an uptime monitor
 - [x] **BE-07**: A one-time idempotent import loads the initial content from Sanity, with a dry run
 
 ### Admin Panel (ADM)
@@ -185,9 +185,9 @@
 | BE-01 | Phase 2 | Complete |
 | BE-02 | Phase 2 | Complete |
 | BE-03 | Phase 2 | Pending |
-| BE-04 | Phase 2 | Pending |
+| BE-04 | Phase 2 | Complete |
 | BE-05 | Phase 2 | Complete |
-| BE-06 | Phase 2 | Pending |
+| BE-06 | Phase 2 | Complete |
 | BE-07 | Phase 2 | Complete |
 | HOME-06 | Phase 2 | Complete |
 | HOME-07 | Phase 2 | Complete |

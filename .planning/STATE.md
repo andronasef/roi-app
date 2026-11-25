@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: content-backend-first-download
 status: planning
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-11-25T13:06:35.025Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-11-25T13:15:16.538Z"
 last_activity: 2026-11-25
 last_activity_desc: Phase 01 closed (01-16-SUMMARY, 01-SPIKE-DECISIONS, remaining Release checks moved to end of Phase 2)
-state_head: dcf5e11c38f8788a63a6c572b3ee71c22852c76b
+state_head: 8b906128777d883ef7e2276d48bea6bb92bbccdb
 progress:
   total_phases: 9
   completed_phases: 1
   total_plans: 24
-  completed_plans: 20
+  completed_plans: 21
   percent: 11
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-24)
 ## Current Position
 
 Phase: 02 (content-backend-first-download) — IN PROGRESS
-Plan: 5 of 8
+Plan: 6 of 8
 Status: Executing plan 02-01
 Last activity: 2026-11-25 — Closed Phase 01 (deferred Release/Firebase checks to end of Phase 2)
 
@@ -72,6 +72,7 @@ Progress: [█░░░░░░░░░] 11%
 | Phase 02 P02 | 2min | 2 tasks | 9 files |
 | Phase 02 P08 | 4min | 2 tasks | 11 files |
 | Phase 02 P04 | 5 min | 3 tasks | 12 files |
+| Phase 02-content-backend-first-download P03 | 8min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,7 @@ Recent decisions affecting current work:
 - [Phase 02]: Guard seed CLI entrypoint with VITEST check, require.main === module for CJS, and import.meta.url fallback for ESM
 - [Phase 02]: Extract shared upsertContentBatch and upsertSyncMeta helpers into app/features/sync/db-ops.ts so first-download and delta-sync share one transactional SQLite write path
 - [Phase 02]: Guard __DEV__ with typeof check and use relative ../app.json in app/constants/app.ts so constants resolve cleanly in both Metro and Node/Vitest
+- [Phase 02-content-backend-first-download]: Use GraphQL Float for epoch-ms timestamps in ContentDelta DTOs and preserve HTTP 429 status for GqlThrottlerGuard via Apollo willSendResponse plugin + formatError
 
 ### Pending Todos
 
@@ -119,6 +121,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-25T13:06:34.933Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-11-25T13:15:16.469Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
