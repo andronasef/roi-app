@@ -375,4 +375,31 @@ describe('silent 6-hour throttled background delta sync', () => {
       runDeltaSyncIfDue({ db, clock: createFixedClock({ value: BASE_MS }), api, isOnline: true }),
     ).resolves.toEqual({ status: 'failed' });
   });
+
+  it('treats a lastCheckedAt in the future as due', async () => {
+    const { sqlite, db } = openMigratedMemoryDb();
+    try {
+      seedInitialLibrary(db, BASE_MS + 10 * DELTA_SYNC_THROTTLE_MS);
+      const api: SyncApiClient = {
+        fetchSnapshot: vi.fn(),
+        fetchContentDelta: vi.fn().mockResolvedValue({
+          contentVersion: 1,
+          verses: [],
+          namesOfGod: [],
+          blessings: [],
+        } satisfies ContentDeltaResponse),
+      };
+
+      const result = await runDeltaSyncIfDue({
+        db,
+        clock: createFixedClock({ value: BASE_MS }),
+        api,
+        isOnline: true,
+      });
+
+      expect(result).toEqual({ status: 'up_to_date', contentVersion: 1 });
+    } finally {
+      sqlite.close();
+    }
+  });
 });

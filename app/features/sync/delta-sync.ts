@@ -50,7 +50,8 @@ export async function runDeltaSyncIfDue({
   }
 
   const now = clock.now();
-  if (now - syncState.lastCheckedAt < throttleMs) {
+  // A lastCheckedAt in the future (clock was set forward, then corrected) counts as due.
+  if (now >= syncState.lastCheckedAt && now - syncState.lastCheckedAt < throttleMs) {
     return { status: 'skipped', reason: 'throttled' };
   }
 
