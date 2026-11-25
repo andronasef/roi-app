@@ -10,3 +10,8 @@ app/*
 !app/package.json
 admin/*
 !admin/package.json
+!admin/index.html
+!admin/vite.config.ts
+!admin/tsconfig.json
+!admin/src
+!admin/public

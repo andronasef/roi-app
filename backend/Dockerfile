@@ -13,7 +13,8 @@ COPY app/package.json ./app/
 RUN bun install --frozen-lockfile
 COPY shared ./shared
 COPY backend ./backend
-RUN bun run --cwd backend build
+COPY admin ./admin
+RUN bun run --cwd backend build && bun run --cwd admin build
 
 FROM bun-node AS prod-deps
 WORKDIR /app
@@ -34,6 +35,8 @@ COPY --from=builder /app/backend/package.json /app/backend/package.json
 COPY --from=builder /app/backend/dist /app/backend/dist
 COPY --from=builder /app/backend/drizzle /app/backend/drizzle
 COPY --from=builder /app/backend/seed /app/backend/seed
+# Built admin SPA only (no admin/node_modules): resolveBackendRoot()=/app/backend -> ../admin/dist
+COPY --from=builder /app/admin/dist /app/admin/dist
 
 RUN mkdir -p /data && chown -R node:node /app /data
 
