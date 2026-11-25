@@ -123,16 +123,18 @@ Plans:
   4. A live preview with a test name and a gender toggle renders exactly what a phone would show; validation rejects any token other than `{الاسم}` and warns when only one version contains the name.
   5. An admin opens a suggestion sent from a phone, edits it, then accepts it (it joins public content) or rejects it (it leaves the queue).
 
-**Plans:** 7 plans
+**Plans:** 9 plans
 
 Plans:
 - [ ] 03-01-PLAN.md — Package legitimacy gate (blocking owner approval for Phase 3 npm dependencies)
 - [ ] 03-02-PLAN.md — Drizzle migration 0001 and backend Google-allowlisted 14-day httpOnly cookie auth
-- [ ] 03-03-PLAN.md — Backend admin content CRUD, suggestion moderation queue, and audit log GraphQL API
-- [ ] 03-04-PLAN.md — Admin SPA scaffold, warm-paper design system, GIS auth gate, and bilingual RTL/LTR shell
-- [ ] 03-05-PLAN.md — Tiptap 3 atomic {الاسم} chip editor, Markdown-subset serializer, validation, and live preview
-- [ ] 03-06-PLAN.md — Catalog management, suggestion moderation queue UI, and read-only audit log page
-- [ ] 03-07-PLAN.md — Express 5 /admin static serving, GIS Helmet CSP, multi-stage Dockerfile, and smoke verification
+- [ ] 03-03-PLAN.md — Backend ContentModule extraction, admin content CRUD, suggestion moderation queue, and audit log GraphQL API
+- [ ] 03-04-PLAN.md — Admin SPA scaffold, split TS/Vitest, Tailwind 4 warm-paper theme, self-hosted Arabic fonts, and bilingual i18n
+- [ ] 03-05-PLAN.md — Warm-paper Tailwind 4 logical-CSS UI component primitives in admin/src/components/ui/
+- [ ] 03-06-PLAN.md — Credentialed GraphQL client, GIS AuthProvider + non-clearing ReauthModal, LoginPage, and bilingual AdminShell
+- [ ] 03-07-PLAN.md — Tiptap 3 atomic {الاسم} chip editor, Markdown-subset serializer, validation, and live preview
+- [ ] 03-08-PLAN.md — Catalog management, suggestion moderation queue UI, and read-only audit log page
+- [ ] 03-09-PLAN.md — Express 5 /admin static serving, GIS Helmet CSP, multi-stage Dockerfile, and smoke verification
 **UI hint**: yes
 
 ### Phase 4: Onboarding, Personalization & Identity
