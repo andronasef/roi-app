@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { type ContentKind, uuidv7 } from '@roi/shared';
 import { eq, isNotNull, isNull } from 'drizzle-orm';
 import type { BlessingDto, NameOfGodDto, VerseDto } from '../content/content.resolver';
@@ -60,6 +60,19 @@ function auditSnapshot(row: {
     text: row.text,
     textFemale: row.textFemale ?? null,
   };
+}
+
+/** Edits need a live row and, when the client supplied one, a matching version (WR-05). */
+function assertEditable(
+  existing: { version: number; deletedAt: number | null },
+  expectedVersion: number | null | undefined,
+): void {
+  if (existing.deletedAt !== null) {
+    throw new ConflictException('CONTENT_ALREADY_DELETED');
+  }
+  if (expectedVersion != null && existing.version !== expectedVersion) {
+    throw new ConflictException('CONTENT_VERSION_CONFLICT');
+  }
 }
 
 function mapVerseRow(row: typeof verses.$inferSelect): VerseDto {
@@ -246,7 +259,12 @@ export class AdminContentService {
     return result;
   }
 
-  updateVerse(actorEmail: string, id: string, input: CreateVersePayload): VerseDto {
+  updateVerse(
+    actorEmail: string,
+    id: string,
+    input: CreateVersePayload,
+    expectedVersion?: number | null,
+  ): VerseDto {
     const ref = input.ref.trim();
     const textFemale = normalizeOptionalText(input.textFemale);
     let before: Record<string, unknown> | undefined;
@@ -262,6 +280,7 @@ export class AdminContentService {
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        assertEditable(existing, expectedVersion);
         before = auditSnapshot(existing);
 
         db.update(verses)
@@ -326,7 +345,12 @@ export class AdminContentService {
     return result;
   }
 
-  updateNameOfGod(actorEmail: string, id: string, input: CreateNameOfGodPayload): NameOfGodDto {
+  updateNameOfGod(
+    actorEmail: string,
+    id: string,
+    input: CreateNameOfGodPayload,
+    expectedVersion?: number | null,
+  ): NameOfGodDto {
     const title = input.title.trim();
     const textFemale = normalizeOptionalText(input.textFemale);
     let before: Record<string, unknown> | undefined;
@@ -342,6 +366,7 @@ export class AdminContentService {
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        assertEditable(existing, expectedVersion);
         before = auditSnapshot(existing);
 
         db.update(namesOfGod)
@@ -408,7 +433,12 @@ export class AdminContentService {
     return result;
   }
 
-  updateBlessing(actorEmail: string, id: string, input: CreateBlessingPayload): BlessingDto {
+  updateBlessing(
+    actorEmail: string,
+    id: string,
+    input: CreateBlessingPayload,
+    expectedVersion?: number | null,
+  ): BlessingDto {
     const title = input.title.trim();
     const verseRef = normalizeOptionalVerseRef(input.verseRef);
     const textFemale = normalizeOptionalText(input.textFemale);
@@ -430,6 +460,7 @@ export class AdminContentService {
         if (!existing) {
           throw new NotFoundException('CONTENT_ITEM_NOT_FOUND');
         }
+        assertEditable(existing, expectedVersion);
         before = auditSnapshot(existing);
 
         db.update(blessings)

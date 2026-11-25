@@ -147,11 +147,23 @@ export function useSaveContent(kind: ContentKind) {
   const invalidate = useInvalidateAfterWrite();
   const { create, update } = KIND_CONFIG[kind];
   return useMutation({
-    mutationFn: ({ id, payload }: { id?: string; payload: ContentPayload }) => {
+    mutationFn: ({
+      id,
+      payload,
+      expectedVersion,
+    }: {
+      id?: string;
+      payload: ContentPayload;
+      /** Version the form was loaded from; the server rejects the edit if the item moved on (WR-05). */
+      expectedVersion?: number;
+    }) => {
       const input = toContentInput(kind, payload);
       const type = `${(id ? update : create).replace(/^./, (c) => c.toUpperCase())}Input`;
       return id
-        ? executeAdminGraphQL(`mutation Save($id: ID!, $input: ${type}!) { ${update}(id: $id, input: $input) { id } }`, { id, input })
+        ? executeAdminGraphQL(
+            `mutation Save($id: ID!, $input: ${type}!, $expectedVersion: Int) { ${update}(id: $id, input: $input, expectedVersion: $expectedVersion) { id } }`,
+            { id, input, expectedVersion },
+          )
         : executeAdminGraphQL(`mutation Save($input: ${type}!) { ${create}(input: $input) { id } }`, { input });
     },
     onSuccess: invalidate,
@@ -252,6 +264,14 @@ export function useRejectSuggestion() {
       ),
     onSuccess: invalidate,
   });
+}
+
+/** Backend rejects stale or soft-deleted edits with CONTENT_VERSION_CONFLICT / CONTENT_ALREADY_DELETED (WR-05). */
+export function isContentConflict(error: unknown): boolean {
+  return (
+    error instanceof AdminApiError &&
+    (error.message.includes('CONTENT_VERSION_CONFLICT') || error.message.includes('CONTENT_ALREADY_DELETED'))
+  );
 }
 
 /** Backend maps a lost moderation race to HTTP 409 / `CONFLICT` with SUGGESTION_ALREADY_MODERATED (D-11). */

@@ -709,4 +709,44 @@ describe('AdminContentModule & AdminAuditModule (ADM-02, ADM-06, BE-05, D-05, D-
       await app.close();
     }
   });
+
+  it('rejects stale expectedVersion and edits to soft-deleted items with 409-style conflicts (WR-05)', async () => {
+    const { app } = await createAdminTestApp({ dataDir: makeTempDir() });
+    try {
+      const server = app.getHttpServer();
+      const cookie = await loginAsAdmin(server);
+      const gql = async (query: string, variables: Record<string, unknown>, ip: string) =>
+        (
+          await request(server)
+            .post('/graphql')
+            .set('Cookie', cookie)
+            .set('x-roi-admin', '1')
+            .set('X-Forwarded-For', ip)
+            .send({ query, variables })
+            .expect(200)
+        ).body;
+      const update = /* GraphQL */ `
+        mutation U($id: ID!, $input: UpdateVerseInput!, $v: Int) {
+          updateVerse(id: $id, input: $input, expectedVersion: $v) { id version }
+        }
+      `;
+      const input = { ref: 'مزمور ١', text: 'نص' };
+
+      const created = await gql(CREATE_VERSE_MUTATION, { input }, '198.51.100.40');
+      const id = created.data.createVerse.id as string;
+      const v1 = created.data.createVerse.version as number;
+
+      const ok = await gql(update, { id, input: { ...input, text: 'نص ٢' }, v: v1 }, '198.51.100.41');
+      expect(ok.errors).toBeUndefined();
+
+      const stale = await gql(update, { id, input: { ...input, text: 'نص ٣' }, v: v1 }, '198.51.100.42');
+      expect(stale.errors?.[0]?.message).toContain('CONTENT_VERSION_CONFLICT');
+
+      await gql(SOFT_DELETE_MUTATION, { kind: 'verse', id }, '198.51.100.43');
+      const deleted = await gql(update, { id, input: { ...input, text: 'نص ٤' } }, '198.51.100.44');
+      expect(deleted.errors?.[0]?.message).toContain('CONTENT_ALREADY_DELETED');
+    } finally {
+      await app.close();
+    }
+  });
 });

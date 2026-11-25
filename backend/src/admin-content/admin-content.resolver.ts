@@ -212,9 +212,11 @@ export class AdminContentResolver {
     id: string,
     @Args('input', new ZodValidationPipe(verseMutationInputSchema))
     input: UpdateVerseInput,
+    @Args('expectedVersion', { type: () => Int, nullable: true })
+    expectedVersion: number | null | undefined,
     @Context() ctx: { req: AdminRequest },
   ): VerseDto {
-    return this.adminContentService.updateVerse(requireActorEmail(ctx), id, input);
+    return this.adminContentService.updateVerse(requireActorEmail(ctx), id, input, expectedVersion);
   }
 
   @Mutation(() => NameOfGodDto)
@@ -232,9 +234,11 @@ export class AdminContentResolver {
     id: string,
     @Args('input', new ZodValidationPipe(nameOfGodMutationInputSchema))
     input: UpdateNameOfGodInput,
+    @Args('expectedVersion', { type: () => Int, nullable: true })
+    expectedVersion: number | null | undefined,
     @Context() ctx: { req: AdminRequest },
   ): NameOfGodDto {
-    return this.adminContentService.updateNameOfGod(requireActorEmail(ctx), id, input);
+    return this.adminContentService.updateNameOfGod(requireActorEmail(ctx), id, input, expectedVersion);
   }
 
   @Mutation(() => BlessingDto)
@@ -252,9 +256,11 @@ export class AdminContentResolver {
     id: string,
     @Args('input', new ZodValidationPipe(blessingMutationInputSchema))
     input: UpdateBlessingInput,
+    @Args('expectedVersion', { type: () => Int, nullable: true })
+    expectedVersion: number | null | undefined,
     @Context() ctx: { req: AdminRequest },
   ): BlessingDto {
-    return this.adminContentService.updateBlessing(requireActorEmail(ctx), id, input);
+    return this.adminContentService.updateBlessing(requireActorEmail(ctx), id, input, expectedVersion);
   }
 
   @Mutation(() => Boolean)

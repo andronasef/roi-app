@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { Pencil, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { matches, NAME_TOKEN, type ContentKind } from '@roi/shared';
@@ -22,6 +22,7 @@ import { toast } from '@/components/ui/toaster';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   KIND_CONFIG,
+  isContentConflict,
   useAdminCatalog,
   useRestore,
   useSaveContent,
@@ -248,6 +249,8 @@ export function ItemEditorRoute({ kind }: { kind: ContentKind }) {
   const catalog = useAdminCatalog(kind);
   const save = useSaveContent(kind);
   const back = () => navigate(`/${route}`);
+  // Version the form was first loaded from; a refetch after a conflict must not silently "rebase" the draft.
+  const loaded = useRef<{ id: string; version: number } | null>(null);
 
   if (id && catalog.isError) {
     return <ErrorBanner onRetry={() => void catalog.refetch()} />;
@@ -258,6 +261,9 @@ export function ItemEditorRoute({ kind }: { kind: ContentKind }) {
   const item = id ? catalog.data?.find((i) => i.id === id) : undefined;
   if (id && !item) {
     return <Navigate to={`/${route}`} replace />; // stale or unknown id
+  }
+  if (id && item && loaded.current?.id !== id) {
+    loaded.current = { id, version: item.version };
   }
 
   return (
@@ -275,7 +281,15 @@ export function ItemEditorRoute({ kind }: { kind: ContentKind }) {
       submitLabel={id ? t.cta.saveChanges : t.cta.publishNew}
       onBack={back}
       onSubmitPayload={async (payload) => {
-        await save.mutateAsync({ id, payload });
+        try {
+          await save.mutateAsync({ id, payload, expectedVersion: loaded.current?.version });
+        } catch (error) {
+          if (isContentConflict(error)) {
+            void catalog.refetch();
+            throw new Error(t.errors.contentConflict);
+          }
+          throw error;
+        }
         back();
       }}
     />

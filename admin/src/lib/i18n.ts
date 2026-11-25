@@ -66,6 +66,8 @@ const AR_COPY = {
       'الرمز الوحيد المسموح به داخل الأقواس هو {الاسم} — احذف أي أقواس أخرى ثم أعد الحفظ.',
     sessionExpired401:
       'انتهت صلاحية الجلسة — مسودتك محفوظة هنا. سجّل الدخول بحساب جوجل للاستمرار بدون فقدان التعديلات.',
+    contentConflict:
+      'تم تعديل هذا العنصر أو حذفه بواسطة مشرف آخر. أعدنا تحميل القائمة — راجع آخر نسخة ثم أعد المحاولة.',
     concurrentModeration409:
       'تمت مراجعة هذا الاقتراح بالفعل بواسطة مشرف آخر. حدّث القائمة لعرض الحالة الحالية.',
     networkFailure:
@@ -245,6 +247,8 @@ const EN_COPY: AdminCopy = {
       'Only the {الاسم} name chip is permitted inside curly braces — remove other {…} braces and try again.',
     sessionExpired401:
       'Your admin session expired — your unsaved edits are preserved. Sign in with Google below to continue saving.',
+    contentConflict:
+      'This item was edited or deleted by another admin. The list was reloaded; review the latest version and try again.',
     concurrentModeration409:
       'This suggestion was already moderated by another admin. Refresh the queue to see its latest status.',
     networkFailure:
