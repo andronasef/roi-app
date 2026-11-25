@@ -98,7 +98,7 @@ describe('personal items CRUD, tombstones, and suggestion payload', () => {
     }
   });
 
-  it('rejects empty title/text, foreign brace tokens, and unsafe Markdown', () => {
+  it('rejects empty title/text locally but accepts links and braces in private notes', () => {
     const { sqlite, db } = openMigratedMemoryDb();
     const clock = createDeterministicClock();
 
@@ -119,24 +119,35 @@ describe('personal items CRUD, tombstones, and suggestion payload', () => {
         }),
       ).toThrow();
 
-      expect(() =>
-        createPersonalItem(db, clock, {
-          kind: 'name_of_god',
-          title: 'الله القريب',
-          text: 'نص به {name} غير مسموح',
-        }),
-      ).toThrow();
-
-      expect(() =>
-        createPersonalItem(db, clock, {
-          kind: 'blessing',
-          title: 'بركة',
-          text: 'اضغط [هنا](https://example.com)',
-        }),
-      ).toThrow();
+      const braces = createPersonalItem(db, clock, {
+        kind: 'name_of_god',
+        title: 'الله القريب',
+        text: 'نص به {name} و www.example.com',
+      });
+      expect(braces.text).toBe('نص به {name} و www.example.com');
     } finally {
       sqlite.close();
     }
+  });
+
+  it('rejects unsafe Markdown and foreign braces only when building a suggestion', () => {
+    expect(() =>
+      toSuggestionInput({
+        kind: 'blessing',
+        title: 'بركة',
+        text: 'اضغط [هنا](https://example.com)',
+        verseRef: null,
+      }),
+    ).toThrow();
+
+    expect(() =>
+      toSuggestionInput({
+        kind: 'name_of_god',
+        title: 'الله القريب',
+        text: 'نص به {name} غير مسموح',
+        verseRef: null,
+      }),
+    ).toThrow();
   });
 
   it('soft-deletes personal item and tombstones linked favorite without hard deletion', () => {

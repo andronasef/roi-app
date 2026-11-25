@@ -19,6 +19,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { ZodError } from 'zod';
 
 import {
   Dialog,
@@ -69,6 +70,8 @@ const SUGGEST_SUCCESS_MESSAGE =
   'تم إرسال اقتراحك للمراجعة — شكراً لمشاركتك';
 const DAILY_LIMIT_MESSAGE =
   'وصلت للحد اليومي للاقتراحات النهاردة — جرّب تاني بكرة';
+const SUGGEST_NOT_ALLOWED_MESSAGE =
+  'النص ده مينفعش يتقترح للكل لأن فيه روابط أو رموز غير مسموحة — شيلها وجرّب تاني';
 const RATE_LIMIT_MESSAGE =
   'بعتّ اقتراحات كتير في وقت قصير — استنى دقيقة وجرّب تاني';
 
@@ -86,6 +89,9 @@ function mapSuggestionErrorMessage(
     if (err.code === 'validation') {
       return err.message;
     }
+  }
+  if (err instanceof ZodError) {
+    return SUGGEST_NOT_ALLOWED_MESSAGE;
   }
   return uiCopy('leyaanaSuggestSubmitError', gender);
 }

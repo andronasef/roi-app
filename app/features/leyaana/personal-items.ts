@@ -1,10 +1,12 @@
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import {
+  contentKindSchema,
   submitSuggestionInputSchema,
   uuidv7,
   type ContentKind,
   type SubmitSuggestionInput,
 } from '@roi/shared';
+import { z } from 'zod';
 
 import { softDelete, type Clock, type SyncDatabase } from '../db/events';
 import { favorites, personalItems } from '../db/schema';
@@ -26,28 +28,50 @@ export interface UpdatePersonalItemInput {
   verseRef?: string | null;
 }
 
-function normalizeAndValidatePersonalInput(
+/**
+ * Lenient schema for private on-device notes: non-empty and length-capped only. The strict
+ * public-content rules (no links/HTML/foreign braces) apply at suggest time via `toSuggestionInput`.
+ */
+const personalItemInputSchema = z.object({
+  kind: contentKindSchema,
+  title: z.string().min(1).max(200),
+  text: z.string().min(1).max(5000),
+  verseRef: z.string().min(1).max(200).optional(),
+});
+
+function normalizePersonalInput(
   kind: ContentKind,
   title: string,
   text: string,
   verseRef?: string | null,
-): SubmitSuggestionInput {
+) {
   const trimmedVerseRef =
     kind === 'blessing' && typeof verseRef === 'string' && verseRef.trim().length > 0
       ? verseRef.trim()
       : null;
 
-  return submitSuggestionInputSchema.parse({
+  return {
     kind,
     title: title.trim(),
     text: text.trim(),
     ...(trimmedVerseRef ? { verseRef: trimmedVerseRef } : {}),
-  });
+  };
+}
+
+function normalizeAndValidatePersonalInput(
+  kind: ContentKind,
+  title: string,
+  text: string,
+  verseRef?: string | null,
+) {
+  return personalItemInputSchema.parse(
+    normalizePersonalInput(kind, title, text, verseRef),
+  );
 }
 
 /**
  * Create a local personal item (verse, Name of God, or blessing) in SQLite.
- * Validates plain-text fields via submitSuggestionInputSchema.
+ * Validates plain-text fields with the lenient local schema (not the public-suggestion schema).
  */
 export function createPersonalItem(
   db: SyncDatabase,
@@ -178,10 +202,7 @@ export function listPersonalItems(
 export function toSuggestionInput(
   item: Pick<PersonalItemRow, 'kind' | 'title' | 'text' | 'verseRef'>,
 ): SubmitSuggestionInput {
-  return normalizeAndValidatePersonalInput(
-    item.kind,
-    item.title,
-    item.text,
-    item.verseRef,
+  return submitSuggestionInputSchema.parse(
+    normalizePersonalInput(item.kind, item.title, item.text, item.verseRef),
   );
 }
