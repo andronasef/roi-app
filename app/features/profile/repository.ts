@@ -29,9 +29,9 @@ export const HOME_TOOL_IDS = [
 
 export type HomeToolId = (typeof HOME_TOOL_IDS)[number];
 
-/** Phase 4 implements only ليا أنا; Phase 5-6 tools stay hidden on Home until shipped (D-06). */
+/** Phase 5 enables ليا أنا, تشفع, and دفتر الشكر; حفظ الآيات stays hidden until Phase 6 (D-13). */
 export const IMPLEMENTED_HOME_TOOLS: ReadonlySet<HomeToolId> =
-  new Set<HomeToolId>(['leyaana']);
+  new Set<HomeToolId>(['leyaana', 'intercession', 'gratitude']);
 
 export const LAST_VISIBLE_TOOL_ERROR =
   'لازم تفضل أداة واحدة ظاهرة على الأقل في الشاشة الرئيسية';

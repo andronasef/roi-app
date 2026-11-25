@@ -170,9 +170,11 @@ describe('HomeScreen tools, MMKV flags & ContentRefreshContext', () => {
         'intercession',
       ]);
 
-      // In Phase 4 (D-06), only leyaana is rendered while all 4 remain persisted
+      // In Phase 5 (D-13), leyaana, intercession, and gratitude are rendered while memorize stays hidden
       expect(getVisibleHomeTools(readHomeTiles(db))).toEqual([
+        { id: 'gratitude', visible: true, order: 0 },
         { id: 'leyaana', visible: true, order: 2 },
+        { id: 'intercession', visible: true, order: 3 },
       ]);
 
       // When future tools are implemented, visibility and order sort apply deterministically
@@ -196,7 +198,8 @@ describe('HomeScreen tools, MMKV flags & ContentRefreshContext', () => {
     try {
       const clock = createDeterministicClock();
 
-      const result = toggleHomeTileVisibility(db, clock, 'leyaana');
+      const singleTool = new Set<'leyaana'>(['leyaana']);
+      const result = toggleHomeTileVisibility(db, clock, 'leyaana', singleTool);
       expect(result).toEqual({
         ok: false,
         reason: 'last_visible',

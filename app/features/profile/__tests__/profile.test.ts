@@ -100,9 +100,19 @@ describe('profile repository & gender-aware personalization', () => {
         ['gratitude', true, 3],
       ]);
 
-      // In Phase 4 only leyaana is implemented, so turning it off is blocked
-      expect(Array.from(IMPLEMENTED_HOME_TOOLS)).toEqual(['leyaana']);
-      const blocked = toggleHomeTileVisibility(db, clock, 'leyaana');
+      // Phase 5 enables leyaana, intercession, and gratitude; turning off the last visible tool is blocked
+      expect(Array.from(IMPLEMENTED_HOME_TOOLS)).toEqual([
+        'leyaana',
+        'intercession',
+        'gratitude',
+      ]);
+      const singleImplemented = new Set<HomeToolId>(['leyaana']);
+      const blocked = toggleHomeTileVisibility(
+        db,
+        clock,
+        'leyaana',
+        singleImplemented,
+      );
       expect(blocked).toEqual({
         ok: false,
         reason: 'last_visible',

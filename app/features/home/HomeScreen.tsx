@@ -64,13 +64,13 @@ const HOME_TOOL_META: Record<HomeToolId, HomeToolDisplayMeta> = {
     title: 'تشفع',
     subtitle: 'متابعة صلواتك عن الناس',
     icon: HeartHandshake,
-    route: ROUTES.home,
+    route: ROUTES.intercession,
   },
   gratitude: {
     title: 'دفتر الشكر',
     subtitle: 'سطر شكر كل يوم',
     icon: NotebookPen,
-    route: ROUTES.home,
+    route: ROUTES.gratitude,
   },
 };
 
