@@ -57,3 +57,22 @@ export function resolveBackendRoot(): string {
 export function resolveBackendPath(...segments: string[]): string {
   return join(resolveBackendRoot(), ...segments);
 }
+
+/**
+ * Locate the built admin SPA (the directory containing `index.html`), or
+ * `undefined` when it has not been built so backend tests/dev boot without it.
+ */
+export function resolveAdminDistDir(): string | undefined {
+  const root = resolveBackendRoot();
+  const candidates = [
+    process.env.ADMIN_DIST_DIR?.trim(),
+    resolve(root, '../admin/dist'),
+    resolve(root, 'admin-dist'),
+  ];
+  for (const candidate of candidates) {
+    if (candidate && existsSync(join(candidate, 'index.html'))) {
+      return resolve(candidate);
+    }
+  }
+  return undefined;
+}
