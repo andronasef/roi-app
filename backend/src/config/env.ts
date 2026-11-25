@@ -63,3 +63,14 @@ export type BackendEnv = z.infer<typeof envSchema>;
 export function loadEnv(rawEnv: Record<string, string | undefined> = process.env): BackendEnv {
   return envSchema.parse(rawEnv);
 }
+
+export const MIN_PROD_JWT_SECRET_LENGTH = 32;
+
+/** Fail fast at boot (not at first login) when production lacks a usable admin JWT secret (WR-01). */
+export function assertProductionConfig(env: BackendEnv): void {
+  if (env.NODE_ENV === 'production' && (env.ADMIN_JWT_SECRET?.length ?? 0) < MIN_PROD_JWT_SECRET_LENGTH) {
+    throw new Error(
+      `ADMIN_JWT_SECRET is required in production (>= ${MIN_PROD_JWT_SECRET_LENGTH} chars)`,
+    );
+  }
+}

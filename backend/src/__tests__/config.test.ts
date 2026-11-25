@@ -11,7 +11,7 @@ import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { loadEnv } from '../config/env';
+import { assertProductionConfig, loadEnv } from '../config/env';
 import { resolveBackendPath, resolveBackendRoot } from '../config/paths';
 
 @Injectable()
@@ -93,6 +93,17 @@ describe('backend Phase 2 foundation (SWC DI, shared schemas, env, paths)', () =
       '23662840492-h4j3v57k9dpm0suqa61qpkv7qh78qq9v.apps.googleusercontent.com',
       '23662840492-laqcbt3hkft72a3mu0ofcokeskr7sr7a.apps.googleusercontent.com',
     ]);
+  });
+
+  it('assertProductionConfig() fails fast without a >=32-char ADMIN_JWT_SECRET in production only (WR-01)', () => {
+    expect(() => assertProductionConfig(loadEnv({ NODE_ENV: 'production' }))).toThrow(/ADMIN_JWT_SECRET/);
+    expect(() =>
+      assertProductionConfig(loadEnv({ NODE_ENV: 'production', ADMIN_JWT_SECRET: 'short' })),
+    ).toThrow(/ADMIN_JWT_SECRET/);
+    expect(() =>
+      assertProductionConfig(loadEnv({ NODE_ENV: 'production', ADMIN_JWT_SECRET: 'x'.repeat(32) })),
+    ).not.toThrow();
+    expect(() => assertProductionConfig(loadEnv({ NODE_ENV: 'development' }))).not.toThrow();
   });
 
   it('loadEnv() parses comma-separated ADMIN_ORIGINS, ADMIN_EMAILS, GOOGLE_CLIENT_IDS, PORT, DATA_DIR, and admin auth fields', () => {

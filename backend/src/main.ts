@@ -6,7 +6,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { type BackendEnv, loadEnv } from './config/env';
+import { type BackendEnv, assertProductionConfig, loadEnv } from './config/env';
 import { resolveAdminDistDir } from './config/paths';
 
 // Minimal structural types: `express` is a transitive dep without its own types here.
@@ -135,6 +135,7 @@ export function isMainEntrypoint(): boolean {
 
 export async function bootstrap(): Promise<NestExpressApplication> {
   const env = loadEnv(process.env);
+  assertProductionConfig(env);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   configureApp(app, env);
   await app.listen(env.PORT);

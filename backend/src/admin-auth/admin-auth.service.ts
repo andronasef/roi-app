@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import {
   ForbiddenException,
   Inject,
@@ -12,14 +13,12 @@ import {
   GOOGLE_OAUTH_CLIENT,
   type GoogleTokenVerifier,
 } from '../common/google-auth.guard';
-import type { BackendEnv } from '../config/env';
+import { type BackendEnv, MIN_PROD_JWT_SECRET_LENGTH } from '../config/env';
 import { BACKEND_ENV } from '../db/drizzle.module';
 
 export const ADMIN_COOKIE_NAME = 'roi_admin_session';
 export const ADMIN_COOKIE_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 const ADMIN_JWT_EXPIRES_IN_SECONDS = 14 * 24 * 60 * 60;
-const DEV_FALLBACK_JWT_SECRET = 'roi-dev-only-admin-jwt-secret-not-for-production';
-const MIN_PROD_JWT_SECRET_LENGTH = 32;
 
 export interface AdminCookieOptions {
   readonly httpOnly: boolean;
@@ -54,6 +53,8 @@ interface AdminSessionPayload {
 export class AdminAuthService {
   private readonly oauthClient: GoogleTokenVerifier;
   private readonly allowlist: Set<string>;
+  /** Non-production fallback: random per process, so no public constant can forge a session. */
+  private readonly devFallbackSecret = randomBytes(32).toString('hex');
 
   constructor(
     @Inject(BACKEND_ENV) private readonly env: BackendEnv,
@@ -194,6 +195,6 @@ export class AdminAuthService {
       }
       return configured;
     }
-    return configured && configured.length > 0 ? configured : DEV_FALLBACK_JWT_SECRET;
+    return configured && configured.length > 0 ? configured : this.devFallbackSecret;
   }
 }
