@@ -126,14 +126,25 @@ Plans:
 **Plans:** 9 plans
 
 Plans:
+**Wave 1**
 - [ ] 03-01-PLAN.md — Package legitimacy gate (blocking owner approval for Phase 3 npm dependencies)
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03-02-PLAN.md — Drizzle migration 0001 and backend Google-allowlisted 14-day httpOnly cookie auth
-- [ ] 03-03-PLAN.md — Backend ContentModule extraction, admin content CRUD, suggestion moderation queue, and audit log GraphQL API
 - [ ] 03-04-PLAN.md — Admin SPA scaffold, split TS/Vitest, Tailwind 4 warm-paper theme, self-hosted Arabic fonts, and bilingual i18n
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 03-03-PLAN.md — Backend ContentModule extraction, admin content CRUD, suggestion moderation queue, and audit log GraphQL API
 - [ ] 03-05-PLAN.md — Warm-paper Tailwind 4 logical-CSS UI component primitives in admin/src/components/ui/
+
+**Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 03-06-PLAN.md — Credentialed GraphQL client, GIS AuthProvider + non-clearing ReauthModal, LoginPage, and bilingual AdminShell
 - [ ] 03-07-PLAN.md — Tiptap 3 atomic {الاسم} chip editor, Markdown-subset serializer, validation, and live preview
+
+**Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 03-08-PLAN.md — Catalog management, suggestion moderation queue UI, and read-only audit log page
+
+**Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 03-09-PLAN.md — Express 5 /admin static serving, GIS Helmet CSP, multi-stage Dockerfile, and smoke verification
 **UI hint**: yes
 

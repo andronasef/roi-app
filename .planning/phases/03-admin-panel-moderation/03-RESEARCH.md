@@ -548,16 +548,15 @@ export class AdminAuthGuard implements CanActivate {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Public Google Client ID delivery to `/admin` SPA in Docker**
+1. **Public Google Client ID delivery to `/admin` SPA in Docker** — **RESOLVED:** `03-02-PLAN.md` and `03-04-PLAN.md` implement an unauthenticated `adminPublicConfig` GraphQL query returning `googleClientId: env.ADMIN_GOOGLE_CLIENT_ID ?? env.GOOGLE_CLIENT_IDS[0]` (non-secret OAuth Web Client ID), so Docker containers work at runtime without requiring `--build-arg VITE_GOOGLE_CLIENT_ID`.
    - What we know: `backend/src/config/env.ts:7-10` defaults `GOOGLE_CLIENT_IDS` to `DEFAULT_GOOGLE_CLIENT_IDS` where index `0` is the Web Client ID (`23662840492-h4j3v57k9dpm0suqa61qpkv7qh78qq9v.apps.googleusercontent.com`), matching `app/constants/app.ts:30-31`.
-   - What's unclear: Whether Dokploy deployments may override `GOOGLE_CLIENT_IDS` at runtime without rebuilding the Docker image.
-   - Recommendation: Expose an unauthenticated GraphQL query `adminAuthConfig { googleClientId }` returning `env.ADMIN_GOOGLE_CLIENT_ID ?? env.GOOGLE_CLIENT_IDS[0]` (non-secret OAuth client ID) so the Docker image works at runtime without requiring `--build-arg VITE_GOOGLE_CLIENT_ID`.
+   - Resolution: Runtime GraphQL `adminPublicConfig` query supplies `googleClientId` dynamically to the `/admin` SPA.
 
-2. **Optional rejection note storage (`D-10`)**
-   - What we know: `suggestions` table (`backend/src/db/schema.ts:68-82`) currently has no `moderationNote` column.
-   - Recommendation: Add nullable `moderationNote: text('moderation_note')` to `suggestions` + index `suggestions_status_created_idx` via Drizzle migration `0001`, AND also record the note in `auditLog.summaryJson`. Zero breakage to existing rows/tests.
+2. **Optional rejection note storage (`D-10`)** — **RESOLVED:** `03-02-PLAN.md` adds nullable `moderationNote: text('moderation_note')` to `suggestions` + index `suggestions_status_created_idx` via Drizzle migration `0001`, and `03-03-PLAN.md` also records the note in `auditLog.summaryJson`.
+   - What we know: `suggestions` table (`backend/src/db/schema.ts:68-82`) previously had no `moderationNote` column.
+   - Resolution: Store in both `suggestions.moderation_note` (for direct `Rejected` tab display) and `audit_log.summary_json`.
 
 ---
 

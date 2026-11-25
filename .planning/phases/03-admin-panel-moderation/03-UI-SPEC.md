@@ -155,7 +155,7 @@ Bilingual UI copy (`D-12`) — the admin shell switches cleanly between Arabic (
 - **Accessibility:** Every icon-only button (Tiptap toolbar buttons `Bold`, `Italic`, `H2`, `H3`, `Bullet List`, `Blockquote`, `Insert Name Chip`, table row `Edit`/`Delete`/`Restore`, and modal close icons) MUST have both an `aria-label` in the active UI language and a `Tooltip` showing the action name and keyboard shortcut.
 
 ### 2. Auth, CSRF & Mid-Edit Expiry Protection (`ADM-01`, `D-01`..`D-03`, `D-14`)
-- **Cookie & CSRF Transport (`D-02`, `D-14`):** Backend serves `/admin` static SPA from the same origin in production and accepts CORS from `ADMIN_ORIGINS` (`http://localhost:5173`) in dev. Admin GraphQL client sets `credentials: 'include'` and attaches custom header `x-roi-admin-csrf: 1` (matched on backend).
+- **Cookie & CSRF Transport (`D-02`, `D-14`):** Backend serves `/admin` static SPA from the same origin in production and accepts CORS from `ADMIN_ORIGINS` (`http://localhost:5173`) in dev. Admin GraphQL client sets `credentials: 'include'` and attaches custom header `x-roi-admin: 1` (matched on backend).
 - **Allowlist Gate (`D-01`):** `google-auth-library` verifies ID token (`email_verified === true`) and checks lower-cased email against `ADMIN_EMAILS`. Non-allowlisted accounts see the `403` allowlist error copy inline on the login card.
 - **Mid-Edit Expiry Protection (`D-03`):**
   - A global GraphQL fetch wrapper intercepts `401` / `UNAUTHENTICATED` responses.
