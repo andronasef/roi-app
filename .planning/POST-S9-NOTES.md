@@ -1,6 +1,6 @@
-# Post-Phase 9 (`S9`) Product, UX & Bug-Fix Notes
+# Post-Phase 7 (`S7`, formerly `S9` — final phase) Product, UX & Bug-Fix Notes
 
-> **Trigger:** Surface and review this entire list with the user immediately after **Phase 9 (`S9`)** is completed.
+> **Trigger:** Surface and review this entire list with the user immediately after **Phase 7 (`S7`, the final phase)** is completed.
 
 ## 1. Appearance & Theme Selector (Settings)
 - **Full Look & Feel Customization:** The current UI feels too minimal for some users; add a comprehensive **Appearance / Theme Selector** section in Settings (`إعدادات الشكل`) where users can customize the entire app's look:

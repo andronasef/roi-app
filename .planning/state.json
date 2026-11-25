@@ -30,22 +30,12 @@
     },
     {
       "number": "6",
-      "name": "Memorization & the Daily Loop",
+      "name": "Memorization, Daily Loop & Widgets",
       "status": "pending"
     },
     {
       "number": "7",
-      "name": "Widgets",
-      "status": "pending"
-    },
-    {
-      "number": "8",
-      "name": "Google Drive Backup & Restore",
-      "status": "pending"
-    },
-    {
-      "number": "9",
-      "name": "Teaching Layers & Store Release",
+      "name": "Drive Backup, Teaching Layers & Store Release",
       "status": "pending"
     }
   ],

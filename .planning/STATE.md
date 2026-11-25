@@ -9,7 +9,7 @@ last_activity: 2026-11-26
 last_activity_desc: Phase 05 execution started
 state_head: 10a0e6ac493a1d7b032b25f68276674eb316d6c2
 progress:
-  total_phases: 9
+  total_phases: 7
   completed_phases: 2
   total_plans: 46
   completed_plans: 40
@@ -130,7 +130,7 @@ Recent decisions affecting current work:
 - [Phase 1 / Hardware]: Physical iPhone Google Sign-In interactive flow and physical iOS widget cold-start tap deferred until physical iOS hardware / Apple Developer provisioning
 - [Phase 2]: First launch needs internet, so backend uptime and production content are release gates
 - [Phase 6]: Start the Play 12-tester / 14-day closed-testing clock at the end of this phase
-- [Phase 8]: Drive file layout (one shared file vs one per device) and headless background sign-in are open research items
+- [Phase 7]: Drive file layout (one shared file vs one per device) and headless background sign-in are open research items
 
 ## Deferred Items
 

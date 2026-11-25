@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ro'i goes from an unproven native stack to two store-published apps in nine phases. Phase 1 proves the hard, expensive-to-retrofit parts on real phones: forced-RTL Arabic, a sync-ready local schema, a shared logic package and every native integration (Firebase, Google Sign-In, MMKV, both widget systems). Phases 2 and 3 stand up the content backend, the one-time Sanity import and the admin panel, so the first launch has real content to download. Phases 4 to 6 deliver the four tools end to end: identity (ليا أنا) with onboarding and personalization, intercession (تشفع) with gratitude (دفتر الشكر), then memorization (حفظ الآيات) with the daily "what's due today" loop that is the core value. Phases 7 and 8 add widgets and Google Drive backup, which are independent of each other. Phase 9 adds the teaching layers and takes the app through store review to publication.
+Ro'i goes from an unproven native stack to two store-published apps in seven phases. Phase 1 proves the hard, expensive-to-retrofit parts on real phones: forced-RTL Arabic, a sync-ready local schema, a shared logic package and every native integration (Firebase, Google Sign-In, MMKV, both widget systems). Phases 2 and 3 stand up the content backend, the one-time Sanity import and the admin panel, so the first launch has real content to download. Phases 4 to 6 deliver the four tools end to end: identity (ليا أنا) with onboarding and personalization, intercession (تشفع) with gratitude (دفتر الشكر), then memorization (حفظ الآيات) with the daily "what's due today" loop that is the core value, plus a home-screen widget per tool. Phase 7 adds Google Drive backup and the teaching layers, and takes the app through store review to publication.
 
 ## Phases
 
@@ -17,10 +17,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Admin Panel & Moderation** - Google-gated admin to author content with the name-chip editor and review user suggestions
 - [x] **Phase 4: Onboarding, Personalization & Identity** - Onboarding, name/gender personalization, Home grid, Settings and the full ليا أنا tool (completed 2026-11-26)
 - [ ] **Phase 5: Intercession & Gratitude** - تشفع prayer cards with "most neglected" sorting, and the دفتر الشكر daily gratitude line
-- [ ] **Phase 6: Memorization & the Daily Loop** - حفظ الآيات spaced-repetition tool, Home "due today" counts and per-tool reminders
-- [ ] **Phase 7: Widgets** - One privacy-safe widget per tool on iOS and Android that deep-links into the app
-- [ ] **Phase 8: Google Drive Backup & Restore** - Opt-in backup to the user's own Drive, restore on a new device, and manual export
-- [ ] **Phase 9: Teaching Layers & Store Release** - Coach marks and help pages, biometric lock, privacy disclosures and publication on both stores
+- [ ] **Phase 6: Memorization, Daily Loop & Widgets** - حفظ الآيات spaced-repetition tool, Home "due today" counts, per-tool reminders, and one privacy-safe deep-linking widget per tool on iOS and Android
+- [ ] **Phase 7: Drive Backup, Teaching Layers & Store Release** - Opt-in Drive backup/restore and export, coach marks and help pages, biometric lock, privacy disclosures and publication on both stores
 
 ## Phase Details
 
@@ -200,84 +198,61 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-### Phase 6: Memorization & the Daily Loop
+### Phase 6: Memorization, Daily Loop & Widgets
 
-**Goal:** As a forgetful believer, I want to run a daily verse-review session and see what is due today on Home, so that the app remembers for me without guilt.
+**Goal:** As a forgetful believer, I want to run a daily verse-review session, see what is due today on Home, and add a home-screen widget per tool, so that the app remembers for me without guilt and is present in my day without opening it.
 **Mode:** mvp
 **Depends on**: Phase 5
-**Requirements**: MEM-01, MEM-02, MEM-03, MEM-04, MEM-05, MEM-06, MEM-07, MEM-08, MEM-09, MEM-10, HOME-04, SET-02, SET-03, SET-04
+**Requirements**: MEM-01, MEM-02, MEM-03, MEM-04, MEM-05, MEM-06, MEM-07, MEM-08, MEM-09, MEM-10, HOME-04, SET-02, SET-03, SET-04, WDG-01, WDG-02, WDG-03, WDG-04, WDG-05
 **Success Criteria** (what must be TRUE):
   1. In حفظ الآيات the user sees stats (due today, in memorization, memorized, streak), adds their own verse or picks one from the library, sets a daily new-verse cap, and searches and filters their verses.
   2. The user runs a daily review session, rating each card with four buttons; a verse counts as memorized at 30 days or more of stability or when the user marks it manually, and a missed day never shames the streak.
   3. The user practices with the reveal challenge (25% / 50%) and first-letter or full-word recall with a progress bar on Arabic letters, and records and plays back their own recitation.
   4. Home shows today's counts (verses to review, prayers waiting, tonight's gratitude) so the user sees what is due without opening each tool.
   5. Reminders for review, prayer, gratitude and the weekly verse fire at the times the user set in each tool's settings, with generic text by default.
+  6. On iOS and Android the user adds a widget for each of the four tools and sees real content in each.
+  7. Tapping any widget opens the right screen in the app, from a cold start and from the background.
+  8. After the user taps "صليت", finishes a review or saves a gratitude line, the matching widget shows the new state without a manual refresh.
+  9. By default widgets show only counts and neutral copy; names and prayer text appear only after the user opts in.
 
 **Plans**: TBD
 **UI hint**: yes
 
-### Phase 7: Widgets
+### Phase 7: Drive Backup, Teaching Layers & Store Release
 
-**Goal:** As a user, I want to add a home-screen widget per tool that opens the right screen, so that Ro'i is present in my day without opening the app.
+**Goal:** As a user, I want to back up my data to my own Google Drive, have each tool explain itself, and download Ro'i from the store, so that changing devices never loses my prayers or verses, I'm never lost, and I trust it with private prayers.
 **Mode:** mvp
 **Depends on**: Phase 6
-**Requirements**: WDG-01, WDG-02, WDG-03, WDG-04, WDG-05
-**Success Criteria** (what must be TRUE):
-  1. On iOS the user adds a widget for each of the four tools and sees real content in each.
-  2. On Android the user adds a widget for each of the four tools and sees real content in each.
-  3. Tapping any widget opens the right screen in the app, from a cold start and from the background.
-  4. After the user taps "صليت", finishes a review or saves a gratitude line, the matching widget shows the new state without a manual refresh.
-  5. By default widgets show only counts and neutral copy; names and prayer text appear only after the user opts in.
-
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 8: Google Drive Backup & Restore
-
-**Goal:** As a user, I want to back up my data to my own Google Drive and restore it on a new phone, so that changing devices never loses my prayers or verses.
-**Mode:** mvp
-**Depends on**: Phase 6
-**Requirements**: SYNC-01, SYNC-02, SYNC-03, SYNC-04, SYNC-05, SYNC-06, SYNC-07, SET-06
+**Requirements**: SYNC-01, SYNC-02, SYNC-03, SYNC-04, SYNC-05, SYNC-06, SYNC-07, SET-06, HELP-01, HELP-02, HELP-03, SET-05, REL-02, REL-03, REL-04, REL-05
 **Success Criteria** (what must be TRUE):
   1. After the user's first win, the app offers Google sign-in and a Drive permission with a plain explanation of why; the user can skip it and offer it again from Settings.
   2. The user's data and recordings appear only in the hidden app-data folder of their own Drive, and a network inspection shows nothing personal sent to our servers.
   3. On app open the app syncs by pulling, merging, then pushing; edits made on two devices both survive, a deleted record stays deleted, prayer counts add up from events, and a fresh empty device never overwrites the backup.
   4. On a new phone, the user signs in, sees a preview of what will be restored, and then gets their verses, prayers, gratitude lines, recordings and settings back.
   5. Background sync runs roughly daily when the OS allows it, and the user can export all their data as a file from Settings at any time.
-
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 9: Teaching Layers & Store Release
-
-**Goal:** As a new user, I want to download Ro'i from the store and have each tool explain itself, so that I'm never lost and I trust it with private prayers.
-**Mode:** mvp
-**Depends on**: Phase 7, Phase 8
-**Requirements**: HELP-01, HELP-02, HELP-03, SET-05, REL-02, REL-03, REL-04, REL-05
-**Success Criteria** (what must be TRUE):
-  1. The first time the user opens each tool they see a one-line purpose and 3-4 coach marks that render correctly in RTL on both platforms; every tool has a teaching empty state and a permanent (?) button opening a help page with FAQ shortcuts.
-  2. The user can turn on a biometric app lock in Settings, and the app asks for Face ID, fingerprint or the phone passcode whenever it is opened or returns from the background.
-  3. A public privacy policy and the App Store and Google Play privacy disclosures are published and match what each SDK actually collects.
-  4. On a build installed from the stores' own testing tracks, Google sign-in works with the OAuth consent screen set to "In production".
-  5. The app passes App Review and Google Play review and a user can download and use it from both stores.
+  6. The first time the user opens each tool they see a one-line purpose and 3-4 coach marks that render correctly in RTL on both platforms; every tool has a teaching empty state and a permanent (?) button opening a help page with FAQ shortcuts.
+  7. The user can turn on a biometric app lock in Settings, and the app asks for Face ID, fingerprint or the phone passcode whenever it is opened or returns from the background.
+  8. A public privacy policy and the App Store and Google Play privacy disclosures are published and match what each SDK actually collects.
+  9. On a build installed from the stores' own testing tracks, Google sign-in works with the OAuth consent screen set to "In production".
+  10. The app passes App Review and Google Play review and a user can download and use it from both stores.
 
 **Plans**: TBD
 **UI hint**: yes
 
 ## Cross-Phase Notes
 
-- **Parallel work:** Phase 3 needs only Phase 2, so it can run alongside Phases 4 and 5. Phases 7 and 8 both need only Phase 6 and are independent of each other.
+- **Parallel work:** Phase 3 needs only Phase 2, so it can run alongside Phases 4 and 5. Inside Phase 6, widgets and memorization can be planned as separate waves; inside Phase 7, Drive backup and teaching layers are independent of each other.
 - **Where cross-tool requirements sit:** HOME-04 and SET-02 to SET-04 complete only when all four tools exist, so they are mapped to Phase 6. Earlier tool phases still ship their own slice (for example the nightly gratitude reminder in Phase 5) on the shared notification planner.
 - **Phase 4 is the heaviest phase** (18 requirements) because onboarding's "pick a first verse" needs the ليا أنا content and favorites to exist. Split it with `/gsd-phase` if planning shows it is too large.
-- **First launch needs internet,** so backend uptime and the Sanity import with production content are release gates for Phase 9.
-- **Play 12-tester / 14-day clock:** start closed testing with a stable internal build at the end of Phase 6, so the 14 days have elapsed before Phase 9 needs them.
-- **Research before planning (`/gsd-plan-phase --research-phase N`):** Phase 1 (native stack spike), Phase 3 (Tiptap chip editor and Markdown round-trip), Phase 7 (iOS widget RTL and deep links, Android bitmap sizing), Phase 8 (headless sign-in, Drive file layout), Phase 9 (RTL coach marks, current store guidelines).
-- **Decisions to settle inside a phase:** iOS widget library, `expo-widgets` or `@bacons/apple-targets` (Phase 1 spike); whether weekly and monthly verse pools are the whole library or a flagged subset (Phase 4); audio length cap and Wi-Fi-only recording sync (Phases 6 and 8); Drive file layout, one shared file or one per device (Phase 8).
+- **First launch needs internet,** so backend uptime and the Sanity import with production content are release gates for Phase 7.
+- **Play 12-tester / 14-day clock:** start closed testing with a stable internal build at the end of Phase 6, so the 14 days have elapsed before Phase 7 needs them.
+- **Research before planning (`/gsd-plan-phase --research-phase N`):** Phase 1 (native stack spike), Phase 3 (Tiptap chip editor and Markdown round-trip), Phase 6 (iOS widget RTL and deep links, Android bitmap sizing), Phase 7 (headless sign-in, Drive file layout, RTL coach marks, current store guidelines).
+- **Decisions to settle inside a phase:** iOS widget library, `expo-widgets` or `@bacons/apple-targets` (Phase 1 spike); whether weekly and monthly verse pools are the whole library or a flagged subset (Phase 4); audio length cap and Wi-Fi-only recording sync (Phases 6 and 7); Drive file layout, one shared file or one per device (Phase 7).
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -286,7 +261,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Admin Panel & Moderation | 9/9 | In Progress | - |
 | 4. Onboarding, Personalization & Identity | 7/7 | Complete    | 2026-11-26 |
 | 5. Intercession & Gratitude | 0/TBD | Not started | - |
-| 6. Memorization & the Daily Loop | 0/TBD | Not started | - |
-| 7. Widgets | 0/TBD | Not started | - |
-| 8. Google Drive Backup & Restore | 0/TBD | Not started | - |
-| 9. Teaching Layers & Store Release | 0/TBD | Not started | - |
+| 6. Memorization, Daily Loop & Widgets | 0/TBD | Not started | - |
+| 7. Drive Backup, Teaching Layers & Store Release | 0/TBD | Not started | - |
