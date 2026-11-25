@@ -36,7 +36,15 @@ export const GOOGLE_OAUTH = {
 const rawApiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim() ?? '';
 
 /** Public backend base URL injected at bundle time via EXPO_PUBLIC_API_BASE_URL (D-06). */
-export const API_BASE_URL =
-  rawApiBaseUrl.length > 0
-    ? rawApiBaseUrl.replace(/\/+$/, '')
-    : 'http://localhost:3000';
+export const API_BASE_URL = resolveApiBaseUrl();
+
+function resolveApiBaseUrl(): string {
+  if (rawApiBaseUrl.length > 0) {
+    return rawApiBaseUrl.replace(/\/+$/, '');
+  }
+  // Release bundles must never silently target cleartext localhost (unreachable on devices).
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('EXPO_PUBLIC_API_BASE_URL is required for release builds');
+  }
+  return 'http://localhost:3000';
+}
