@@ -70,3 +70,56 @@ export const gratitudeLines = sqliteTable('gratitude_lines', {
 export function gratitudeId(localDate: string): string {
   return `${GRATITUDE_ID_PREFIX}${localDate}`;
 }
+
+/** Singleton row ID in sync_meta tracking downloaded content version and delta throttle. */
+export const CONTENT_SYNC_META_ID = 'content_sync';
+
+const publicContentCols = () => ({
+  ...syncCols(),
+  text: text('text').notNull(),
+  textFemale: text('text_female'),
+  version: integer('version').notNull(),
+  sortOrder: integer('sort_order'),
+  tagsJson: text('tags_json'),
+});
+
+/** Downloaded public Bible verses synced from backend snapshots and deltas. */
+export const verses = sqliteTable(
+  'verses',
+  {
+    ...publicContentCols(),
+    ref: text('ref').notNull(),
+  },
+  (t) => [
+    index('verses_version_idx').on(t.version),
+    index('verses_live_order_idx').on(t.deletedAt, t.sortOrder),
+  ],
+);
+
+/** Downloaded public Names of God entries synced from backend snapshots and deltas. */
+export const namesOfGod = sqliteTable(
+  'names_of_god',
+  {
+    ...publicContentCols(),
+    title: text('title').notNull(),
+  },
+  (t) => [index('names_of_god_version_idx').on(t.version)],
+);
+
+/** Downloaded public blessings entries synced from backend snapshots and deltas. */
+export const blessings = sqliteTable(
+  'blessings',
+  {
+    ...publicContentCols(),
+    title: text('title').notNull(),
+    verseRef: text('verse_ref'),
+  },
+  (t) => [index('blessings_version_idx').on(t.version)],
+);
+
+/** Local content sync cursor and last delta check timestamp (keyed by CONTENT_SYNC_META_ID). */
+export const syncMeta = sqliteTable('sync_meta', {
+  ...syncCols(),
+  lastContentVersion: integer('last_content_version').notNull().default(0),
+  lastCheckedAt: integer('last_checked_at').notNull().default(0),
+});
