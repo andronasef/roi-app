@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('expo-linking', () => ({
@@ -98,5 +100,31 @@ describe('settings support helpers', () => {
       valid: true,
       profile: { name: 'مريم', gender: 'female' },
     });
+  });
+
+  it('wires SettingsScreen grouped cards, /settings route, and keeps PII off telemetry', () => {
+    const screenPath = path.resolve(__dirname, '../SettingsScreen.tsx');
+    const routePath = path.resolve(__dirname, '../../../app/settings.tsx');
+    const screenSource = fs.readFileSync(screenPath, 'utf8');
+    const routeSource = fs.readFileSync(routePath, 'utf8');
+
+    expect(routeSource).toContain('SettingsScreen');
+
+    expect(screenSource).toContain('useThemePreference');
+    expect(screenSource).toContain('ScriptureSizeSlider');
+    expect(screenSource).toContain('<Scripture');
+    expect(screenSource).toContain('updateProfile');
+    expect(screenSource).toContain('getGoogleAccountStatus');
+    expect(screenSource).toContain('signInWithGoogleDriveScope');
+    expect(screenSource).toContain('Share.share');
+    expect(screenSource).toContain('openSupportUrl');
+    expect(screenSource).toContain('formatAppVersionLabel');
+    expect(screenSource).toContain('SUPPORT_URLS.rate');
+    expect(screenSource).toContain('SUPPORT_URLS.support');
+    expect(screenSource).toContain('SUPPORT_URLS.whatsapp');
+
+    // Privacy invariant (T-04-10): never pass user name, gender, or Google email to telemetry
+    expect(screenSource).not.toMatch(/track\s*\([^)]*(name|gender|email)/i);
+    expect(screenSource).not.toMatch(/reportError\s*\([^)]*(name|gender|email)/i);
   });
 });
