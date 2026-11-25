@@ -7,8 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { OAuth2Client } from 'google-auth-library';
-import { GOOGLE_OAUTH_CLIENT, GoogleAuthGuard } from './common/google-auth.guard';
+import { AdminAuthModule } from './admin-auth/admin-auth.module';
+import { GoogleAuthGuard } from './common/google-auth.guard';
 import { GqlThrottlerGuard } from './common/gql-throttler.guard';
 import { loadEnv } from './config/env';
 import { ContentResolver } from './content/content.resolver';
@@ -49,6 +49,7 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 60 }]),
     DrizzleModule,
+    AdminAuthModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: () => {
@@ -100,10 +101,6 @@ function createThrottlerHttpStatusPlugin(): ApolloServerPlugin {
     SnapshotService,
     ContentService,
     ContentResolver,
-    {
-      provide: GOOGLE_OAUTH_CLIENT,
-      useFactory: () => new OAuth2Client(),
-    },
     GoogleAuthGuard,
     SuggestionsService,
     SuggestionsResolver,

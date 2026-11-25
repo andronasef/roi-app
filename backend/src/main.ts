@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { type BackendEnv, loadEnv } from './config/env';
@@ -15,6 +16,7 @@ export function configureApp(app: NestExpressApplication, env: BackendEnv): void
   const allowedOrigins = new Set(env.ADMIN_ORIGINS);
 
   app.set('trust proxy', 1);
+  app.use(cookieParser());
   app.use(helmet(isProd ? {} : { contentSecurityPolicy: false }));
   app.enableCors({
     origin: (
@@ -28,6 +30,8 @@ export function configureApp(app: NestExpressApplication, env: BackendEnv): void
       }
       callback(null, allowedOrigins.has(origin));
     },
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Roi-Admin', 'Apollo-Require-Preflight'],
   });
   app.useBodyParser('json', { limit: '100kb' });
   app.enableShutdownHooks();
