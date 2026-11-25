@@ -35,7 +35,12 @@ export async function runDeltaSyncIfDue({
   throttleMs = DELTA_SYNC_THROTTLE_MS,
   signal,
 }: RunDeltaSyncParams): Promise<DeltaSyncResult> {
-  const syncState = readSyncState(db);
+  let syncState: ReturnType<typeof readSyncState>;
+  try {
+    syncState = readSyncState(db);
+  } catch {
+    return { status: 'failed' };
+  }
   if (syncState.lastContentVersion <= 0) {
     return { status: 'skipped', reason: 'not_initialized' };
   }

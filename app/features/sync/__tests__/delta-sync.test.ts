@@ -365,4 +365,14 @@ describe('silent 6-hour throttled background delta sync', () => {
       sqlite.close();
     }
   });
+
+  it('resolves failed (never rejects) when the local DB cannot be read', async () => {
+    const { sqlite, db } = openMigratedMemoryDb();
+    sqlite.close();
+    const api: SyncApiClient = { fetchSnapshot: vi.fn(), fetchContentDelta: vi.fn() };
+
+    await expect(
+      runDeltaSyncIfDue({ db, clock: createFixedClock({ value: BASE_MS }), api, isOnline: true }),
+    ).resolves.toEqual({ status: 'failed' });
+  });
 });

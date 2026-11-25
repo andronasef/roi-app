@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Pressable, View } from 'react-native';
+import { AppState, Pressable, View } from 'react-native';
 import Animated, {
   ReduceMotion,
   useAnimatedStyle,
@@ -122,6 +122,8 @@ export function ContentGate({ children }: { children: ReactNode }) {
   const isOnlineRef = useRef(isOnline);
   isOnlineRef.current = isOnline;
   const deltaCheckedThisOnlineRef = useRef(false);
+  // Bumped on every return to foreground so the (6h-throttled) delta check re-arms without a restart.
+  const [foregroundTick, setForegroundTick] = useState(0);
 
   const startDownload = useCallback(async () => {
     if (inFlightRef.current) {
@@ -226,13 +228,25 @@ export function ContentGate({ children }: { children: ReactNode }) {
       clock: deviceClock,
       api: createSyncApiClient(),
       isOnline: true,
-    }).then((result) => {
-      if (result.status === 'reset') {
-        // Server lineage was rewound; the auto-start effect re-runs first download from version 0.
-        setLastContentVersion(0);
+    })
+      .then((result) => {
+        if (result.status === 'reset') {
+          // Server lineage was rewound; the auto-start effect re-runs first download from version 0.
+          setLastContentVersion(0);
+        }
+      })
+      .catch(() => {});
+  }, [isBypassed, lastContentVersion, isOnline, foregroundTick]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        deltaCheckedThisOnlineRef.current = false;
+        setForegroundTick((tick) => tick + 1);
       }
     });
-  }, [isBypassed, lastContentVersion, isOnline]);
+    return () => subscription.remove();
+  }, []);
 
   // Abort any pending download request on unmount.
   useEffect(() => {
