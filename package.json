@@ -16,7 +16,7 @@
   "scripts": {
     "test": "vitest run",
     "test:tz": "TZ=Africa/Cairo vitest run --project @roi/shared && TZ=America/Los_Angeles vitest run --project @roi/shared",
-    "typecheck": "tsc -p tsconfig.json && tsc -p app/tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json && tsc -p admin/tsconfig.json && tsc -p app/tsconfig.json"
   },
   "devDependencies": {
     "typescript": "~6.0.3",
