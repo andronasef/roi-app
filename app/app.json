@@ -84,7 +84,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosDependencyManager": "spm",
+          "iosDependencyManager": "cocoapods",
           "iosUrlScheme": "com.googleusercontent.apps.23662840492-laqcbt3hkft72a3mu0ofcokeskr7sr7a"
         }
       ],

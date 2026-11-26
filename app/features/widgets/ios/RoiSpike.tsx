@@ -50,7 +50,4 @@ const RoiSpikeLayout = (props: RoiSpikeProps, _env: WidgetEnvironment) => {
   );
 };
 
-export default createWidget<RoiSpikeProps>('RoiSpike', RoiSpikeLayout, {
-  verse: '',
-  count: '',
-});
+export default createWidget<RoiSpikeProps>('RoiSpike', RoiSpikeLayout);
